@@ -1,0 +1,69 @@
+.header {
+    width: 100%;
+    text-align: center;
+}
+
+.title {
+    width: 100%;
+    text-align: center;
+    font-size: 50px;
+}
+
+.stat {
+    border: 1px solid #424242;
+    border-radius: 5px;
+}
+
+.statistics {
+    width: 30%;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.accent {
+    color: #f7e136;
+    font-style: italic;
+}
+
+.submit {
+    width: 100%;
+    text-align: center;
+}
+
+.oneline {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.bottom {
+    margin-bottom: 50px;
+}
+
+.flat {
+    border-radius: 3px !important;
+    border: 1px solid #999 !important;
+}
+
+.input-field label {
+    color: #424242 !important;
+}
+
+.input-field input:focus+label {
+    color: #424242 !important;
+}
+
+.input-field input:focus {
+    border-bottom: 1px solid #424242 !important;
+    box-shadow: 0 1px 0 0 #424242 !important;
+}
+
+.checkbox-orange[type="checkbox"]:checked+span:after {
+    border: 2px solid #ff9800;
+    background-color: #ff9800;
+}
