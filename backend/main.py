@@ -1,1 +1,1 @@
-pass
+print("Hello World!")
