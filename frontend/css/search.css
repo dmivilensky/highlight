@@ -1,0 +1,12 @@
+nav {
+    background: #aaa !important;
+}
+
+.fixed {
+    overflow-y: auto !important;
+}
+
+.material-tooltip,
+.backdrop {
+    background-color: #aaa !important;
+}

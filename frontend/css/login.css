@@ -9,6 +9,10 @@
     font-size: 50px;
 }
 
+.title-link {
+    color: #444;
+}
+
 .stat {
     border: 1px solid #424242;
     border-radius: 5px;
@@ -63,7 +67,18 @@
     box-shadow: 0 1px 0 0 #424242 !important;
 }
 
-.checkbox-orange[type="checkbox"]:checked+span:after {
-    border: 2px solid #ff9800;
-    background-color: #ff9800;
+[type="radio"]:checked+span:after,
+[type="radio"].with-gap:checked+span:after {
+    background-color: #f7e136 !important;
+}
+
+[type="radio"]:checked+span:after,
+[type="radio"].with-gap:checked+span:before,
+[type="radio"].with-gap:checked+span:after {
+    border: 2px solid #f7e136 !important;
+}
+
+[type="checkbox"]:checked+span:not(.lever):before {
+    border-right: 2px solid #f7e136 !important;
+    border-bottom: 2px solid #f7e136 !important;
 }

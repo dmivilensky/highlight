@@ -1,0 +1,24 @@
+.chip {
+    background-color: #ddd !important;
+}
+
+.chips {
+    color: #424242 !important;
+    border-bottom: 1px solid #777 !important;
+    box-shadow: 0 1px 0 0 #777 !important;
+}
+
+.autocomplete-content {
+    color: #424242 !important;
+}
+
+[type="radio"]:checked+span:after,
+[type="radio"].with-gap:checked+span:after {
+    background-color: #f7e136 !important;
+}
+
+[type="radio"]:checked+span:after,
+[type="radio"].with-gap:checked+span:before,
+[type="radio"].with-gap:checked+span:after {
+    border: 2px solid #f7e136 !important;
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="../css/login.css"  media="screen,projection"/>        
+        <link type="text/css" rel="stylesheet" href="../css/admin.css"  media="screen,projection"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+        <title>highlight</title>
+        <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <a href="index.html" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
+            </div>
+
+            <div class="row container">
+                <div class="col s12 m12 l12">
+                    <form action="#">
+                        <div class="file-field input-field">
+                        <div class="btn grey">
+                            <span>Загрузить</span>
+                            <input type="file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                        </div>
+                    </form>
+
+                    <fieldset style="border: 1px #424242 solid; border-radius: 5px;">
+                                <legend style="padding: 0.2em 0.8em ">Язык документа</legend>
+
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" checked />
+                                        <span>Английский</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span>Немецкий</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span>Французский</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span>Испанский</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span>Итальянский</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span>Японский</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s6 m4 l4">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span>Китайский</span>
+                                    </label></p>
+                                </div>
+                                <div class="col s1 m1 l1">
+                                    <p><label>
+                                        <input type="radio" name="group1" />
+                                        <span></span>
+                                    </label></p>
+                                </div>
+                                <div class="col s5 m7 l7">
+                                        <div class="input-field" style="margin: 0;">
+                                        <input placeholder="Другой" id="first_name" type="text" class="validate">
+                                        </div>
+                                </div>
+
+                                </fieldset>
+                                  
+                        <div class="chips chips-autocomplete"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="../js/admin.js"></script>
+    </body>
+</html>
