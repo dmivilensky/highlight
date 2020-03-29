@@ -37,52 +37,74 @@
                                 <fieldset style="border: 1px #424242 solid; border-radius: 5px;">
                                 <legend style="padding: 0.2em 0.8em ">Только для переводчиков</legend>
 
-                                <div class="col s6 m4 l4">
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" checked="checked" />
                                         <span>Английский</span>
                                     </label></p>
                                 </div>
-                                <div class="col s6 m4 l4">
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" />
                                         <span>Немецкий</span>
                                     </label></p>
                                 </div>
-                                <div class="col s6 m4 l4">
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" />
                                         <span>Французский</span>
                                     </label></p>
                                 </div>
-                                <div class="col s6 m4 l4">
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" />
                                         <span>Испанский</span>
                                     </label></p>
                                 </div>
-                                <div class="col s6 m4 l4">
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" />
                                         <span>Итальянский</span>
                                     </label></p>
                                 </div>
-                                <div class="col s6 m4 l4">
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" />
                                         <span>Японский</span>
                                     </label></p>
                                 </div>
-                                <div class="col s3 m4 l4"></div>
-                                <div class="col s6 m4 l4">
+                                <div class="col s0 m4 l4"></div>
+                                <div class="col s12 m4 l4">
                                     <p><label>
                                         <input type="checkbox" />
                                         <span>Китайский</span>
                                     </label></p>
                                 </div>
-                                <div class="col s3 m4 l4"></div>
+                                <div class="col s0 m4 l4"></div>
 
                                 </fieldset>
+
+                                <div id="soc" style="margin-top: 15px;">
+
+                                <div class="input-field col s12 m12 l4" style="margin-top: 15px;">
+                                <select id="soc_value0">
+                                <option value="1" selected>ВК</option>
+                                <option value="2">Facebook</option>
+                                <option value="3">Telegram</option>
+                                </select>
+                                <label>Соц. сеть</label>
+                                </div>
+
+                                <div class="input-field col s12 m12 l8">
+                                <input id="soc0" type="text" class="validate">
+                                <label for="soc0">id</label>
+                                </div>
+
+                                </div>
+
+                                <div style="width: 100%; text-align: right;">
+                                <a onclick="add_social();" class="waves-effect waves-light btn yellow" style="font-size: 24px; line-height: 25x; color: #888;">+</a>
+                                </div>
 
                                 <div class="input-field col s12">
                                 <input id="login" type="text" class="validate">
@@ -115,7 +137,10 @@
                 </div>
             </div>
         </div>
-
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="js/signup.js"></script>
     </body>
 </html>

@@ -23,3 +23,17 @@ nav {
     border-bottom: 1px solid #424242 !important;
     box-shadow: 0 1px 0 0 #424242 !important;
 }
+
+#field {
+    height: 500px !important;
+}
+
+.chip {
+    background-color: #ddd !important;
+}
+
+.chips {
+    color: #424242 !important;
+    border-bottom: 1px solid #777 !important;
+    box-shadow: 0 1px 0 0 #777 !important;
+}

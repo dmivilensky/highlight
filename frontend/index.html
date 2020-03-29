@@ -36,7 +36,7 @@
 
                     <div class="container">
                         <form class="col s12">
-                            <div class="row">
+                            <div class="row" style="margin-bottom: 0;">
                                 <div class="input-field col s12">
                                 <input id="login" type="text" class="validate">
                                 <label for="login">Логин</label>
@@ -48,7 +48,20 @@
                                 </div>
                             </div>
 
-                            <a class="waves-effect waves-light btn submit grey" href="main.html">Войти</a>
+                            <div class="input-field col s6" style="margin-top: 0;">
+                                <p><label>
+                                    <input name="translator" type="radio" checked class="tr" />
+                                    <span>Переводчик</span>
+                                </label></p>
+                                </div>
+                                <div class="input-field col s6" style="margin-top: 0;">
+                                <p><label>
+                                    <input name="translator" type="radio" class="tr" id="editor" />
+                                    <span>Редактор</span>
+                                </label></p>
+                                </div>
+
+                            <a class="waves-effect waves-light btn submit grey" onclick="signin();">Войти</a>
                             <p class="header online">или</p>
                             <a class="waves-effect waves-gray btn-flat submit flat bottom" href="signup.html">Зарегистрироваться</a>
                         </form>
@@ -77,7 +90,10 @@
                 </div>
             </div>
         </div>
-
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="js/index.js"></script>
     </body>
 </html>
