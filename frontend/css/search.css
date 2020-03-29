@@ -10,3 +10,16 @@ nav {
 .backdrop {
     background-color: #aaa !important;
 }
+
+.input-field label {
+    color: #424242 !important;
+}
+
+.input-field textarea:focus+label {
+    color: #424242 !important;
+}
+
+.input-field textarea:focus {
+    border-bottom: 1px solid #424242 !important;
+    box-shadow: 0 1px 0 0 #424242 !important;
+}

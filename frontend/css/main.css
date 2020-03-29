@@ -1,0 +1,23 @@
+.preview {
+    background: -webkit-linear-gradient(#333, #eee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fixed {
+    overflow-y: auto !important;
+}
+
+.instruments-panel {
+    text-align: right;
+    margin-right: 10px;
+    margin-left: 10px;
+    /* border: 1px solid #bbb;
+    border-radius: 7px; */
+}
+
+#modal1 {
+    max-height: 90% !important;
+    height: 80% !important;
+    width: 80% !important;
+}
