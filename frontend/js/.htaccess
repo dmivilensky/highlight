@@ -1,0 +1,8 @@
+Options All -Indexes
+IndexIgnore *
+IndexIgnore *.js
+
+<Files .htaccess>
+	Order allow,deny
+	Deny from all
+</Files>
