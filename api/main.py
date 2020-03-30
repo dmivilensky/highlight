@@ -17,7 +17,7 @@ responses:
 :errors 2003: no account matching id
 :errors 2004: account has not enough rights
 :errors 3000: pieces already taken
-:errors 3001: not a single piece
+:errors 3001: not a single piece (как у вас могут быть карты не в том порядке разложены?!)
 :errors 4040: a error
 :success OK: no error occurred during operation
 """
@@ -400,8 +400,7 @@ def delete_from_db(doc_id):
 
 
 def find_file_by_path(path):
-    document = Document(path)
-    return document
+    return Document(path)
 
 
 def find_pieces(user_id):
@@ -440,7 +439,7 @@ def find_doc_by_lang(lang):
     for key in docs.keys():
         docs[key] = sorted(docs[key], key=lambda a: a["index"])
         out.append([key, docs[key], docs_o])
-    sorted(out, key=lambda a: a[2], reverse=True)
+    out = sorted(out, key=lambda a: a[2], reverse=True)
 
     return out
 
@@ -463,8 +462,7 @@ def find_complete_docs_by_lang(lang):
             taken_pieces_indexes = []
             pss = lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "PIECE",
                                      "translation status": "DONE"})
-            pss = sorted(pss, key=lambda a: a["piece begin"])
-            for p in pss:
+            for p in sorted(pss, key=lambda a: a["piece begin"]):
                 taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
             docs.append([doc["_id"], doc["name"], doc["tags"], len(taken_pieces_indexes) / pieces_count])
 
@@ -548,7 +546,7 @@ def get_translators_stat():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return [t for t in acc.find({"status": {"$in": ["translator", "both"]}, "verified": True})]
+    return list(acc.find({"status": {"$in": ["translator", "both"]}, "verified": True}))
 
 
 def get_file_stat():
