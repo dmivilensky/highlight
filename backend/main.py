@@ -1,8 +1,11 @@
+import os
 import pprint
 from bson.objectid import ObjectId
 
+from docx import Document
 from pymongo import MongoClient
 import pymongo as pm
+import datetime
 
 """
 responses:
@@ -10,15 +13,18 @@ responses:
 :errors 2000: no account matching login
 :errors 2001: wrong password
 :errors 2002: account not verified
+:errors 2003: no account matching id
+:errors 2004: account has not enough rights
 :errors 3000: pieces already taken
 :errors 3001: not a single piece
-:success OK: operation done
+:errors 4040: a error
+:success OK: no error occurred during operation
 """
 
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
-def register(name, surname, mi, email, langs, login, password, is_not_translator):
+def register(name, surname, mi, email, langs, login, password, is_not_translator, vk=None, tg=None, fb=None):
     """
     :param name: obvious
     :param surname: obvious
@@ -32,9 +38,9 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
     """
 
     if is_not_translator:
-        stat = "Translator"
+        stat = "translator"
     else:
-        stat = "Chief"
+        stat = "chief"
 
     a = {"name": name,
          "surname": surname,
@@ -44,6 +50,10 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
          "login": login,
          "password": password,
          "status": stat,
+         "vk": vk,
+         "tg": tg,
+         "fb": fb,
+         "translated": 0,
          "verified": False}
 
     client = MongoClient()
@@ -51,9 +61,9 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
     acc = db.accounts
     try:
         user_id = acc.insert_one(a).inserted_id
-        return user_id
+        return "OK"
     except pm.errors.DuplicateKeyError:
-        return None
+        return "1000"
 
 
 def log_in(login, password):
@@ -68,21 +78,67 @@ def log_in(login, password):
     user = acc.find_one({"login": login})
     if not (user is None):
         if user["password"] == password and user["verified"]:
-            return user["_id"]
+            if user["verified"]:
+                return user["_id"]
+            else:
+                return "2002"
         else:
-            return None
+            return "2001"
     else:
-        return None
+        return "2000"
 
 
-def Verify(user_id, key):
+def verify(user_id, key, decision="ADMITTED"):
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
     if key == "NICE":
-        acc.update_one(
-            {"_id": ObjectId(user_id)},
-            {"$set": {"verified": True}})
+        if decision == "ADMITTED":
+            acc.update_one(
+                {"_id": ObjectId(user_id)},
+                {"$set": {"verified": True}})
+        else:
+            acc.delete_one({"_id": ObjectId(user_id)})
+        return "OK"
+    else:
+        return "2004"
+
+
+def verify_file(doc_id, user_id):
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    acc = db.accounts
+    user = acc.find_one({"_id": ObjectId(user_id)})
+    if not (user is None):
+        if user["status"] == "chief":
+            lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
+            return "OK"
+        else:
+            return "2004"
+    else:
+        return "2003"
+
+
+def split_to_pieces(number, name, lang, doc):
+    """
+       :param number: id number of document
+       :param name: file name
+       :param lang: language one of ENG, RUS, ESP, JAP, etc.
+       :param doc: document docx
+       :return: pieces ids
+   """
+
+    ids = list()
+    for i in range(len(doc.paragraphs)):
+        did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=i, freedom=True)
+        ids.append(did)
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
+                            {"$set": {"piece number": len(doc.paragraphs)}})
+    return ids
 
 
 def push_to_file_storage(path, file):
@@ -91,23 +147,13 @@ def push_to_file_storage(path, file):
     :param file: file
     :return: Nothing
     """
-    pass
+    file.save(path)
 
 
-def split_to_pieces(number, name, status, lang):
-    """
-       :param number: id number of document
-       :param name: file name
-       :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION
-       :param lang: language one of ENG, RUS, ESP, JAP, etc.
-       :return: Nothing
-   """
-    pass
-
-
-def push_to_db(number, name, status, lang, importance=None, pieces_count=None, path=None, orig_path=None, file_data=None, tags=None,
-               freedom=None, index=None, to_lang=None, translator=None, piece_begin=None, piece_end=None, txt=None,
-               translated_txt=None, chief=None):
+def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path=None, orig_path=None, file_data=None,
+               tags=None,
+               freedom=True, index=None, to_lang="RUS", translator=None, piece_begin=None, piece_end=None, txt=None,
+               translated_txt=None, translation_status="UNDONE", chief=None):
     """
     :param number: id number of document
     :param name: file name
@@ -127,6 +173,7 @@ def push_to_db(number, name, status, lang, importance=None, pieces_count=None, p
     :param piece_end: piece ending paragraph
     :param txt: piece text
     :param translated_txt: translated piece
+    :param translation_status: whether translation done or not (DONE/UNDONE)
     :param chief: translates verifier
     :return: file mongo id in DB
     """
@@ -140,11 +187,13 @@ def push_to_db(number, name, status, lang, importance=None, pieces_count=None, p
                 "name": name,
                 "lang": lang,
                 "orig path": orig_path,
+                "piece number": pieces_count,
                 "tags": tags,
                 "importance": importance,
-                "status": status}
-        push_to_file_storage(path, file_data)
-        split_to_pieces(number, name, status, lang)
+                "status": status,
+                "lastModified": datetime.datetime.utcnow()}
+        push_to_file_storage(orig_path, file_data)
+        split_to_pieces(number, name, lang, file_data)
 
     elif status == "WAITING_PIECE":
         file = {"number": number,
@@ -153,7 +202,8 @@ def push_to_db(number, name, status, lang, importance=None, pieces_count=None, p
                 "txt": txt,
                 "index": index,
                 "freedom": freedom,
-                "status": status}
+                "status": status,
+                "lastModified": datetime.datetime.utcnow()}
 
     elif status == "PIECE":
         file = {"number": number,
@@ -165,21 +215,11 @@ def push_to_db(number, name, status, lang, importance=None, pieces_count=None, p
                 "translated txt": translated_txt,
                 "translator": translator,
                 "to lang": to_lang,
-                "status": status}
+                "translation status": translation_status,
+                "status": status,
+                "lastModified": datetime.datetime.utcnow()}
 
-    elif status == "NEED_CHECK":
-        file = {"number": number,
-                "name": name,
-                "lang": lang,
-                "path": path,
-                "orig path": orig_path,
-                "to lang": to_lang,
-                "tags": tags,
-                "translator": translator,
-                "status": status}
-        push_to_file_storage(path, file_data)
-
-    elif status == "TRANSLATED":
+    elif status == "NEED_CHECK" or status == "TRANSLATED":
         file = {"number": number,
                 "name": name,
                 "lang": lang,
@@ -189,7 +229,8 @@ def push_to_db(number, name, status, lang, importance=None, pieces_count=None, p
                 "tags": tags,
                 "translator": translator,
                 "chief": chief,
-                "status": status}
+                "status": status,
+                "lastModified": datetime.datetime.utcnow()}
         push_to_file_storage(path, file_data)
 
     lang_storage = db.files_info
@@ -198,7 +239,21 @@ def push_to_db(number, name, status, lang, importance=None, pieces_count=None, p
     return file_id
 
 
-def update_pieces(user_id, doc_id, pieces_ids, to_lang=None):
+def update_importance(doc_id):
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$inc": {"importance": 1}})
+
+
+def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
+    """
+    :param user_id: mongo id of user
+    :param doc_id: mongo id of file
+    :param pieces_ids: mongo ids of pieces list
+    :param to_lang: language file is translated to
+    :return: response code
+    """
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -231,14 +286,99 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang=None):
                    translated_txt=None,
                    translator=user_id,
                    to_lang=to_lang,
-                   status="PIECE")
+                   status="PIECE",
+                   translation_status="UNDONE")
         for p in pieces:
-            lang_storage.update_one({"_id": p["_id"]}, {"$set": {"freedom": False}})
+            lang_storage.update_one({"_id": p["_id"]},
+                                    {"$set": {"freedom": False, "lastModified": datetime.datetime.utcnow()}})
         return "OK"
 
 
-def update_docs(doc, lang, tags):
-    pass
+def update_docs(name, doc, lang, tags):
+    """
+    :param name: file name
+    :param doc: file data .docx
+    :param lang: language
+    :param tags: tags as array
+    :return: file mongo id
+    """
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, name,
+                     "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
+                     orig_path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'original' + os.path.sep + name,
+                     file_data=doc)
+    return did
+
+
+def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
+    """
+    :param piece_id: mongo id of piece
+    :param tr_txt: translated text string
+    :param tr_stat: status of translation DONE/UNDONE
+    :return: None or translated doc id
+    """
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    lang_storage.update_one({"_id": ObjectId(piece_id)}, {
+        "$set": {"translated txt": tr_txt, "translation status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
+    if tr_stat == "DONE":
+        ps = lang_storage.find_one({"_id": ObjectId(piece_id)})
+        acc = db.accounts
+        acc.update_one({"_id": ObjectId(ps["translator"])}, {"$inc": {"translated": 1}})
+        doc = lang_storage.find_one(
+            {"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "WAITING_FOR_TRANSLATION"})
+        pieces_count = doc["piece number"]
+        taken_pieces_indexes = []
+        pss = lang_storage.find({"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "PIECE",
+                                 "translation status": "DONE"})
+        pss = sorted(pss, key=lambda a: a["piece begin"])
+        for p in pss:
+            taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
+        if pieces_count <= len(taken_pieces_indexes):
+            create_translated_unverified_docs(pss, doc, ps)
+
+
+def create_translated_unverified_docs(pieces, doc, ps):
+    """
+    :param pieces: all text pieces (translated)
+    :param doc: document in db format
+    :param ps: one of pieces
+    :return: mongo id of created element
+    """
+    file_data = find_file_by_path(doc["orig path"])
+    for p in pieces:
+        txts = p["translated txt"].split("\n")
+        for i in range(p["piece begin"], p["piece end"] + 1):
+            file_data.paragraphs[i].text = txts
+    did = push_to_db(doc["number"], doc["name"], "NEED_CHECK", doc["lang"], orig_path=doc["orig path"],
+                     path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'translated' + os.path.sep + doc[
+                         "name"], to_lang=ps["to lang"], tags=doc["tags"], translator=[p["translator"] for p in pieces],
+                     file_data=file_data)
+    for p in pieces:
+        delete_from_db(p["_id"])
+    return did
+
+
+def delete_from_doc_storage(path):
+    os.remove(path)
+
+
+def delete_from_db(doc_id):
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    doc = lang_storage.find_one({"_id": doc_id})
+    if "path" in doc.keys():
+        delete_from_doc_storage(doc["path"])
+    lang_storage.delete_one({"_id": doc_id})
+
+
+def find_file_by_path(path):
+    document = Document(path)
+    return document
 
 
 def find_pieces(user_id):
@@ -249,14 +389,16 @@ def find_pieces(user_id):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
-    pieces = lang_storage.find({"translator": ObjectId(user_id), "status": "PIECE"})
+    pieces = sorted(lang_storage.find({"translator": user_id, "status": "PIECE", "translation status": "UNDONE"}),
+                    key=lambda a: a["lastModified"], reverse=True)
     return pieces
 
 
 def find_doc_by_lang(lang):
     """
     :param lang: language
-    :return: tuple where first element is document name, second is list of pieces for this document
+    :return: array of tuples where first element is document name, second is list of pieces for this document
+    :description: finds pieces as docs by language
     """
     client = MongoClient()
     db = client.highlight
@@ -276,12 +418,41 @@ def find_doc_by_lang(lang):
     return out
 
 
-def get_from_db(search, tags):
+def find_complete_docs_by_lang(lang):
+    """
+    :param lang: language
+    :return: array of docs (id, name, tags, progress)
+    :description: finds docs by language
+    """
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    docs = list()
+    for doc in lang_storage.find({"lang": lang, "status": { "$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}):
+        if doc["status"] in {"NEED_CHECK", "TRANSLATED"}:
+            docs.append([doc["_id"], doc["name"], doc["tags"], 1])
+        else:
+            pieces_count = doc["piece number"]
+            taken_pieces_indexes = []
+            pss = lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "PIECE",
+                                     "translation status": "DONE"})
+            pss = sorted(pss, key=lambda a: a["piece begin"])
+            for p in pss:
+                taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
+            docs.append([doc["_id"], doc["name"], doc["tags"], len(taken_pieces_indexes) / pieces_count])
+
+    return docs
+
+
+def get_from_db(search, tags, status=None):
     """
     :param search: user input
     :param tags: tags
+    :param status: list of statuses
     :return: matching docs of id, name, tags, status, path, etc.
     """
+    if status is None:
+        status = {"TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"}
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -292,40 +463,66 @@ def get_from_db(search, tags):
     search_set_words = set(hl)
     search_tags = set(tags.split(","))
     matching_docs = list()
-    for doc in lang_storage.find():
+    for doc in lang_storage.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
         doc_stat = doc["status"]
-        if doc_stat == "TRANSLATED" or doc_stat == "NEED_CHECK" or doc_stat == "WAITING_FOR_TRANSLATION":
-            relev = 0
-            if doc_stat == "TRANSLATED":
-                relev += 100
-            elif doc_stat == "NEED_CHECK":
-                relev += 50
-            elif doc_stat == "WAITING_FOR_TRANSLATION":
-                relev += 0
-            doc_name_set = set(doc["name"])
-            doc_tags_set = set(doc["tags"])
-            doc_id = doc["number"]
-            tag_inrsc = search_tags.intersection(doc_tags_set)
-            name_inrsc = search_set.intersection(doc_name_set)
+        relev = 0
+        if doc_stat == "TRANSLATED":
+            relev += 100
+        elif doc_stat == "NEED_CHECK":
+            relev += 50
+        elif doc_stat == "WAITING_FOR_TRANSLATION":
+            relev += 0
+        doc_name_set = set(doc["name"])
+        doc_tags_set = set(doc["tags"])
+        doc_id = doc["number"]
+        tag_inrsc = search_tags.intersection(doc_tags_set)
+        name_inrsc = search_set.intersection(doc_name_set)
 
-            if len(search_tags) > 0:
-                if len(tag_inrsc) >= len(search_tags) * 0.8:
-                    relev += len(tag_inrsc) / len(search_tags) * 7
+        if len(search_tags) > 0:
+            if len(tag_inrsc) >= len(search_tags) * 0.8:
+                relev += len(tag_inrsc) / len(search_tags) * 7
 
-                if doc["lang"] in search_tags:
-                    relev += 4
+            if doc["lang"] in search_tags:
+                relev += 4
 
-            if len(search_set) > 0:
-                if len(name_inrsc) >= 0.6 * len(doc_name_set):
-                    relev += len(name_inrsc) / len(doc_name_set) * 10
+        if len(search_set) > 0:
+            if len(name_inrsc) >= 0.6 * len(doc_name_set):
+                relev += len(name_inrsc) / len(doc_name_set) * 10
 
-                if doc_id in search_set_words:
-                    relev += 8
+            if doc_id in search_set_words:
+                relev += 8
 
-            if relev > 0:
-                matching_docs.append((relev, doc))
+        if relev > 0:
+            matching_docs.append((relev, doc))
 
-    return list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True))
+    return list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)
+
+
+def get_for_chief_from_db(search, tags):
+    return get_from_db(search, tags, status={"NEED_CHECK"})
+
+
+def get_users():
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    return acc.find({"verified": False})
+
+
+def get_docs_and_trans():
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    l_s = db.files_info
+    return l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), acc.count_documents({"status": "translator", "verified": True}), l_s.count_documents({"status": "TRANSLATED"})
+
+
+def get_translators_stat():
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    l_s = db.files_info
+    return [t for t in acc.find({"status": "translator", "verified": True})]
 
 
 def test():
@@ -333,15 +530,14 @@ def test():
     # db = client.highlight
     # acc = db.accounts
     # acc.create_index([('login', pm.ASCENDING)], unique=True)
-    # id = register("seva", "obvious", "obvious", "obvious", "obvious", "seva", "tester", "obvious")
-    # print(id)
-    # # Verify(id, "NICE")
+    # did = register("seva", "obvious", "obvious", "obvious", "obvious", "seva", "tester", "obvious")
+    # print(did)
+    # # verify(id, "NICE")
     # print(log_in("seva", "tester"))
     # for i in acc.find():
     #     pprint.pprint(i)
     # acc.delete_one({"_id": log_in("seva", "tester")})
-    a = [0, 1, 2]
-    pprint.pprint(a[-1])
+    pprint.pprint(1 in {2,3})
 
 
 if __name__ == '__main__':
