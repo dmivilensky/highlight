@@ -6,6 +6,7 @@ from docx import Document
 from pymongo import MongoClient
 import pymongo as pm
 import datetime
+import django
 
 """
 responses:
