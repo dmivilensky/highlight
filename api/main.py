@@ -17,7 +17,7 @@ responses:
 :errors 2003: no account matching id
 :errors 2004: account has not enough rights
 :errors 3000: pieces already taken
-:errors 3001: not a single piece
+:errors 3001: not a single piece (как у вас могут быть карты не в том порядке разложены?!)
 :errors 4040: a error
 :success OK: no error occurred during operation
 """
