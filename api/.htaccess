@@ -1,0 +1,9 @@
+Options All -Indexes
+IndexIgnore *
+IndexIgnore *.txt
+IndexIgnore *.py
+
+<Files .htaccess>
+	Order allow,deny
+	Deny from all
+</Files>
