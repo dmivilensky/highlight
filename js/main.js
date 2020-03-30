@@ -1,5 +1,28 @@
 var user_id = "";
 
+var languages = [{
+    code: "ENG",
+    name: "Английский"
+}, {
+    code: "GER",
+    name: "Немецкий"
+}, {
+    code: "FRE",
+    name: "Французский"
+}, {
+    code: "ESP",
+    name: "Испанский"
+}, {
+    code: "ITA",
+    name: "Итальянский"
+}, {
+    code: "JAP",
+    name: "Японский"
+}, {
+    code: "CHI",
+    name: "Китайский"
+}];
+
 function check_user(success) {
     user_id = findGetParameter("user_id");
 
@@ -12,11 +35,7 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            if (user_id == 120) {
-                success();
-            } else {
-                $.redirectGet("index.html", {});
-            }
+            /**/
         })
         .fail(function(jqXHR, status) {
             if (user_id == 120) {
@@ -88,8 +107,179 @@ function list_blocks() {
     }
 }
 
+function close_modal() {
+    $("#hint").hide();
+    $("#get").hide();
+    $("#paragraphs").empty();
+    selected_paragraphs.clear();
+}
+
+var selected_paragraphs = new Set();
+var selected_document = "";
+
+function select_paragraph(id) {
+    if ($("#bar" + id).css("background-color") == "rgb(76, 175, 80)") {
+        selected_paragraphs.delete(id);
+        $("#bar" + id).css("background-color", "#aaaaaa");
+    } else {
+        selected_paragraphs.add(id);
+        $("#bar" + id).css("background-color", "#4caf50");
+    }
+}
+
+function create_block() {
+    var p = Array.from(selected_paragraphs).sort();
+    var all_correct = true;
+    for (var i = 1; i < p.length; ++i) {
+        if (p[i] - p[i - 1] != 1) {
+            all_correct = false;
+            break;
+        }
+    }
+
+    if (!all_correct) {
+        alert("Выбирать можно только последовательно идущие абзацы!");
+    } else {
+        $.ajax({
+                url: "../api/test_script.txt",
+                method: "POST",
+                data: {
+                    id: user_id
+                },
+                dataType: "json"
+            })
+            .done(function(data) {
+                /**/
+            })
+            .fail(function(jqXHR, status) {
+                close_modal();
+                var id = 12;
+                edit_block(id);
+            });
+    }
+}
+
+function select_document(id) {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {
+                id: user_id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            $("#hint").show();
+            $("#get").show();
+            $("#paragraphs").empty();
+            selected_paragraphs.clear();
+
+            selected_document = id;
+            $("#get").click(create_block);
+
+            var text = [{
+                text: `I am a very simple card. I am good at containing small bits of information.`,
+                status: 0
+            }, {
+                text: `I am a very simple card. I am good at containing small bits of information.`,
+                status: 0
+            }, {
+                text: `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
+                status: 1
+            }, {
+                text: `I am convenient because`,
+                status: 0
+            }, {
+                text: `I am convenient because`,
+                status: 0
+            }];
+
+            for (var i = 0; i < text.length; ++i) {
+                var id = i;
+
+                $("#paragraphs").append(`
+                <div class="row" id="p` + id + `" ` + (text[i].status == 0 ? `onclick="select_paragraph(` + id + `);"` : ``) + ` style="margin:0; display: flex;">
+                    <div class="col s1">
+                        <div style="background: ` + (text[i].status == 0 ? "#aaa" : "#fa0000") + `; width: 7px; height: 100%;" id="bar` + id + `"></div>
+                    </div>
+                    <div class="col s11">
+                        <p style="margin:0;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;` + text[i].text + `
+                        </p>
+                    </div>
+                </div>
+                `);
+            }
+        });
+}
+
+function list_documents(lang) {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {
+                id: user_id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            $("#hint").hide();
+            $("#get").hide();
+            $("#docs").empty();
+            for (var i = 0; i < 7; ++i) {
+                var id = i;
+                var tags = ["Английский", "Дезинфекция", "Массачусетс", "Городские мероприятия"];
+                var title = "«" + "Disinfection instructions" + "»";
+                var ready = 20;
+                var total = 55;
+                var progress = ((ready / total) * 100).toFixed(1) + "%";
+
+                var tags_markup = "";
+                for (var j = 0; j < tags.length; ++j) {
+                    tags_markup += `<div class="chip">` + tags[j] + `</div>`;
+                }
+
+                $("#docs").append(`
+                    <li class="collection-item avatar" onclick="select_document(` + id + `);">
+                    <i class="material-icons circle">schedule</i>
+                    <p>
+                    ` + title + `
+                    </p>
+                    <div style="background: #ccc; height: 7px; margin-top: 7px; "></div>
+                    <div style="background: #4caf50; height: 7px; margin-top: -7px; width: ` + progress + `;"></div>
+                    <div style="margin-top: 10px;padding-right: 10%;">
+                    ` + tags_markup + `
+                    </div>
+                    </li>
+                `);
+            }
+        });
+}
+
+function list_languages() {
+    for (var i = 0; i < languages.length; ++i) {
+        $("#lang").append(`
+            <option value="` + languages[i].code + `">` + languages[i].name + `</option>
+        `);
+    }
+
+    $("#lang").change(function() {
+        list_documents($(this).val());
+    })
+}
+
 function init() {
     $('.modal').modal();
+    $("#hint").hide();
+    $("#get").hide();
+
+    list_languages();
     $('select').formSelect();
 
     $.ajax({
@@ -101,19 +291,11 @@ function init() {
             dataType: "json"
         })
         .done(function(data) {
-            list_blocks();
+            /**/
         })
         .fail(function(jqXHR, status) {
             list_blocks();
         });
-}
-
-function select_paragraph(id) {
-    if ($("#bar" + id).css("background-color") == "rgb(76, 175, 80)") {
-        $("#bar" + id).css("background-color", "#aaaaaa");
-    } else {
-        $("#bar" + id).css("background-color", "#4caf50");
-    }
 }
 
 $(document).ready(function() {

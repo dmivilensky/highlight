@@ -34,53 +34,8 @@
                                 <label for="email">Email</label>
                                 </div>
 
-                                <fieldset style="border: 1px #424242 solid; border-radius: 5px;">
+                                <fieldset style="border: 1px #424242 solid; border-radius: 5px;" id="lang">
                                 <legend style="padding: 0.2em 0.8em ">Только для переводчиков</legend>
-
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" checked="checked" />
-                                        <span>Английский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" />
-                                        <span>Немецкий</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" />
-                                        <span>Французский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" />
-                                        <span>Испанский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" />
-                                        <span>Итальянский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" />
-                                        <span>Японский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s0 m4 l4"></div>
-                                <div class="col s12 m4 l4">
-                                    <p><label>
-                                        <input type="checkbox" />
-                                        <span>Китайский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s0 m4 l4"></div>
 
                                 </fieldset>
 
@@ -103,7 +58,8 @@
                                 </div>
 
                                 <div style="width: 100%; text-align: right;">
-                                <a onclick="add_social();" class="waves-effect waves-light btn yellow" style="font-size: 24px; line-height: 25x; color: #888;">+</a>
+                                <a onclick="remove_social();" style="margin-right: 10px;"><i class="material-icons circle grey" style="font-size: 20px; line-height: 30px; color: #fff; height: 30px; width: 30px; text-align: center;">exposure_neg_1</i></a>
+                                <a onclick="add_social();"><i class="material-icons circle grey" style="font-size: 20px; line-height: 30px; color: #fff; height: 30px; width: 30px; text-align: center;">exposure_plus_1</i></a>
                                 </div>
 
                                 <div class="input-field col s12">
@@ -124,13 +80,13 @@
                                 </div>
                                 <div class="input-field col s6">
                                 <p><label>
-                                    <input name="translator" type="radio" class="tr" />
+                                    <input name="translator" type="radio" class="tr" id="editor" />
                                     <span>Проверка документов</span>
                                 </label></p>
                                 </div>
                             </div>
 
-                            <a class="waves-effect waves-light btn submit grey" href="main.html">Зарегистрироваться</a>
+                            <a class="waves-effect waves-light btn submit grey" onclick="signup();">Зарегистрироваться</a>
                             <p style="font-size: 10px;">Нажимая на кнопку «Зарегистрироватся», я даю <a href="privacy_policy.pdf">согласие на обработку персональных данных</a></p>
                         </form>
                     </div>
@@ -141,6 +97,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="js/utils.js"></script>
         <script src="js/signup.js"></script>
     </body>
 </html>

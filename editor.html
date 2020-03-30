@@ -15,38 +15,10 @@
     <body>
         <div style="margin-left: 10%; margin-right: 10%;">
             <div class="row">
-                <a href="index.html" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
+                <a onclick="back();" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
             </div>
 
-            <div class="row" style="width: 100%;">
-                <div class="col s12 m12">
-                <div class="card">
-                    <div class="card-content">
-                    <div class="row">
-                        <div class="col s12 m6 l6">
-                            <p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.
-                            </p>
-                        </div>
-
-                        <div class="col s12 m6 l6">
-                            <form class="col s12" style="background: #eee; border-radius: 5px;">
-                            <div class="row" style="margin: 0;">
-                                <div class="input-field col s12" style="margin: 0;">
-                                <textarea placeholder="Перевод" id="textarea1" class="materialize-textarea" style="height: 200px;"></textarea>
-                                </div>
-                            </div>
-                            </form>
-                        </div>
-                    </div> 
-                    </div>
-
-                    <div style="width: 100%; text-align: right; padding: 20px; padding-top:0;">
-                        <a class="waves-effect waves-light btn yellow darken-2" href="main.html">Перевод завершён</a>
-                        <a class="waves-effect waves-light btn green" href="main.html">Сохранить</a>
-                    </div>
-                </div>
-                </div>
+            <div class="row" style="width: 100%;" id="translations">
             </div>
 
         </div>
@@ -74,6 +46,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="js/utils.js"></script>
         <script src="js/editor.js"></script>
     </body>
 </html>

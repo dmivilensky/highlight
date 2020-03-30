@@ -16,10 +16,7 @@ function signin() {
             dataType: "json"
         })
         .done(function(data) {
-            var id = 120;
-            $.redirectGet(home_page, {
-                user_id: id
-            });
+            /**/
         })
         .fail(function(jqXHR, status) {
             var id = 120;
