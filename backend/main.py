@@ -25,7 +25,7 @@ responses:
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
-def register(name, surname, mi, email, langs, login, password, is_not_translator, vk=None, tg=None, fb=None):
+def register(name, surname, mi, email, langs, login, password, status, vk=None, tg=None, fb=None):
     """
     :param name: obvious
     :param surname: obvious
@@ -34,14 +34,9 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
     :param langs: user languages
     :param login: obvious
     :param password: obvious
-    :param is_not_translator: status translator/verifier
+    :param status: status translator/chief/both
     :return: user id or None if failed
     """
-
-    if is_not_translator:
-        stat = "translator"
-    else:
-        stat = "chief"
 
     a = {"name": name,
          "surname": surname,
@@ -50,7 +45,7 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
          "langs": langs,
          "login": login,
          "password": password,
-         "status": stat,
+         "status": status,
          "vk": vk,
          "tg": tg,
          "fb": fb,
@@ -63,9 +58,9 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
     acc = db.accounts
     try:
         user_id = acc.insert_one(a).inserted_id
-        return "OK"
+        return ("OK", user_id)
     except pm.errors.DuplicateKeyError:
-        return "1000"
+        return ("1000",)
 
 
 def log_in(login, password):
@@ -83,11 +78,11 @@ def log_in(login, password):
             if user["verified"]:
                 return user["_id"]
             else:
-                return "2002"
+                return ("2002",)
         else:
-            return "2001"
+            return ("2001",)
     else:
-        return "2000"
+        return ("2000",)
 
 
 def verify(user_id, key, decision="ADMITTED"):
@@ -101,9 +96,9 @@ def verify(user_id, key, decision="ADMITTED"):
                 {"$set": {"verified": True}})
         else:
             acc.delete_one({"_id": ObjectId(user_id)})
-        return "OK"
+        return ("OK",)
     else:
-        return "2004"
+        return ("2004",)
 
 
 def verify_file(doc_id, user_id, file_data):
@@ -112,16 +107,23 @@ def verify_file(doc_id, user_id, file_data):
     lang_storage = db.files_info
     acc = db.accounts
     user = acc.find_one({"_id": ObjectId(user_id)})
-    if not (user is None):
+    if is_there_any_body(user_id):
         if user["status"] == "chief":
             lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
             file = lang_storage.find_one({"_id": ObjectId(doc_id)})
             push_to_file_storage(file["path"], file_data)
-            return "OK"
+            return ("OK",)
         else:
-            return "2004"
+            return ("2004",)
     else:
-        return "2003"
+        return ("2003",)
+
+
+def is_there_any_body(uid):
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    return not(acc.find_one({"_id": uid}) is None)
 
 
 def split_to_pieces(number, name, lang, doc):
@@ -269,17 +271,17 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         pieces.append(p)
         if not p["freedom"]:
             no_intersections = False
-            return "3000"
+            return ("3000",)
     pieces = sorted(pieces, key=lambda a: a["index"])
     txt = [pieces[0]["txt"]]
     for i in range(1, len(pieces)):
         if pieces[i]["index"] - pieces[i - 1]["index"] != 1:
-            return "3001"
+            return ("3001",)
         txt.append(pieces[i]["txt"])
     begin_index = pieces[0]["index"]
     end_index = pieces[-1]["index"]
     if not no_intersections:
-        return "3000"
+        return ("3000",)
     else:
         acc = db.accounts
         new_piece = {
@@ -288,7 +290,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
             "reservation date": datetime.datetime.utcnow()
         }
         acc.update_one({"_id": ObjectId(user_id)}, {"$push": {"pieces": new_piece}})
-        push_to_db(number=document["number"],
+        did1 = push_to_db(number=document["number"],
                    name=document["name"],
                    lang=document["lang"],
                    piece_begin=begin_index,
@@ -302,7 +304,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         for p in pieces:
             lang_storage.update_one({"_id": p["_id"]},
                                     {"$set": {"freedom": False, "lastModified": datetime.datetime.utcnow()}})
-        return "OK"
+        return ("OK", did1)
 
 
 def update_docs(name, doc, lang, tags):
@@ -349,14 +351,17 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
         if pieces_count <= len(taken_pieces_indexes):
-            create_translated_unverified_docs(pss, doc, ps)
+            return create_translated_unverified_docs(pss, doc, ps, acc)
+        else:
+            return None
 
 
-def create_translated_unverified_docs(pieces, doc, ps):
+def create_translated_unverified_docs(pieces, doc, ps, acc):
     """
     :param pieces: all text pieces (translated)
     :param doc: document in db format
     :param ps: one of pieces
+    :param acc: accounts db
     :return: mongo id of created element
     """
     file_data = find_file_by_path(doc["orig path"])
@@ -364,9 +369,16 @@ def create_translated_unverified_docs(pieces, doc, ps):
         txts = p["translated txt"]
         for i in range(p["piece begin"], p["piece end"] + 1):
             file_data.paragraphs[i].text = txts[i]
-    did = push_to_db(doc["number"], doc["name"], "NEED_CHECK", doc["lang"], orig_path=doc["orig path"],
+
+    the_stat = "TRANSLATED"
+
+    for tr_id in list({p["translator"] for p in pieces}):
+        if acc.find_one({"_id": tr_id})["status"] == "translator":
+            the_stat = "NEED_CHECK"
+
+    did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig path"],
                      path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'translated' + os.path.sep + doc[
-                         "name"], to_lang=ps["to lang"], tags=doc["tags"], translator=[p["translator"] for p in pieces],
+                         "name"], to_lang=ps["to lang"], tags=doc["tags"], translator=list({p["translator"] for p in pieces}),
                      file_data=file_data)
     for p in pieces:
         delete_from_db(p["_id"])
@@ -529,14 +541,14 @@ def get_docs_and_trans():
     db = client.highlight
     acc = db.accounts
     l_s = db.files_info
-    return l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), acc.count_documents({"status": "translator", "verified": True}), l_s.count_documents({"status": "TRANSLATED"})
+    return l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), acc.count_documents({"status": {"$in": ["translator", "both"]}, "verified": True}), l_s.count_documents({"status": "TRANSLATED"})
 
 
 def get_translators_stat():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return [t for t in acc.find({"status": "translator", "verified": True})]
+    return [t for t in acc.find({"status": {"$in": ["translator", "both"]}, "verified": True})]
 
 
 def get_file_stat():
@@ -553,18 +565,19 @@ def get_file_stat():
 
 
 def test():
-    # client = MongoClient()
-    # db = client.highlight
-    # acc = db.accounts
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
     # acc.create_index([('login', pm.ASCENDING)], unique=True)
     # did = register("seva", "obvious", "obvious", "obvious", "obvious", "seva", "tester", "obvious")
     # print(did)
-    # # verify(id, "NICE")
+    # did1 = get_users()[0]
+    # print(did1["_id"])
+    # verify(did1["_id"], "NICE")
     # print(log_in("seva", "tester"))
     # for i in acc.find():
     #     pprint.pprint(i)
     # acc.delete_one({"_id": log_in("seva", "tester")})
-    pprint.pprint(1 in {2,3})
 
 
 if __name__ == '__main__':
