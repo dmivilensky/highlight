@@ -21,13 +21,11 @@
             <div class="row"> 
             <nav>
             <div class="nav-wrapper">
-                <form>
                     <div class="input-field">
                     <input id="search" type="search" required>
                     <label class="label-icon" for="search"><i class="material-icons">search</i></label>
                     <i class="material-icons">close</i>
                     </div>
-                </form>
             </div>
             </nav>
                     <div class="chips chips-placeholder"></div>
@@ -35,114 +33,12 @@
 
             <div class="row">
                 <div class="col s12 m6 l6">
-                    <ul class="collection fixed" style="max-height: 400px;">
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Инструкции по проведению дезинфикционных мероприятий</a></span>
-                        <p>
-                        «Disinfection instructions»
-                        </p>
-                        <div style="margin-top: 10px;padding-right: 10%;">
-                        <div class="chip">
-                            Английский
-                        </div>
-                        <div class="chip">
-                            Дезинфекция
-                        </div>
-                        <div class="chip">
-                            Массачусетс
-                        </div>
-                        <div class="chip">
-                            Городские мероприятия
-                        </div>
-                        </div>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
-                        <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">Результаты тестирования препарата А213</a></span>
-                        <p>«A213 experiments»</p>
-                        </li>
+                    <ul class="collection fixed" style="max-height: 400px;" id="docs">
                     </ul>
                 </div>
 
                 <div class="col s12 m6 l6">
-                    <ul class="collection">
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title">Инструкции по проведению дезинфикционных мероприятий</span>
-                        <p>
-                        «Disinfection instructions»
-                        </p>      
-                        
-                        <div style="margin-top: 10px;padding-right: 10%;">
-                        <div class="chip">
-                            Английский
-                        </div>
-                        <div class="chip">
-                            Дезинфекция
-                        </div>
-                        <div class="chip">
-                            Массачусетс
-                        </div>
-                        <div class="chip">
-                            Городские мероприятия
-                        </div>
-                        </div>
-
-                        <div class="row" style="margin-top: 20px;">
-                            <div class="col s6">
-                            <a class="waves-effect waves-light btn green modal-trigger" href="#modal1" style="width: 100%; border-radius: 20px;"><i class="material-icons left">border_color</i>Редактировать</a>
-                            </div>
-                            <div class="col s6">
-                            <a class="waves-effect waves-green btn-flat" style="width: 100%; border-radius: 20px; text-align: center;"><i class="material-icons left">get_app</i>Скачать оригинал</a>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top: 20px;">
-                            <div class="col s6">
-                            <a class="waves-effect waves-light btn grey" style="width: 100%; border-radius: 20px;"><i class="material-icons left">get_app</i>Скачать перевод</a>
-                            </div>
-                        </div>
-                    </li>
+                    <ul class="collection" id="details">
                     <ul>
                 </div>
             </div> 
@@ -150,23 +46,21 @@
 
         <div id="modal1" class="modal">
             <div class="modal-content">
-            <h5>Править перевод</h5>
-            <div class="row" style="margin-bottom: 0;">
-                <div class="col s12 m12 l12">
-                            <form class="col s12" style="background: #eee; border-radius: 5px;">
-                            <div class="row" style="margin: 0;">
-                                <div class="input-field col s12" style="margin: 0;">
-                                <textarea id="field" placeholder="Перевод" id="textarea1" class="materialize-textarea">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.
-                                </textarea>
-                                </div>
-                            </div>
-                            </form>
+            <h4>Загрузить исправленный перевод (.docx)</h4>
+            <form action="#">
+                        <div class="file-field input-field">
+                        <div class="btn grey">
+                            <span>Загрузить</span>
+                            <input type="file" id="corrections">
                         </div>
-            </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" id="corrections_path">
+                        </div>
+                        </div>
+                    </form>
             </div>
             <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-light btn yellow darken-2">Проверено</a>
+            <a onclick="corrected();" class="modal-close waves-effect waves-light btn yellow darken-2">Проверено</a>
             <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
             </div>
         </div>
@@ -174,6 +68,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="js/utils.js"></script>
         <script src="js/main_editor.js"></script>
     </body>
 </html>
