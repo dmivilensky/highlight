@@ -54,6 +54,7 @@ def register(name, surname, mi, email, langs, login, password, is_not_translator
          "tg": tg,
          "fb": fb,
          "translated": 0,
+         "pieces": [],
          "verified": False}
 
     client = MongoClient()
@@ -104,7 +105,7 @@ def verify(user_id, key, decision="ADMITTED"):
         return "2004"
 
 
-def verify_file(doc_id, user_id):
+def verify_file(doc_id, user_id, file_data):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -113,6 +114,8 @@ def verify_file(doc_id, user_id):
     if not (user is None):
         if user["status"] == "chief":
             lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
+            file = lang_storage.find_one({"_id": ObjectId(doc_id)})
+            push_to_file_storage(file["path"], file_data)
             return "OK"
         else:
             return "2004"
@@ -267,16 +270,23 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
             no_intersections = False
             return "3000"
     pieces = sorted(pieces, key=lambda a: a["index"])
-    txt = pieces[0]["txt"]
+    txt = [pieces[0]["txt"]]
     for i in range(1, len(pieces)):
         if pieces[i]["index"] - pieces[i - 1]["index"] != 1:
             return "3001"
-        txt.join("\n".join(pieces[i]["txt"]))
+        txt.append(pieces[i]["txt"])
     begin_index = pieces[0]["index"]
     end_index = pieces[-1]["index"]
     if not no_intersections:
         return "3000"
     else:
+        acc = db.accounts
+        new_piece = {
+            "name": document["name"],
+            "indexes": [range(begin_index, end_index+1)],
+            "reservation date": datetime.datetime.utcnow()
+        }
+        acc.update_one({"_id": ObjectId(user_id)}, {"$push": {"pieces": new_piece}})
         push_to_db(number=document["number"],
                    name=document["name"],
                    lang=document["lang"],
@@ -350,9 +360,9 @@ def create_translated_unverified_docs(pieces, doc, ps):
     """
     file_data = find_file_by_path(doc["orig path"])
     for p in pieces:
-        txts = p["translated txt"].split("\n")
+        txts = p["translated txt"]
         for i in range(p["piece begin"], p["piece end"] + 1):
-            file_data.paragraphs[i].text = txts
+            file_data.paragraphs[i].text = txts[i]
     did = push_to_db(doc["number"], doc["name"], "NEED_CHECK", doc["lang"], orig_path=doc["orig path"],
                      path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'translated' + os.path.sep + doc[
                          "name"], to_lang=ps["to lang"], tags=doc["tags"], translator=[p["translator"] for p in pieces],
@@ -404,16 +414,20 @@ def find_doc_by_lang(lang):
     db = client.highlight
     lang_storage = db.files_info
     docs = dict()
+    docs_o = dict()
     for piece in lang_storage.find({"lang": lang, "status": "WAITING_PIECE"}):
+        orig_doc = lang_storage.find_one({"name": piece["name"], "number": piece["number"], "lang": piece["lang"], "status": "WAITING_FOR_TRANSLATION"})
         if piece["name"] in docs.keys():
             docs[piece["name"]].append(piece)
         else:
             docs[piece["name"]] = [piece]
+            docs_o[piece["name"]] = [orig_doc]
 
     out = list()
     for key in docs.keys():
         docs[key] = sorted(docs[key], key=lambda a: a["index"])
-        out.append((key, docs[key]))
+        out.append([key, docs[key], docs_o])
+    sorted(out, key=lambda a: a[2], reverse=True)
 
     return out
 
@@ -521,8 +535,20 @@ def get_translators_stat():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    l_s = db.files_info
     return [t for t in acc.find({"status": "translator", "verified": True})]
+
+
+def get_file_stat():
+    client = MongoClient()
+    db = client.highlight
+    l_s = db.files_info
+    docs = []
+    for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
+        if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
+            docs.append([t["name"], t["status"], l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]])
+        else:
+            docs.append([t["name"], [l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation status": "DONE"}), t["piece number"]], t["importance"]])
+    return docs
 
 
 def test():
