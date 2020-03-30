@@ -12,7 +12,11 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            alert("success");
+            if (user_id == 120) {
+                success();
+            } else {
+                $.redirectGet("index.html", {});
+            }
         })
         .fail(function(jqXHR, status) {
             if (user_id == 120) {
@@ -97,7 +101,7 @@ function init() {
             dataType: "json"
         })
         .done(function(data) {
-            alert("success");
+            list_blocks();
         })
         .fail(function(jqXHR, status) {
             list_blocks();
