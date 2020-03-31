@@ -23,18 +23,18 @@ def verify_file(doc_id, user_id, file_data):
             lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
             file = lang_storage.find_one({"_id": ObjectId(doc_id)})
             push_to_file_storage(file["path"], file_data)
-            return ("OK",)
+            return {"code": "OK"}
         else:
-            return ("2004",)
+            return {"code": "2004"}
     else:
-        return ("2003",)
+        return {"code": "2003"}
 
 
 def is_there_any_body(uid):
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return not(acc.find_one({"_id": uid}) is None)
+    return not(acc.find_one({"_id": ObjectId(uid), "verified": True}) is None)
 
 
 def split_to_pieces(number, name, lang, doc):
@@ -161,6 +161,7 @@ def update_importance(doc_id):
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$inc": {"importance": 1}})
+    return {"code": "OK"}
 
 
 def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
@@ -182,17 +183,17 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         pieces.append(p)
         if not p["freedom"]:
             no_intersections = False
-            return ("3000",)
+            return {"code": "3000"}
     pieces = sorted(pieces, key=lambda a: a["index"])
     txt = [pieces[0]["txt"]]
     for i in range(1, len(pieces)):
         if pieces[i]["index"] - pieces[i - 1]["index"] != 1:
-            return ("3001",)
+            return {"code": "3001"}
         txt.append(pieces[i]["txt"])
     begin_index = pieces[0]["index"]
     end_index = pieces[-1]["index"]
     if not no_intersections:
-        return ("3000",)
+        return {"code": "3000"}
     else:
         acc = db.accounts
         new_piece = {
@@ -215,7 +216,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         for p in pieces:
             lang_storage.update_one({"_id": p["_id"]},
                                     {"$set": {"freedom": False, "lastModified": datetime.datetime.utcnow()}})
-        return ("OK", did1)
+        return {"id": str(did1), "code": "OK"}
 
 
 def update_docs(name, doc, lang, tags):
@@ -233,7 +234,7 @@ def update_docs(name, doc, lang, tags):
                      "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
                      orig_path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'original' + os.path.sep + name,
                      file_data=doc)
-    return did
+    return {"id": str(did), "code": "OK"}
 
 
 def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
@@ -262,9 +263,9 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
         if pieces_count <= len(taken_pieces_indexes):
-            return create_translated_unverified_docs(pss, doc, ps, acc)
+            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc)), "code": "OK"}
         else:
-            return None
+            return {"code": "3002"}
 
 
 def create_translated_unverified_docs(pieces, doc, ps, acc):
@@ -317,6 +318,7 @@ def find_file_by_path(path):
 def test():
     client = MongoClient()
     db = client.highlight
+    pprint.pprint("gf " + ("mi" if type(1) == str else ""))
 
 
 if __name__ == '__main__':

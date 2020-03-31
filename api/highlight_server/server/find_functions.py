@@ -13,7 +13,7 @@ def find_pieces(user_id):
     lang_storage = db.files_info
     pieces = sorted(lang_storage.find({"translator": user_id, "status": "PIECE", "translation status": "UNDONE"}),
                     key=lambda a: a["lastModified"], reverse=True)
-    return pieces
+    return {"code": "OK", "document": pieces}
 
 
 def find_doc_by_lang(lang):
@@ -33,15 +33,15 @@ def find_doc_by_lang(lang):
             docs[piece["name"]].append(piece)
         else:
             docs[piece["name"]] = [piece]
-            docs_o[piece["name"]] = [orig_doc]
+            docs_o[piece["name"]] = orig_doc
 
     out = list()
     for key in docs.keys():
         docs[key] = sorted(docs[key], key=lambda a: a["index"])
-        out.append([key, docs[key], docs_o])
+        out.append({"name": key, "pieces": docs[key], "doc": docs_o[key]})
     out = sorted(out, key=lambda a: a[2], reverse=True)
 
-    return out
+    return {"code": "OK", "document": out}
 
 
 def find_complete_docs_by_lang(lang):
@@ -56,7 +56,7 @@ def find_complete_docs_by_lang(lang):
     docs = list()
     for doc in lang_storage.find({"lang": lang, "status": { "$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}):
         if doc["status"] in {"NEED_CHECK", "TRANSLATED"}:
-            docs.append([doc["_id"], doc["name"], doc["tags"], 1])
+            docs.append({"id": doc["_id"], "name": doc["name"], "tags": doc["tags"], "status": 1})
         else:
             pieces_count = doc["piece number"]
             taken_pieces_indexes = []
@@ -64,9 +64,9 @@ def find_complete_docs_by_lang(lang):
                                      "translation status": "DONE"})
             for p in sorted(pss, key=lambda a: a["piece begin"]):
                 taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
-            docs.append([doc["_id"], doc["name"], doc["tags"], len(taken_pieces_indexes) / pieces_count])
+            docs.append({"id": doc["_id"], "name": doc["name"], "tags": doc["tags"], "status": len(taken_pieces_indexes) / pieces_count})
 
-    return docs
+    return {"code": "OK", "document": docs}
 
 
 def test():

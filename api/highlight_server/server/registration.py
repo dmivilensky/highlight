@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import pymongo as pm
 from bson.objectid import ObjectId
 
-# from highlight.api.get_functions import get_users
+from . import get_functions as gf
 
 
 def register(name, surname, mi, email, langs, login, password, status, vk=None, tg=None, fb=None):
@@ -38,9 +38,9 @@ def register(name, surname, mi, email, langs, login, password, status, vk=None, 
     acc = db.accounts
     try:
         user_id = acc.insert_one(a).inserted_id
-        return ("OK", user_id)
+        return {"id": str(user_id), "code": "OK"}
     except pm.errors.DuplicateKeyError:
-        return ("1000",)
+        return {"code": "1000"}
 
 
 def log_in(login, password):
@@ -65,20 +65,17 @@ def log_in(login, password):
         return {"code": "2000"}
 
 
-def verify(user_id, key, decision="ADMITTED"):
+def verify(user_login, decision="ADMITTED"):
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    if key == "NICE":
-        if decision == "ADMITTED":
-            acc.update_one(
-                {"_id": ObjectId(user_id)},
-                {"$set": {"verified": True}})
-        else:
-            acc.delete_one({"_id": ObjectId(user_id)})
-        return ("OK",)
+    if decision == "ADMITTED":
+        acc.update_one(
+            {"login": user_login},
+            {"$set": {"verified": True}})
     else:
-        return ("2004",)
+        acc.delete_one({"login": user_login})
+    return {"code": "OK"}
 
 
 def test():
@@ -88,9 +85,9 @@ def test():
     # acc.create_index([('login', pm.ASCENDING)], unique=True)
     did = register("seva", "obvious", "obvious", "obvious", "obvious", "seva", "tester", "obvious")
     # print(did)
-    did1 = get_users()[0]
+    did1 = gf.get_users()[0]
     print(did1["_id"])
-    verify(did1["_id"], "NICE")
+    verify(did1["_id"])
     # print(log_in("seva", "tester"))
     # for i in acc.find():
     #     pprint.pprint(i)

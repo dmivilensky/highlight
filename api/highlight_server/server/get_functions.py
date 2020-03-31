@@ -54,7 +54,7 @@ def get_from_db(search, tags, status=None):
         if relev > 0:
             matching_docs.append((relev, doc))
 
-    return list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)
+    return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)}
 
 
 def get_for_chief_from_db(search, tags):
@@ -65,7 +65,7 @@ def get_users():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return acc.find({"verified": False})
+    return {"code": "OK", "document": acc.find({"verified": False})}
 
 
 def get_docs_and_trans():
@@ -73,14 +73,14 @@ def get_docs_and_trans():
     db = client.highlight
     acc = db.accounts
     l_s = db.files_info
-    return l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), acc.count_documents({"status": {"$in": ["translator", "both"]}, "verified": True}), l_s.count_documents({"status": "TRANSLATED"})
+    return {"code": "OK", "document": {"documents": l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), "translators": acc.count_documents({"status": {"$in": ["translator", "both"]}, "verified": True}), "translated documents": l_s.count_documents({"status": "TRANSLATED"})}}
 
 
 def get_translators_stat():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return list(acc.find({"status": {"$in": ["translator", "both"]}, "verified": True}))
+    return {"code": "OK", "document": list(acc.find({"status": {"$in": ["translator", "both"]}, "verified": True}))}
 
 
 def get_file_stat():
@@ -90,10 +90,10 @@ def get_file_stat():
     docs = []
     for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
         if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
-            docs.append([t["name"], t["status"], l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]])
+            docs.append({"name": ["name"], "pieces info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
         else:
-            docs.append([t["name"], [l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation status": "DONE"}), t["piece number"]], t["importance"]])
-    return docs
+            docs.append({"name": t["name"], "pieces info": {"done pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation status": "DONE"}), "all pieces": t["piece number"]}, "status": t["status"], "importance": t["importance"]})
+    return {"code": "OK", "document": docs}
 
 
 def test():
