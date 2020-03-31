@@ -19,6 +19,22 @@ var translation = "";
 
 function send_file() {
     var email = $("#email").val();
+    $.ajax({
+            url: "../php_scripts/send_mail.php",
+            method: "GET",
+            data: {
+                name: title,
+                email: email,
+                path: translation
+            },
+            dataType: "text"
+        })
+        .done(function(data) {
+            alert("Файл будет отправлен на указанную почту");
+        })
+        .fail(function(jqXHR, status, error) {
+            alert("Ошибка соединения с сервером. Попробуйте зайти позднее.")
+        });
 }
 
 function document_info(id) {
