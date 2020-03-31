@@ -41,3 +41,11 @@ def create_name_by_user(uac):
     return (uac["name"] if type(uac["name"]) == str else "") + " " + (
         uac["surname"] if type(uac["surname"]) == str else "") + " " + (
                uac["mi"] if type(uac["mi"]) == str else "")
+
+
+def handle_uploaded_file(f):
+    path = 'name.docx'
+    with open('name.docx', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return path

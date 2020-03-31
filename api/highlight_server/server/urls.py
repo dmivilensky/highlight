@@ -14,4 +14,10 @@ urlpatterns = [
     path('get_trans_and_docs', views.get_trans_and_docs_cover, name='gtad'),
     path('get_translator_stats', views.get_translator_stats_cover, name='gts'),
     path('get_file_stat', views.get_file_stat_cover, name='gfs'),
-    path('', views.index, name='index')]
+    path('', views.index, name='index'),
+    path('verify_file', views.verify_file_cover, name='vff'),
+    path('update_importance', views.update_importance_cover, name='ui'),
+    path('update_docs', views.update_docs_cover, name='ud'),
+    path('update_pieces', views.update_pieces_cover, name='up'),
+    path('update_translating_pieces', views.update_translating_pieces_cover, name='utp')
+]

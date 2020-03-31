@@ -12,7 +12,7 @@ import django
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
-def verify_file(doc_id, user_id, file_data):
+def verify_file(doc_id, user_id, file_data=None):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -21,8 +21,9 @@ def verify_file(doc_id, user_id, file_data):
     if is_there_any_body(user_id):
         if user["status"] == "chief":
             lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
-            file = lang_storage.find_one({"_id": ObjectId(doc_id)})
-            push_to_file_storage(file["path"], file_data)
+            if not(file_data is None):
+                file = lang_storage.find_one({"_id": ObjectId(doc_id)})
+                push_to_file_storage(file["path"], file_data)
             return {"code": "OK"}
         else:
             return {"code": "2004"}
@@ -299,6 +300,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
 
 def delete_from_doc_storage(path):
     os.remove(path)
+    return {"code": "OK"}
 
 
 def delete_from_db(doc_id):
