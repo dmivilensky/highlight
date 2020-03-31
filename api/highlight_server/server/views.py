@@ -195,16 +195,17 @@ def verify_file_cover(request):
     result = {'code': "4040"}
     path = None
     if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            path = handle_uploaded_file(request.FILES['file'])
-        else:
-            path = None
+        # form = UploadFileForm(request.POST, request.FILES)
+        # if form.is_valid():
+        #     path = handle_uploaded_file(request.FILES['file'])
+        # else:
+        #     path = None
         params = request.POST
-        file_data = mn.find_file_by_path(path) if not(path is None) else None
+        # file_data = mn.find_file_by_path(path) if not(path is None) else None
         did = params["decision"]
         uid = params["id"]
-        result = mn.verify_file(did, uid, file_data)
+        path = params["path"]
+        result = mn.verify_file(did, uid, path)
 
     text = json.dumps(result)
     a = mn.delete_from_doc_storage(path) if not(path is None) else ""
@@ -226,16 +227,17 @@ def update_importance_cover(request):
 def update_docs_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            path = handle_uploaded_file(request.FILES['file'])
-        else:
-            path = None
+        # form = UploadFileForm(request.POST, request.FILES)
+        # if form.is_valid():
+        #     path = handle_uploaded_file(request.FILES['file'])
+        # else:
+        #     path = None
         params = request.POST
-        file_data = mn.find_file_by_path(path) if not(path is None) else None
         name = params["name"]
         lang = params["language"]
         tags = params["tags"]
+        path = params["path"]
+        file_data = mn.find_file_by_path(path) if not(path == "") else None
         result = mn.update_docs(name, file_data, lang, tags) if not(file_data is None) else {"code": "5000"}
 
     text = json.dumps(result)

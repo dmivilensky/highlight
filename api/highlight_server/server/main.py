@@ -12,7 +12,7 @@ import django
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
-def verify_file(doc_id, user_id, file_data=None):
+def verify_file(doc_id, user_id, path=""):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -20,10 +20,13 @@ def verify_file(doc_id, user_id, file_data=None):
     user = acc.find_one({"_id": ObjectId(user_id)})
     if is_there_any_body(user_id):
         if user["status"] == "chief":
-            lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
-            if not(file_data is None):
+            if not(path == ""):
                 file = lang_storage.find_one({"_id": ObjectId(doc_id)})
-                push_to_file_storage(file["path"], file_data)
+                delete_from_doc_storage(file["path"])
+                lang_storage.update_one({"_id": ObjectId(doc_id)},
+                                        {"$set": {"status": "TRANSLATED", "chief": user_id, "path": path}})
+            else:
+                lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
             return {"code": "OK"}
         else:
             return {"code": "2004"}

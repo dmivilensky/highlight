@@ -54,7 +54,7 @@ def get_from_db(search, tags, status=None):
         if relev > 0:
             matching_docs.append((relev, doc))
 
-    return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)}
+    return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[:50]}
 
 
 def get_for_chief_from_db(search, tags):
