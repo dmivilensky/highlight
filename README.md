@@ -6,4 +6,4 @@
 - search.js (except mailing)
 - main_editor.js (except loading file)
 - admin_index.js
-- admin.js (only users approvement)
+- admin.js (only users approvement and basic file uploading form)

@@ -135,8 +135,81 @@ function load_users() {
         });
 }
 
+var languages = [{
+    code: "ENG",
+    name: "Английский"
+}, {
+    code: "GER",
+    name: "Немецкий"
+}, {
+    code: "FRE",
+    name: "Французский"
+}, {
+    code: "ESP",
+    name: "Испанский"
+}, {
+    code: "ITA",
+    name: "Итальянский"
+}, {
+    code: "JAP",
+    name: "Японский"
+}, {
+    code: "CHI",
+    name: "Китайский"
+}];
+
+function load_languages() {
+    $("#lang").empty();
+    for (var i = 0; i < languages.length; ++i) {
+        $("#lang").append(`
+        <div class="col s6 m4 l4">
+            <p><label>
+                <input type="radio" name="group1" id="lang_` + i + `" checked />
+                <span>` + languages[i].name + `</span>
+            </label></p>
+        </div>
+        `);
+    }
+}
+
+function add_document() {
+    var lang = "";
+    var lang_set = false;
+    for (var i = 0; i < languages.length; ++i) {
+        if ($("#lang_" + i).is(':checked')) {
+            lang_set = true;
+            lang = languages[i].code;
+            break;
+        }
+    }
+
+    if (!lang_set) {
+        lang = $("#lang_other_val").val();
+    }
+
+    var chips = M.Chips.getInstance($('#tags')).chipsData;;
+    var tags = "";
+    for (var i = 0; i < chips.length; ++i) {
+        tags += chips[i].tag + ",";
+    }
+    tags = tags.slice(0, -1);
+
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {},
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            /**/
+        });
+}
+
 function init() {
-    $('.chips-autocomplete').chips({
+    $('#tags').chips({
         data: [{
             tag: 'Важный',
         }],
@@ -149,6 +222,7 @@ function init() {
         }
     });
 
+    load_languages();
     load_users();
 }
 

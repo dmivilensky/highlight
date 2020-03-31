@@ -35,118 +35,32 @@
                     <fieldset style="border: 1px #424242 solid; border-radius: 5px;">
                                 <legend style="padding: 0.2em 0.8em ">Язык документа</legend>
 
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" checked />
-                                        <span>Английский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" />
-                                        <span>Немецкий</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" />
-                                        <span>Французский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" />
-                                        <span>Испанский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" />
-                                        <span>Итальянский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" />
-                                        <span>Японский</span>
-                                    </label></p>
-                                </div>
-                                <div class="col s6 m4 l4">
-                                    <p><label>
-                                        <input type="radio" name="group1" />
-                                        <span>Китайский</span>
-                                    </label></p>
+                                <div id="lang">
                                 </div>
                                 <div class="col s1 m1 l1">
                                     <p><label>
-                                        <input type="radio" name="group1" />
+                                        <input type="radio" name="group1" id="lang_other" />
                                         <span></span>
                                     </label></p>
                                 </div>
                                 <div class="col s5 m7 l7">
                                         <div class="input-field" style="margin: 0;">
-                                        <input placeholder="Другой" id="first_name" type="text" class="validate">
+                                        <input placeholder="Другой" id="lang_other_val" type="text" class="validate">
                                         </div>
                                 </div>
 
                                 </fieldset>
                                   
-                        <div class="chips chips-autocomplete"></div>
+                        <div class="chips chips-autocomplete" id="tags"></div>
 
                         <div style="width: 100%; text-align: right;">
-                            <a class="waves-effect waves-light btn green">Загрузить файл<i class="material-icons right">file_upload</i></a>
+                            <a onclick="add_document();" class="waves-effect waves-light btn green">Загрузить файл<i class="material-icons right">file_upload</i></a>
                         </div>
                 </div>
 
                 <div class="col s12 m6 l6">
                     <ul class="collection" style="height: 400px; overflow-y: auto;" id="users">
-                    <li class="collection-item avatar" style="padding-left: 20px;">
-                    <p style="font-size: 12px; font-family: Consolas, monaco, monospace;">Редактор</p>
-                    <span class="title">Иванов Иван Иванович</span>
-                    <p>
-                    VK: <a href="https://vk.com/id25314918">id25314918</a>
-                    </p>
-                    <div class="secondary-content">
-                    <a href="#!" style="margin-right: 20px;"><i class="material-icons green-text">done</i></a>
-                    <a href="#!"><i class="material-icons red-text">clear</i></a>
-                    </div>
-                    
-                    </li>
-                    <li class="collection-item avatar" style="padding-left: 20px;">
-                    <p style="font-size: 12px; font-family: Consolas, monaco, monospace;">Переводчик</p>
-                    <span class="title">Цезарь Гай Юлий</span>
-                    <p>
-                    VK: <a href="https://vk.com/id25314918">id25314918</a>
-                    </p>
-                    <div class="secondary-content">
-                    <a href="#!" style="margin-right: 20px;"><i class="material-icons green-text">done</i></a>
-                    <a href="#!"><i class="material-icons red-text">clear</i></a>
-                    </div>
-                    
-                    </li>
-                    <li class="collection-item avatar" style="padding-left: 20px;">
-                    <p style="font-size: 12px; font-family: Consolas, monaco, monospace;">Переводчик</p>
-                    <span class="title">Марк Антоний</span>
-                    <p>
-                    VK: <a href="https://vk.com/id25314918">id25314918</a>
-                    </p>
-                    <div class="secondary-content">
-                    <a href="#!" style="margin-right: 20px;"><i class="material-icons green-text">done</i></a>
-                    <a href="#!"><i class="material-icons red-text">clear</i></a>
-                    </div>
-
-                    </li>
-                    <li class="collection-item avatar" style="padding-left: 20px;">
-                    <p style="font-size: 12px; font-family: Consolas, monaco, monospace;">Редактор</p>
-                    <span class="title">Марк Брут</span>
-                    <p>
-                    VK: <a href="https://vk.com/id25314918">id25314918</a>
-                    </p>
-                    <div class="secondary-content">
-                    <a href="#!" style="margin-right: 20px;"><i class="material-icons green-text">done</i></a>
-                    <a href="#!"><i class="material-icons red-text">clear</i></a>
-                    </div>
-                </ul>
+                    </ul>
                 </div>
 
 

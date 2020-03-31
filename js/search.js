@@ -41,8 +41,8 @@ function document_info(id) {
                 tags_markup += `<div class="chip">` + tags[j] + `</div>`;
             }
 
-            var original = "../privacy_policy.pdf";
-            translation = "../privacy_policy.pdf";
+            var original = "privacy_policy.pdf";
+            translation = "privacy_policy.pdf";
 
             var status = 2;
             var avatar = "";
