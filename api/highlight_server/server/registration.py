@@ -82,16 +82,19 @@ def test():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    # acc.create_index([('login', pm.ASCENDING)], unique=True)
-    did = register("seva", "obvious", "obvious", "obvious", "obvious", "seva", "tester", "obvious")
+    # acc.drop()
+    # acc.create_index('login', unique=True)
+    # did = register("1d", "g", "gf", "1s", "1s", "loo", "nndcxd1b", "gfgf")
     # print(did)
-    did1 = gf.get_users()[0]
-    print(did1["_id"])
-    verify(did1["_id"])
-    # print(log_in("seva", "tester"))
+    # did1 = gf.get_users()[0]
+    # print(did1["_id"])
+    # verify(did1["_id"])
+    # print(log_in("seva", "tester")["id"])
     # for i in acc.find():
-    #     pprint.pprint(i)
-    # acc.delete_one({"_id": log_in("seva", "tester")})
+    #     print(i)
+    # acc.delete_one({"_id": ObjectId(log_in("seva", "tester")["id"])})
+    # acc.delete_one({"_id": ObjectId("5e837394e1b35a1442eee197")})
+
 
 
 if __name__ == '__main__':

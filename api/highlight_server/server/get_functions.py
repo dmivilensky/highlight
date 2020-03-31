@@ -65,7 +65,7 @@ def get_users():
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return {"code": "OK", "document": acc.find({"verified": False})}
+    return {"code": "OK", "document": list(acc.find({"verified": False}))}
 
 
 def get_docs_and_trans():

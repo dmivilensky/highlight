@@ -13,7 +13,7 @@ def find_pieces(user_id):
     lang_storage = db.files_info
     pieces = sorted(lang_storage.find({"translator": user_id, "status": "PIECE", "translation status": "UNDONE"}),
                     key=lambda a: a["lastModified"], reverse=True)
-    return {"code": "OK", "document": pieces}
+    return {"code": "OK", "document": list(pieces)}
 
 
 def find_doc_by_lang(lang):
