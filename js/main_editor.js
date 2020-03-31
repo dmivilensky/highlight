@@ -28,16 +28,26 @@ function corrected() {
     if (extention != "docx") {
         alert("Необходимо загрузить исправленный .docx файл!");
     } else {
+        $("#corrections_path").val('new_file' + getRandomInt(10000) + '.docx');
+        $("#file").submit();
 
+        $.ajax({
+                url: "../api/test_script.txt",
+                method: "POST",
+                data: {},
+                dataType: "json"
+            })
+            .done(function(data) {
+                /**/
+            })
+            .fail(function(jqXHR, status) {
+                /**/
+            });
     }
 }
 
 var title = "";
 var translation = "";
-
-function send_file() {
-    var email = $("#email").val();
-}
 
 function document_info(id) {
     $.ajax({

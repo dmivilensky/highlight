@@ -20,14 +20,16 @@
 
             <div class="row">
                 <div class="col s12 m6 l6" style="padding-right: 40px; margin-bottom: 20px;">
-                    <form action="#">
+                    <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
+
+                    <form enctype="multipart/form-data" target="hiddenFrame" action="/php_scripts/save_file.php" method="POST" id="file">
                         <div class="file-field input-field">
                         <div class="btn grey">
                             <span>Загрузить</span>
-                            <input type="file">
+                            <input type="file" name="document">
                         </div>
                         <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text">
+                            <input class="file-path validate" type="text" name="name" id="filename">
                         </div>
                         </div>
                     </form>

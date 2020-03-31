@@ -1,9 +1,9 @@
 ## TODO
 ### View
-Nothing
+Done
 ### Controller
-- ~~search.js (mailing)~~ <span style="color: green">DONE!</span>
-- main_editor.js (loading file)
-- admin.js (loading file)
+- ~~search.js (mailing)~~ DONE!
+- ~~main_editor.js (loading file)~~ DONE!
+- ~~admin.js (loading file)~~ DONE!
 ### Model
 Soft DEADLINE!!!

@@ -194,18 +194,26 @@ function add_document() {
     }
     tags = tags.slice(0, -1);
 
-    $.ajax({
-            url: "../api/test_script.txt",
-            method: "POST",
-            data: {},
-            dataType: "json"
-        })
-        .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            /**/
-        });
+    var extention = $("#corrections_path").val().slice(-4, -1) + $("#corrections_path").val().slice(-1);
+    if (extention != "docx") {
+        alert("Необходимо загрузить .docx файл!");
+    } else {
+        $("#filename").val('new_file' + getRandomInt(10000) + '.docx');
+        $("#file").submit();
+
+        $.ajax({
+                url: "../api/test_script.txt",
+                method: "POST",
+                data: {},
+                dataType: "json"
+            })
+            .done(function(data) {
+                /**/
+            })
+            .fail(function(jqXHR, status) {
+                /**/
+            });
+    }
 }
 
 function load_stat() {
