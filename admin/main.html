@@ -78,9 +78,9 @@
 
                         <tbody>
                         <tr>
-                            <td>1 000</td>
-                            <td>10</td>
-                            <td>200</td>
+                            <td id="stat_untranslated"></td>
+                            <td id="stat_translated"></td>
+                            <td id="stat_users"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -96,74 +96,14 @@
                         </tr>
                         </thead>
 
-                        <tbody>
-                        <tr>
-                            <td>Иванов Иван Иванович<br>VK: example</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 1-10</td>
-                            <td>01.01.1970</td>
-                        </tr>
-                        <tr>
-                            <td>Смирнов Алексей Валерьевич<br>TG: @aleksiy</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 10-20</td>
-                            <td>12.12.2019</td>
-                        </tr>
-                        <tr>
-                            <td>Кесарийский Октавиан<br>FB: oktavian</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 20-30</td>
-                            <td>01.01.2020</td>
-                        </tr>
-                        <tr>
-                            <td>Иванов Иван Иванович<br>VK: example</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 1-10</td>
-                            <td>01.01.1970</td>
-                        </tr>
-                        <tr>
-                            <td>Смирнов Алексей Валерьевич<br>TG: @aleksiy</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 10-20</td>
-                            <td>12.12.2019</td>
-                        </tr>
-                        <tr>
-                            <td>Кесарийский Октавиан<br>FB: oktavian</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 20-30</td>
-                            <td>01.01.2020</td>
-                        </tr>
-                        <tr>
-                            <td>Иванов Иван Иванович<br>VK: example</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 1-10</td>
-                            <td>01.01.1970</td>
-                        </tr>
-                        <tr>
-                            <td>Смирнов Алексей Валерьевич<br>TG: @aleksiy</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 10-20</td>
-                            <td>12.12.2019</td>
-                        </tr>
-                        <tr>
-                            <td>Кесарийский Октавиан<br>FB: oktavian</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 20-30</td>
-                            <td>01.01.2020</td>
-                        </tr>
-                        <tr>
-                            <td>Иванов Иван Иванович<br>VK: example</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 1-10</td>
-                            <td>01.01.1970</td>
-                        </tr>
-                        <tr>
-                            <td>Смирнов Алексей Валерьевич<br>TG: @aleksiy</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 10-20</td>
-                            <td>12.12.2019</td>
-                        </tr>
-                        <tr>
-                            <td>Кесарийский Октавиан<br>FB: oktavian</td>
-                            <td>"Disinfection instructions"<br>Абзацы: 20-30</td>
-                            <td>01.01.2020</td>
-                        </tr>
+                        <tbody id="work">
                         </tbody>
                     </table>
                     </div>
 
                     <div class="col s12 m6 l6">
                     <h5 style="margin-bottom: 10px;">Рейтинг переводчиков</h5>
-                    <a style="margin-bottom: 20px; border-radius: 20px;" class="waves-effect waves-light btn green"><i class="material-icons left">file_download</i>Скачать базу переводчиков</a>
+                    <a onclick="save_db();" style="margin-bottom: 20px; border-radius: 20px;" class="waves-effect waves-light btn green"><i class="material-icons left">file_download</i>Скачать базу переводчиков</a>
 
                  <div style="height: 400px; overflow-y: auto;">
                  <table class="striped centered" style="border-radius: 7px !important; border-collapse: unset !important; border: 1px solid #000;">
@@ -174,31 +114,7 @@
                         </tr>
                         </thead>
 
-                        <tbody>
-                        <tr>
-                            <td>Иванов Иван Иванович<br>VK: example</td>
-                            <td>100</td>
-                        </tr>
-                        <tr>
-                            <td>Смирнов Алексей Валерьевич<br>TG: @aleksiy</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>Кесарийский Октавиан<br>FB: oktavian</td>
-                            <td>30</td>
-                        </tr>
-                        <tr>
-                            <td>Иванов Иван Иванович<br>VK: example</td>
-                            <td>20</td>
-                        </tr>
-                        <tr>
-                            <td>Смирнов Алексей Валерьевич<br>TG: @aleksiy</td>
-                            <td>10</td>
-                        </tr>
-                        <tr>
-                            <td>Кесарийский Октавиан<br>FB: oktavian</td>
-                            <td>0</td>
-                        </tr>
+                        <tbody id="translators">
                         </tbody>
                     </table>
                     </div>
@@ -216,47 +132,7 @@
                         </tr>
                         </thead>
 
-                        <tbody>
-                        <tr>
-                            <td>"Disinfection instructions"</td>
-                            <td>Переведён и проверен</td>
-                            <td>100</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
-                        <tr>
-                            <td>"Disinfection instructions 2"</td>
-                            <td>В работе<br>(переведено 10/40 абзацев)</td>
-                            <td>70</td>
-                        </tr>
+                        <tbody id="documents">
                         </tbody>
                     </table>
                     </div>

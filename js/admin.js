@@ -208,6 +208,167 @@ function add_document() {
         });
 }
 
+function load_stat() {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {},
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            $("#stat_untranslated").html(1000);
+            $("#stat_translated").html(10);
+            $("#stat_users").html(200);
+        });
+}
+
+function load_work() {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {},
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            $("#work").empty();
+
+            for (var i = 0; i < 10; ++i) {
+                var name = "Иванов Иван Иванович";
+                var document = "«" + "Disinfection instructions" + "»";
+                var date = "01.01.1970";
+                var paragraph_begin = 10;
+                var paragraph_end = 30;
+
+                var vk = "example";
+                var fb = "";
+                var tg = "";
+
+                var social_markup = "";
+                if (vk != "") {
+                    social_markup += "VK: " + vk + "<br>";
+                }
+                if (fb != "") {
+                    social_markup += "FB: " + fb + "<br>";
+                }
+                if (tg != "") {
+                    social_markup += "TG: " + tg + "<br>";
+                }
+                social_markup = social_markup.slice(0, -1);
+
+                $("#work").append(`
+                <tr>
+                    <td>` + name + `<br>` + social_markup + `</td>
+                    <td>` + document + `<br>Абзацы: ` + paragraph_begin + `-` + paragraph_end + `</td>
+                    <td>` + date + `</td>
+                </tr>
+                `);
+            }
+        });
+}
+
+function load_translators() {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {},
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            $("#translators").empty();
+
+            for (var i = 0; i < 10; ++i) {
+                var name = "Иванов Иван Иванович";
+                var paragraphs = 100;
+
+                var vk = "example";
+                var fb = "";
+                var tg = "";
+
+                var social_markup = "";
+                if (vk != "") {
+                    social_markup += "VK: " + vk + "<br>";
+                }
+                if (fb != "") {
+                    social_markup += "FB: " + fb + "<br>";
+                }
+                if (tg != "") {
+                    social_markup += "TG: " + tg + "<br>";
+                }
+                social_markup = social_markup.slice(0, -4);
+
+                $("#translators").append(`
+                        <tr>
+                            <td>` + name + `<br>` + social_markup + `</td>
+                            <td>` + paragraphs + `</td>
+                        </tr>`);
+            }
+        });
+}
+
+function load_documents() {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {},
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            $("#documents").empty();
+
+            for (var i = 0; i < 10; ++i) {
+                var document = "«" + "Disinfection instructions" + "»";
+                var status = 0;
+                var paragraphs_all = 20;
+                var paragraphs_ready = 5;
+                var stars = 100;
+
+                var status_text = "";
+                if (status == 2) {
+                    status_text = "Переведён и проверен";
+                } else if (status == 1) {
+                    status_text = "Переведён";
+                } else {
+                    status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
+                }
+
+                $("#documents").append(`
+                        <tr>
+                            <td>` + document + `</td>
+                            <td>` + status_text + `</td>
+                            <td>` + stars + `</td>
+                        </tr>
+                `);
+            }
+        });
+}
+
+function save_db() {
+    $.ajax({
+            url: "../api/test_script.txt",
+            method: "POST",
+            data: {},
+            dataType: "json"
+        })
+        .done(function(data) {
+            /**/
+        })
+        .fail(function(jqXHR, status) {
+            download_text("Текст!", "users_db.txt");
+        });
+}
+
 function init() {
     $('#tags').chips({
         data: [{
@@ -224,6 +385,10 @@ function init() {
 
     load_languages();
     load_users();
+    load_stat();
+    load_work();
+    load_translators();
+    load_documents();
 }
 
 $(document).ready(function() {

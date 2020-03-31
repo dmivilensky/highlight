@@ -53,3 +53,22 @@ function findGetParameter(parameterName) {
         });
     return result;
 }
+
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+}
+
+function text_uri(text) {
+    var text_data = new Blob(["\ufeff" + text], { type: 'text/plain; charset=utf-8' });
+    return window.URL.createObjectURL(text_data);
+}
+
+function download_text(text, file) {
+    downloadURI(text_uri(text), file);
+}

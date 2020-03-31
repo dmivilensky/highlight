@@ -62,16 +62,14 @@ function list_blocks() {
             `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
             `I am convenient because`
         ];
-        var data_text = new Blob(["<html><body>" + text.join("\n\n") + "</body></html>"], { type: 'text/plain' });
-        var url_text = window.URL.createObjectURL(data_text);
+        var url_text = text_uri(text.join("\n\n"));
 
         var translate = [
             `FFF I am a very simple card. I am good at containing small bits of information.`,
             `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
             `I am convenient because`
         ];
-        var data_translate = new Blob(["<html><body>" + translate.join("\n\n") + "</body></html>"], { type: 'text/plain' });
-        var url_translate = window.URL.createObjectURL(data_translate);
+        var url_translate = text_uri(translate.join("\n\n"));
 
         var tags = ["Английский", "Дезинфекция", "Массачусетс", "Городские мероприятия"];
 
