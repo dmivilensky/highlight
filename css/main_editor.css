@@ -1,0 +1,33 @@
+#head {
+    margin-left: 10% !important;
+    margin-right: 10% !important;
+}
+
+#docs {
+    max-height: 400px !important;
+}
+
+.tags-block {
+    margin-top: 10px !important;
+    padding-right: 10% !important;
+}
+
+.editor-buttons {
+    margin-top: 20px !important;
+}
+
+.download-translation {
+    width: 100% !important;
+    border-radius: 20px!important;
+}
+
+.download-original {
+    width: 100% !important;
+    border-radius: 20px !important;
+    text-align: center !important;
+}
+
+.docs-tags {
+    margin-top: 10px !important;
+    padding-right: 10% !important;
+}

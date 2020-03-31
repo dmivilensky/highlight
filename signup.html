@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="css/login.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="css/signup.css"  media="screen,projection"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
         <title>highlight</title>
@@ -18,7 +19,7 @@
             </div>
 
             <div class="row">
-                <div class="col s12 m12 l12" style="padding-left: 12%; padding-right: 12%;">
+                <div class="col s12 m12 l12" id="signup-form">
                     <h5 class="header">Регистрация</h5>
 
                     <div class="container">
@@ -34,32 +35,31 @@
                                 <label for="email">Email</label>
                                 </div>
 
-                                <fieldset style="border: 1px #424242 solid; border-radius: 5px;" id="lang">
-                                <legend style="padding: 0.2em 0.8em ">Только для переводчиков</legend>
+                                <fieldset class="signup-fieldset" id="lang">
+                                    <legend class="signup-legend">Только для переводчиков</legend>
 
                                 </fieldset>
 
-                                <div id="soc" style="margin-top: 15px;">
+                                <div id="soc" class="soc">
 
-                                <div class="input-field col s12 m12 l4" style="margin-top: 15px;">
-                                <select id="soc_value0">
-                                <option value="1" selected>ВК</option>
-                                <option value="2">Facebook</option>
-                                <option value="3">Telegram</option>
-                                </select>
-                                <label>Соц. сеть</label>
+                                <div class="input-field col s12 m12 l4 soc">
+                                    <select id="soc_value0">
+                                        <option value="1" selected>ВК</option>
+                                        <option value="2">Facebook</option>
+                                        <option value="3">Telegram</option>
+                                    </select>
+                                    <label>Соц. сеть</label>
                                 </div>
-
                                 <div class="input-field col s12 m12 l8">
-                                <input id="soc0" type="text" class="validate">
-                                <label for="soc0">id</label>
+                                    <input id="soc0" type="text" class="validate">
+                                    <label for="soc0">id</label>
                                 </div>
 
                                 </div>
 
-                                <div style="width: 100%; text-align: right;">
-                                <a onclick="remove_social();" style="margin-right: 10px;"><i class="material-icons circle grey" style="font-size: 20px; line-height: 30px; color: #fff; height: 30px; width: 30px; text-align: center;">exposure_neg_1</i></a>
-                                <a onclick="add_social();"><i class="material-icons circle grey" style="font-size: 20px; line-height: 30px; color: #fff; height: 30px; width: 30px; text-align: center;">exposure_plus_1</i></a>
+                                <div id="soc-buttons">
+                                <a onclick="remove_social();" id="soc-remove"><i id="soc-icon" class="material-icons circle grey">exposure_neg_1</i></a>
+                                <a onclick="add_social();"><i id="soc-icon" class="material-icons circle grey">exposure_plus_1</i></a>
                                 </div>
 
                                 <div class="input-field col s12">
@@ -74,7 +74,7 @@
 
                                 <div class="input-field col s6">
                                 <p><label>
-                                    <input name="translator" type="radio" checked class="tr" />
+                                    <input class="tr" name="translator" type="radio" checked />
                                     <span>Перевод документов</span>
                                 </label></p>
                                 </div>
@@ -87,7 +87,7 @@
                             </div>
 
                             <a class="waves-effect waves-light btn submit grey" onclick="signup();">Зарегистрироваться</a>
-                            <p style="font-size: 10px;">Нажимая на кнопку «Зарегистрироватся», я даю <a href="privacy_policy.pdf">согласие на обработку персональных данных</a></p>
+                            <p id="privacy_text">Нажимая на кнопку «Зарегистрироватся», я даю <a href="privacy_policy.pdf">согласие на обработку персональных данных</a></p>
                         </form>
                     </div>
                 </div>

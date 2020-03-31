@@ -67,21 +67,21 @@ function document_info(id) {
                 <i class="material-icons circle yellow darken-2">find_in_page</i>
                 <span class="title">` + title + `</span>
         
-                <div style="margin-top: 10px;padding-right: 10%;">
+                <div class="tags-block">
                 ` + tags_markup + `
                 </div>
         
-                <div class="row" style="margin-top: 20px;">
+                <div class="row editor-buttons">
                     <div class="col s6">
-                    <a href="` + translation + `" class="waves-effect waves-light btn green" style="width: 100%; border-radius: 20px;"><i class="material-icons left">get_app</i>Скачать перевод</a>
+                    <a href="` + translation + `" target="_blank" class="waves-effect waves-light btn green download-translation"><i class="material-icons left">get_app</i>Скачать перевод</a>
                     </div>
                     <div class="col s6">
-                    <a href="` + original + `" class="waves-effect waves-green btn-flat" style="width: 100%; border-radius: 20px; text-align: center;"><i class="material-icons left">get_app</i>Скачать оригинал</a>
+                    <a href="` + original + `" target="_blank" class="waves-effect waves-green btn-flat download-original"><i class="material-icons left">get_app</i>Скачать оригинал</a>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s6">
-                    <a class="waves-effect waves-light btn grey modal-trigger" style="width: 100%; border-radius: 20px;" href="#modal1"><i class="material-icons left">send</i>Исправления</a>
+                    <a class="waves-effect waves-light btn grey modal-trigger download-translation" href="#modal1"><i class="material-icons left">send</i>Исправления</a>
                     </div>
                 </div>
             </li>
@@ -117,7 +117,7 @@ function update_search() {
                     <li class="collection-item avatar" onclick="document_info(` + id + `);">
                         <i class="material-icons circle yellow darken-2">find_in_page</i>
                         <span class="title"><a href="">` + title + `</a></span>
-                        <div style="margin-top: 10px;padding-right: 10%;">
+                        <div class="docs-tags">
                         ` + tags_markup + `
                         </div>
                     </li>

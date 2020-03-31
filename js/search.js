@@ -61,26 +61,26 @@ function document_info(id) {
             $("#details").append(`
             <li class="collection-item avatar">
                 ` + avatar + `
-                <span class="title" style="font-size: 12px; font-family: Consolas, monaco, monospace;">` + status_text + `</span><br>
+                <span class="title status-text">` + status_text + `</span><br>
                 <span class="title">` + title + `</span>
                 
-                <a onclick="inc_importance(` + id + `);" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons" style="color: #444;">star_border</i></a>
+                <a onclick="inc_importance(` + id + `);" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>
         
-                <div style="margin-top: 10px;padding-right: 10%;">
+                <div class="tags-block">
                 ` + tags_markup + `
                 </div>
         
-                <div class="row" style="margin-top: 20px;">
+                <div class="row btns">
                     <div class="col s6">
-                    <a href="` + translation + `" class="waves-effect waves-light btn green" style="width: 100%; border-radius: 20px;"><i class="material-icons left">get_app</i>Скачать перевод</a>
+                    <a href="` + translation + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
                     </div>
                     <div class="col s6">
-                    <a href="` + original + `" class="waves-effect waves-green btn-flat" style="width: 100%; border-radius: 20px; text-align: center;"><i class="material-icons left">get_app</i>Скачать оригинал</a>
+                    <a href="` + original + `" target="_blank" class="waves-effect waves-green btn-flat download-btns"><i class="material-icons left">get_app</i>Скачать оригинал</a>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s6">
-                    <a class="waves-effect waves-light btn grey modal-trigger" style="width: 100%; border-radius: 20px;" href="#modal1"><i class="material-icons left">send</i>Отправить на почту</a>
+                    <a class="waves-effect waves-light btn grey modal-trigger send-file" href="#modal1"><i class="material-icons left">send</i>Отправить на почту</a>
                     </div>
                 </div>
             </li>
@@ -127,7 +127,7 @@ function update_search() {
                     <li class="collection-item avatar" onclick="document_info(` + id + `);">
                         ` + avatar + `
                         <span class="title"><a href="">` + title + `</a></span>
-                        <div style="margin-top: 10px;padding-right: 10%;">
+                        <div class="tags-mu">
                         ` + tags_markup + `
                         </div>
                     </li>

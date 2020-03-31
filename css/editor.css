@@ -1,0 +1,24 @@
+#head {
+    margin-left: 10% !important;
+    margin-right: 10% !important;
+}
+
+.slim {
+    margin: 0 !important;
+}
+
+.translation-block {
+    background: #eee !important;
+    border-radius: 5px !important;
+}
+
+.translation-edit {
+    height: 200px !important;
+}
+
+.translation-buttons {
+    width: 100% !important;
+    text-align: right !important;
+    padding: 20px !important;
+    padding-top: 0 !important;
+}

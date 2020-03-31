@@ -85,19 +85,19 @@ function list_blocks() {
                         <div class="card-content">
                         <span class="card-title">` + title + `</span>
                         
-                        <div style="margin-top: 10px; margin-bottom: 10px; padding-right: 10%;">
+                        <div class="tags-markup">
                         ` + tags_markup + `
                         </div>
-                        <div style="width: 100%; margin-bottom: 10px;">
-                        <a href="` + url_text + `" download="original.txt" class="waves-effect waves-light btn green" style="width: 100%; border-radius: 20px;"><i class="material-icons left">file_download</i>Скачать отрывок</a>
+                        <div class="download-url-or">
+                        <a href="` + url_text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
                         </div>
-                        <div style="width: 100%; margin-bottom: 10px;">
-                        <a href="` + url_translate + `" download="translate.txt" class="waves-effect waves-green btn-flat" style="width: 100%; text-align: center; border-radius: 20px;"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
+                        <div class="download-url-or">
+                        <a href="` + url_translate + `" download="translate.txt" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
                         </div>
                         <p class="preview">` + text[0].slice(0, 150) + `</p>
                         </div>
-                        <div class="card-action" style="text-align: right;">
-                        <a onclick="edit_block(` + id + `);" style="color: #4caf50;">Продолжить перевод</a>
+                        <div class="card-action edit-btn">
+                        <a onclick="edit_block(` + id + `);" class="continue-tr">Продолжить перевод</a>
                         </div>
                     </div>
                 </div>
@@ -199,12 +199,12 @@ function select_document(id) {
                 var id = i;
 
                 $("#paragraphs").append(`
-                <div class="row" id="p` + id + `" ` + (text[i].status == 0 ? `onclick="select_paragraph(` + id + `);"` : ``) + ` style="margin:0; display: flex;">
+                <div class="row paragraphs-flex" id="p` + id + `" ` + (text[i].status == 0 ? `onclick="select_paragraph(` + id + `);"` : ``) + `>
                     <div class="col s1">
-                        <div style="background: ` + (text[i].status == 0 ? "#aaa" : "#fa0000") + `; width: 7px; height: 100%;" id="bar` + id + `"></div>
+                        <div style="background: ` + (text[i].status == 0 ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + id + `"></div>
                     </div>
                     <div class="col s11">
-                        <p style="margin:0;">
+                        <p class="slim">
                         &nbsp;&nbsp;&nbsp;&nbsp;` + text[i].text + `
                         </p>
                     </div>
@@ -229,6 +229,7 @@ function list_documents(lang) {
         .fail(function(jqXHR, status) {
             $("#hint").hide();
             $("#get").hide();
+            $("#paragraphs").empty();
             $("#docs").empty();
             for (var i = 0; i < 7; ++i) {
                 var id = i;
@@ -249,9 +250,9 @@ function list_documents(lang) {
                     <p>
                     ` + title + `
                     </p>
-                    <div style="background: #ccc; height: 7px; margin-top: 7px; "></div>
-                    <div style="background: #4caf50; height: 7px; margin-top: -7px; width: ` + progress + `;"></div>
-                    <div style="margin-top: 10px;padding-right: 10%;">
+                    <div class="progress-bg"></div>
+                    <div class="progress-ind" style="width: ` + progress + `;"></div>
+                    <div class="tags-par">
                     ` + tags_markup + `
                     </div>
                     </li>

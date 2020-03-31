@@ -2,6 +2,57 @@ nav {
     background: #aaa !important;
 }
 
+#head {
+    margin-left: 10% !important;
+    margin-right: 10% !important;
+}
+
+.docs-search {
+    max-height: 400px !important;
+}
+
+.no-bottom {
+    margin-bottom: 0 !important;
+}
+
+.no-top {
+    margin-top: 0 !important;
+}
+
+.tags-mu {
+    margin-top: 10px !important;
+    padding-right: 10% !important;
+}
+
+.send-file {
+    width: 100%;
+    border-radius: 20px !important;
+}
+
+.download-btns {
+    width: 100% !important;
+    border-radius: 20px !important;
+    text-align: center !important;
+}
+
+.btns {
+    margin-top: 20px !important;
+}
+
+.tags-block {
+    margin-top: 10px !important;
+    padding-right: 10% !important;
+}
+
+.grey-star {
+    color: #444 !important;
+}
+
+.status-text {
+    font-size: 12px !important;
+    font-family: Consolas, monaco, monospace !important;
+}
+
 .fixed {
     overflow-y: auto !important;
 }

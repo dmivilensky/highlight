@@ -49,7 +49,7 @@ function add_social() {
     $('#soc').append(`
         <div id="field` + social_idx + `">
         <div class="input-field col s12 m12 l4">
-            <select id="soc_value` + social_idx + `" style="margin-top: 15px;">
+            <select class="soc" id="soc_value` + social_idx + `">
             <option value="1" selected>ВК</option>
             <option value="2">Facebook</option>
             <option value="3">Telegram</option>

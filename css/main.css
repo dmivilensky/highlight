@@ -4,6 +4,100 @@
     -webkit-text-fill-color: transparent;
 }
 
+.wide {
+    width: 100% !important;
+}
+
+.tall {
+    height: 100% !important;
+}
+
+.slim {
+    margin: 0 !important;
+}
+
+.paragraphs-flex {
+    margin: 0 !important;
+    display: flex !important;
+}
+
+.indicator {
+    width: 7px !important;
+    height: 100% !important;
+}
+
+.progress-bg {
+    background: #ccc !important;
+    height: 7px !important;
+    margin-top: 7px !important;
+}
+
+.progress-ind {
+    background: #4caf50 !important;
+    height: 7px !important;
+    margin-top: -7px !important;
+}
+
+.tags-par {
+    margin-top: 10px !important;
+    padding-right: 10% !important;
+}
+
+#modal-docs {
+    margin: 0 !important;
+    height: 80% !important;
+}
+
+#hint {
+    height: 40px !important;
+    margin: 0 !important;
+    margin-bottom: 5px !important;
+    font-size: 20px !important;
+}
+
+#paragraphs {
+    height: calc(100% - 85px) !important;
+    overflow-y: auto !important;
+    max-height: calc(100% - 85px) !important;
+}
+
+#get-btn {
+    height: 40px !important;
+    width: 100% !important;
+    text-align: right !important;
+    padding-top: 15px !important;
+}
+
+.list-modal {
+    max-height: calc(100% - 80px) !important;
+    margin: 0 !important;
+}
+
+.tags-markup {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    padding-right: 10% !important;
+}
+
+.download-url-or {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+}
+
+.edit-btn {
+    text-align: right !important;
+}
+
+.continue-tr {
+    color: #4caf50 !important;
+}
+
+.download-btn {
+    width: 100% !important;
+    text-align: center !important;
+    border-radius: 20px !important;
+}
+
 .fixed {
     overflow-y: auto !important;
 }

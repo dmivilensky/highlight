@@ -99,10 +99,10 @@ function init() {
                 var translation_markup = "";
                 if (status[i] == 0) {
                     translation_markup = `
-                    <form class="col s12" style="background: #eee; border-radius: 5px;">
-                    <div class="row" style="margin: 0;">
-                        <div class="input-field col s12" style="margin: 0;">
-                        <textarea placeholder="Перевод" id="textarea` + id + `" class="materialize-textarea" style="height: 200px;">` + translate[i] + `</textarea>
+                    <form class="col s12 translation-block">
+                    <div class="row slim">
+                        <div class="input-field col s12 slim">
+                        <textarea placeholder="Перевод" id="textarea` + id + `" class="materialize-textarea translation-edit">` + translate[i] + `</textarea>
                         </div>
                     </div>
                     </form>
@@ -131,7 +131,7 @@ function init() {
                     </div> 
                     </div>
 
-                    <div style="width: 100%; text-align: right; padding: 20px; padding-top:0;">
+                    <div class="translation-buttons">
                         <a onclick="ready(` + id + `);" class="waves-effect waves-light btn yellow darken-2">Перевод завершён</a>
                         <a onclick="save(` + id + `);" class="waves-effect waves-light btn green">Сохранить</a>
                     </div>

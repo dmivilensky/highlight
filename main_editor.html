@@ -5,6 +5,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="css/login.css"  media="screen,projection"/>
         <link type="text/css" rel="stylesheet" href="css/search.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="css/main_editor.css"  media="screen,projection"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
         <title>highlight</title>
@@ -13,27 +14,27 @@
     </head>
 
     <body>
-        <div style="margin-left: 10%; margin-right: 10%;">
+        <div id="head">
             <div class="row">
                 <a href="index.html" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
             </div>
 
             <div class="row"> 
-            <nav>
-            <div class="nav-wrapper">
-                    <div class="input-field">
-                    <input id="search" type="search" required>
-                    <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                    <i class="material-icons">close</i>
+                <nav>
+                    <div class="nav-wrapper">
+                        <div class="input-field">
+                            <input id="search" type="search" required>
+                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                            <i class="material-icons">close</i>
+                        </div>
                     </div>
-            </div>
-            </nav>
-                    <div class="chips chips-placeholder"></div>
+                </nav>
+                <div class="chips chips-placeholder"></div>
             </div>
 
             <div class="row">
                 <div class="col s12 m6 l6">
-                    <ul class="collection fixed" style="max-height: 400px;" id="docs">
+                    <ul class="collection fixed" id="docs">
                     </ul>
                 </div>
 
@@ -60,8 +61,8 @@
                     </form>
             </div>
             <div class="modal-footer">
-            <a onclick="corrected();" class="modal-close waves-effect waves-light btn yellow darken-2">Проверено</a>
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
+                <a onclick="corrected();" class="modal-close waves-effect waves-light btn yellow darken-2">Проверено</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
             </div>
         </div>
 

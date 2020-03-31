@@ -3,6 +3,18 @@
     text-align: center;
 }
 
+.no-bottom {
+    margin-bottom: 0 !important;
+}
+
+.no-top {
+    margin-top: 0 !important;
+}
+
+#privacy_text {
+    font-size: 10px !important;
+}
+
 .title {
     width: 100%;
     text-align: center;

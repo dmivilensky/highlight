@@ -5,6 +5,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="css/login.css"  media="screen,projection"/>
         <link type="text/css" rel="stylesheet" href="css/search.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="css/editor.css"  media="screen,projection"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
         <title>highlight</title>
@@ -13,34 +14,14 @@
     </head>
 
     <body>
-        <div style="margin-left: 10%; margin-right: 10%;">
+        <div id="head">
             <div class="row">
                 <a onclick="back();" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
             </div>
 
-            <div class="row" style="width: 100%;" id="translations">
+            <div class="row wide" id="translations">
             </div>
 
-        </div>
-
-        <div id="modal1" class="modal">
-            <div class="modal-content">
-            <h5>Отправить документ на почту</h5>
-            <div class="row" style="margin-bottom: 0;">
-                <form class="col s12">
-                <div class="row container" style="margin-bottom: 0;">
-                    <div class="input-field col s12">
-                    <input id="email" type="email" class="validate">
-                    <label for="email">Email</label>
-                    </div>
-                </div>
-                </form>
-            </div>
-            </div>
-            <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отправить</a>
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
-            </div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">

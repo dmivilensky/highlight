@@ -1,0 +1,39 @@
+#signup-form {
+    padding-left: 12%;
+    padding-right: 12%;
+}
+
+.signup-fieldset {
+    border: 1px #424242 solid;
+    border-radius: 5px;
+}
+
+.signup-legend {
+    padding: 0.2em 0.8em;
+}
+
+.soc {
+    margin-top: 15px !important;
+}
+
+#soc-buttons {
+    width: 100%;
+    text-align: right;
+}
+
+#soc-remove {
+    margin-right: 10px !important;
+}
+
+#soc-icon {
+    font-size: 20px !important;
+    line-height: 30px !important;
+    color: #fff !important;
+    height: 30px !important;
+    width: 30px !important;
+    text-align: center !important;
+}
+
+#privacy_text {
+    font-size: 10px !important;
+}

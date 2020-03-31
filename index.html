@@ -23,7 +23,7 @@
 
                     <div class="container">
                         <form class="col s12">
-                            <div class="row" style="margin-bottom: 0;">
+                            <div class="row no-bottom">
                                 <div class="input-field col s12">
                                 <input id="login" type="text" class="validate">
                                 <label for="login">Логин</label>
@@ -35,13 +35,13 @@
                                 </div>
                             </div>
 
-                            <div class="input-field col s12 m12 l12" style="margin-top: 0; margin-bottom: 0;">
+                            <div class="input-field col s12 m12 l12 no-bottom no-top">
                                 <p><label>
                                     <input name="translator" type="radio" checked class="tr" />
                                     <span>Переводчик</span>
                                 </label></p>
                                 </div>
-                                <div class="input-field col s12 m12 l12" style="margin-top: 0;">
+                                <div class="input-field col s12 m12 l12 no-top">
                                 <p><label>
                                     <input name="translator" type="radio" class="tr" id="editor" />
                                     <span>Редактор</span>
@@ -72,7 +72,7 @@
                             </div>
 
                             <a onclick="signin_doctor();" class="waves-effect waves-light btn submit grey">Войти</a>
-                            <p style="font-size: 10px;">Нажимая на кнопку Войти, я даю <a href="privacy_policy.pdf">согласие на обработку персональных данных</a></p>
+                            <p id="privacy_text">Нажимая на кнопку Войти, я даю <a href="privacy_policy.pdf">согласие на обработку персональных данных</a></p>
                         </form>
                     </div>
                 </div>

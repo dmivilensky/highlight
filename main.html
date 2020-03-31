@@ -13,7 +13,7 @@
     </head>
 
     <body>
-        <div class="container" style="width: 100%;">
+        <div class="container wide">
             <div class="row">
                 <a href="index.html" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
             </div>
@@ -27,60 +27,30 @@
         </div>
 
         <div id="modal1" class="modal modal-fixed-footer">
-            <div class="modal-content" style="height: 100%;">
+            <div class="modal-content tall">
             <h4>База документов</h4>
 
-            <div class="row" style="margin: 0; height: 80%;">
-                <div class="col s12 m6 l6" style="height: 100%;">
+            <div class="row" id="modal-docs">
+                <div class="col s12 m6 l6 tall">
                     <div class="input-field col s12">
                         <select id="lang">
                         <option value="" disabled selected>Язык</option>
                         </select>
                         <label>Язык</label>
                     </div>
-                    <ul class="collection fixed" style="max-height: calc(100% - 80px); margin:0;" id="docs">
+                    <ul class="collection fixed list-modal" id="docs">
                     </ul>
                 </div>
 
-                <div class="col s12 m6 l6" style="height: 100%; ">
-                    <p id="hint" style="height: 40px; margin: 0; margin-bottom: 5px; font-size: 20px;">
+                <div class="col s12 m6 l6 tall">
+                    <p id="hint">
                         Чтобы выбрать абзац – нажмите на него
                     </p>
 
-                    <div id="paragraphs" style="height: calc(100% - 85px); overflow-y: auto; max-height: calc(100% - 85px); ">
-                    <!--<div class="row" id="p1" onclick="select_paragraph(1);" style="margin:0; display: flex;">
-                        <div class="col s1">
-                            <div style="background: #aaa; width: 7px; height: 100%;" id="bar1"></div>
-                        </div>
-                        <div class="col s11">
-                            <p style="margin:0;">
-                            &nbsp;&nbsp;&nbsp;&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row" id="p2" onclick="select_paragraph(2);" style="margin:0; display: flex;">
-                        <div class="col s1">
-                            <div style="background: #aaa; width: 7px; height: 100%;" id="bar2"></div>
-                        </div>
-                        <div class="col s11">
-                            <p style="margin:0;">
-                            &nbsp;&nbsp;&nbsp;&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row" id="p3" style="margin:0; display: flex;">
-                        <div class="col s1">
-                            <div style="background: #fa0000; width: 7px; height: 100%;" id="bar3"></div>
-                        </div>
-                        <div class="col s11">
-                            <p style="margin:0;">
-                            &nbsp;&nbsp;&nbsp;&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum bibendum egestas nisl vel facilisis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla id tempor elit. Maecenas id eros enim. Aliquam cursus nulla sapien, ut lobortis mauris consequat in. Proin consectetur turpis vel purus rutrum imperdiet. Sed malesuada vel metus vitae tempus. Integer dictum est vehicula gravida venenatis. Nullam ac consequat odio. Sed quis interdum nisl, in euismod ante. Donec ut semper augue, ac dapibus neque. Suspendisse ultricies, tellus nec vehicula porttitor, quam nisi luctus mi, quis malesuada nisl enim in leo. Fusce imperdiet est et turpis euismod, sed semper nulla porttitor. Duis ultrices diam quam, a eleifend dolor scelerisque nec. Aenean id rutrum est.
-                            </p>
-                        </div>
-                    </div>-->
+                    <div id="paragraphs">
                     </div>
 
-                    <div style="height: 40px; width: 100%; text-align: right; padding-top: 15px;">
+                    <div id="get-btn">
                         <a id="get" class="waves-effect waves-light btn green">Забрать для перевода</a>
                     </div>
 

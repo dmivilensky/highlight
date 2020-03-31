@@ -22,3 +22,16 @@
 [type="radio"].with-gap:checked+span:after {
     border: 2px solid #f7e136 !important;
 }
+
+.user-card {
+    padding-left: 20px !important;
+}
+
+.user-status {
+    font-size: 12px;
+    font-family: Consolas, monaco, monospace !important;
+}
+
+.approve-btn {
+    margin-right: 20px !important;
+}

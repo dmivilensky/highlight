@@ -120,12 +120,12 @@ function load_users() {
                     `;
 
                 $("#users").append(`
-                    <li class="collection-item avatar" style="padding-left: 20px;">
-                    <p style="font-size: 12px; font-family: Consolas, monaco, monospace;">` + (users[i].type == 0 ? 'Переводчик' : 'Редактор') + `</p>
+                    <li class="collection-item avatar user-card">
+                    <p class="user-status">` + (users[i].type == 0 ? 'Переводчик' : 'Редактор') + `</p>
                     <span class="title">` + users[i].name + `</span>
                     ` + social + `
                     <div class="secondary-content">
-                    <a onclick="approve_user(` + users[i].id + `);" style="margin-right: 20px;"><i class="material-icons green-text">done</i></a>
+                    <a onclick="approve_user(` + users[i].id + `);" class="approve-btn"><i class="material-icons green-text">done</i></a>
                     <a onclick="delete_user(` + users[i].id + `);"><i class="material-icons red-text">clear</i></a>
                     </div>
                     
@@ -335,12 +335,15 @@ function load_documents() {
                 var stars = 100;
 
                 var status_text = "";
-                if (status == 2) {
-                    status_text = "Переведён и проверен";
-                } else if (status == 1) {
-                    status_text = "Переведён";
-                } else {
-                    status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
+                switch (status) {
+                    case 2:
+                        status_text = "Переведён и проверен";
+                        break;
+                    case 1:
+                        status_text = "Переведён";
+                        break;
+                    case 0:
+                        status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
                 }
 
                 $("#documents").append(`
