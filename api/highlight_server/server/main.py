@@ -8,100 +8,11 @@ import pymongo as pm
 import datetime
 import django
 
-"""
-responses:
-:errors 1000: can't register user
-:errors 2000: no account matching login
-:errors 2001: wrong password
-:errors 2002: account not verified
-:errors 2003: no account matching id
-:errors 2004: account has not enough rights
-:errors 3000: pieces already taken
-:errors 3001: not a single piece (как у вас могут быть карты не в том порядке разложены?!)
-:errors 4040: a error
-:success OK: no error occurred during operation
-"""
 
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
-def register(name, surname, mi, email, langs, login, password, status, vk=None, tg=None, fb=None):
-    """
-    :param name: obvious
-    :param surname: obvious
-    :param mi: middle initials
-    :param email: obvious
-    :param langs: user languages
-    :param login: obvious
-    :param password: obvious
-    :param status: status translator/chief/both
-    :return: user id or None if failed
-    """
-
-    a = {"name": name,
-         "surname": surname,
-         "mi": mi,
-         "email": email,
-         "langs": langs,
-         "login": login,
-         "password": password,
-         "status": status,
-         "vk": vk,
-         "tg": tg,
-         "fb": fb,
-         "translated": 0,
-         "pieces": [],
-         "verified": False}
-
-    client = MongoClient()
-    db = client.highlight
-    acc = db.accounts
-    try:
-        user_id = acc.insert_one(a).inserted_id
-        return ("OK", user_id)
-    except pm.errors.DuplicateKeyError:
-        return ("1000",)
-
-
-def log_in(login, password):
-    """
-    :param login:
-    :param password:
-    :return: user id or None if failed
-    """
-    client = MongoClient()
-    db = client.highlight
-    acc = db.accounts
-    user = acc.find_one({"login": login})
-    if not (user is None):
-        if user["password"] == password and user["verified"]:
-            if user["verified"]:
-                return user["_id"]
-            else:
-                return ("2002",)
-        else:
-            return ("2001",)
-    else:
-        return ("2000",)
-
-
-def verify(user_id, key, decision="ADMITTED"):
-    client = MongoClient()
-    db = client.highlight
-    acc = db.accounts
-    if key == "NICE":
-        if decision == "ADMITTED":
-            acc.update_one(
-                {"_id": ObjectId(user_id)},
-                {"$set": {"verified": True}})
-        else:
-            acc.delete_one({"_id": ObjectId(user_id)})
-        return ("OK",)
-    else:
-        return ("2004",)
-
-
-def verify_file(doc_id, user_id, file_data):
+def verify_file(doc_id, user_id, path=""):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -109,21 +20,25 @@ def verify_file(doc_id, user_id, file_data):
     user = acc.find_one({"_id": ObjectId(user_id)})
     if is_there_any_body(user_id):
         if user["status"] == "chief":
-            lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
-            file = lang_storage.find_one({"_id": ObjectId(doc_id)})
-            push_to_file_storage(file["path"], file_data)
-            return ("OK",)
+            if not(path == ""):
+                file = lang_storage.find_one({"_id": ObjectId(doc_id)})
+                delete_from_doc_storage(file["path"])
+                lang_storage.update_one({"_id": ObjectId(doc_id)},
+                                        {"$set": {"status": "TRANSLATED", "chief": user_id, "path": path}})
+            else:
+                lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
+            return {"code": "OK"}
         else:
-            return ("2004",)
+            return {"code": "2004"}
     else:
-        return ("2003",)
+        return {"code": "2003"}
 
 
 def is_there_any_body(uid):
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    return not(acc.find_one({"_id": uid}) is None)
+    return not(acc.find_one({"_id": ObjectId(uid), "verified": True}) is None)
 
 
 def split_to_pieces(number, name, lang, doc):
@@ -250,6 +165,7 @@ def update_importance(doc_id):
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$inc": {"importance": 1}})
+    return {"code": "OK"}
 
 
 def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
@@ -271,17 +187,17 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         pieces.append(p)
         if not p["freedom"]:
             no_intersections = False
-            return ("3000",)
+            return {"code": "3000"}
     pieces = sorted(pieces, key=lambda a: a["index"])
     txt = [pieces[0]["txt"]]
     for i in range(1, len(pieces)):
         if pieces[i]["index"] - pieces[i - 1]["index"] != 1:
-            return ("3001",)
+            return {"code": "3001"}
         txt.append(pieces[i]["txt"])
     begin_index = pieces[0]["index"]
     end_index = pieces[-1]["index"]
     if not no_intersections:
-        return ("3000",)
+        return {"code": "3000"}
     else:
         acc = db.accounts
         new_piece = {
@@ -304,7 +220,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         for p in pieces:
             lang_storage.update_one({"_id": p["_id"]},
                                     {"$set": {"freedom": False, "lastModified": datetime.datetime.utcnow()}})
-        return ("OK", did1)
+        return {"id": str(did1), "code": "OK"}
 
 
 def update_docs(name, doc, lang, tags):
@@ -322,7 +238,7 @@ def update_docs(name, doc, lang, tags):
                      "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
                      orig_path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'original' + os.path.sep + name,
                      file_data=doc)
-    return did
+    return {"id": str(did), "code": "OK"}
 
 
 def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
@@ -351,9 +267,9 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
         if pieces_count <= len(taken_pieces_indexes):
-            return create_translated_unverified_docs(pss, doc, ps, acc)
+            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc)), "code": "OK"}
         else:
-            return None
+            return {"code": "3002"}
 
 
 def create_translated_unverified_docs(pieces, doc, ps, acc):
@@ -387,6 +303,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
 
 def delete_from_doc_storage(path):
     os.remove(path)
+    return {"code": "OK"}
 
 
 def delete_from_db(doc_id):
@@ -403,179 +320,10 @@ def find_file_by_path(path):
     return Document(path)
 
 
-def find_pieces(user_id):
-    """
-    :param user_id: user mongo id
-    :return: all pieces taken by user
-    """
-    client = MongoClient()
-    db = client.highlight
-    lang_storage = db.files_info
-    pieces = sorted(lang_storage.find({"translator": user_id, "status": "PIECE", "translation status": "UNDONE"}),
-                    key=lambda a: a["lastModified"], reverse=True)
-    return pieces
-
-
-def find_doc_by_lang(lang):
-    """
-    :param lang: language
-    :return: array of tuples where first element is document name, second is list of pieces for this document
-    :description: finds pieces as docs by language
-    """
-    client = MongoClient()
-    db = client.highlight
-    lang_storage = db.files_info
-    docs = dict()
-    docs_o = dict()
-    for piece in lang_storage.find({"lang": lang, "status": "WAITING_PIECE"}):
-        orig_doc = lang_storage.find_one({"name": piece["name"], "number": piece["number"], "lang": piece["lang"], "status": "WAITING_FOR_TRANSLATION"})
-        if piece["name"] in docs.keys():
-            docs[piece["name"]].append(piece)
-        else:
-            docs[piece["name"]] = [piece]
-            docs_o[piece["name"]] = [orig_doc]
-
-    out = list()
-    for key in docs.keys():
-        docs[key] = sorted(docs[key], key=lambda a: a["index"])
-        out.append([key, docs[key], docs_o])
-    out = sorted(out, key=lambda a: a[2], reverse=True)
-
-    return out
-
-
-def find_complete_docs_by_lang(lang):
-    """
-    :param lang: language
-    :return: array of docs (id, name, tags, progress)
-    :description: finds docs by language
-    """
-    client = MongoClient()
-    db = client.highlight
-    lang_storage = db.files_info
-    docs = list()
-    for doc in lang_storage.find({"lang": lang, "status": { "$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}):
-        if doc["status"] in {"NEED_CHECK", "TRANSLATED"}:
-            docs.append([doc["_id"], doc["name"], doc["tags"], 1])
-        else:
-            pieces_count = doc["piece number"]
-            taken_pieces_indexes = []
-            pss = lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "PIECE",
-                                     "translation status": "DONE"})
-            for p in sorted(pss, key=lambda a: a["piece begin"]):
-                taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
-            docs.append([doc["_id"], doc["name"], doc["tags"], len(taken_pieces_indexes) / pieces_count])
-
-    return docs
-
-
-def get_from_db(search, tags, status=None):
-    """
-    :param search: user input
-    :param tags: tags
-    :param status: list of statuses
-    :return: matching docs of id, name, tags, status, path, etc.
-    """
-    if status is None:
-        status = {"TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"}
-    client = MongoClient()
-    db = client.highlight
-    lang_storage = db.files_info
-    search_set = set(search)
-    hl = []
-    for i in search.split(" "):
-        hl.extend(i.split("_"))
-    search_set_words = set(hl)
-    search_tags = set(tags.split(","))
-    matching_docs = list()
-    for doc in lang_storage.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
-        doc_stat = doc["status"]
-        relev = 0
-        if doc_stat == "TRANSLATED":
-            relev += 100
-        elif doc_stat == "NEED_CHECK":
-            relev += 50
-        elif doc_stat == "WAITING_FOR_TRANSLATION":
-            relev += 0
-        doc_name_set = set(doc["name"])
-        doc_tags_set = set(doc["tags"])
-        doc_id = doc["number"]
-        tag_inrsc = search_tags.intersection(doc_tags_set)
-        name_inrsc = search_set.intersection(doc_name_set)
-
-        if len(search_tags) > 0:
-            if len(tag_inrsc) >= len(search_tags) * 0.8:
-                relev += len(tag_inrsc) / len(search_tags) * 7
-
-            if doc["lang"] in search_tags:
-                relev += 4
-
-        if len(search_set) > 0:
-            if len(name_inrsc) >= 0.6 * len(doc_name_set):
-                relev += len(name_inrsc) / len(doc_name_set) * 10
-
-            if doc_id in search_set_words:
-                relev += 8
-
-        if relev > 0:
-            matching_docs.append((relev, doc))
-
-    return list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)
-
-
-def get_for_chief_from_db(search, tags):
-    return get_from_db(search, tags, status={"NEED_CHECK"})
-
-
-def get_users():
-    client = MongoClient()
-    db = client.highlight
-    acc = db.accounts
-    return acc.find({"verified": False})
-
-
-def get_docs_and_trans():
-    client = MongoClient()
-    db = client.highlight
-    acc = db.accounts
-    l_s = db.files_info
-    return l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), acc.count_documents({"status": {"$in": ["translator", "both"]}, "verified": True}), l_s.count_documents({"status": "TRANSLATED"})
-
-
-def get_translators_stat():
-    client = MongoClient()
-    db = client.highlight
-    acc = db.accounts
-    return list(acc.find({"status": {"$in": ["translator", "both"]}, "verified": True}))
-
-
-def get_file_stat():
-    client = MongoClient()
-    db = client.highlight
-    l_s = db.files_info
-    docs = []
-    for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
-        if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
-            docs.append([t["name"], t["status"], l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]])
-        else:
-            docs.append([t["name"], [l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation status": "DONE"}), t["piece number"]], t["importance"]])
-    return docs
-
-
 def test():
     client = MongoClient()
     db = client.highlight
-    acc = db.accounts
-    # acc.create_index([('login', pm.ASCENDING)], unique=True)
-    # did = register("seva", "obvious", "obvious", "obvious", "obvious", "seva", "tester", "obvious")
-    # print(did)
-    # did1 = get_users()[0]
-    # print(did1["_id"])
-    # verify(did1["_id"], "NICE")
-    # print(log_in("seva", "tester"))
-    # for i in acc.find():
-    #     pprint.pprint(i)
-    # acc.delete_one({"_id": log_in("seva", "tester")})
+    pprint.pprint("gf " + ("mi" if type(1) == str else ""))
 
 
 if __name__ == '__main__':
