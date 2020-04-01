@@ -369,7 +369,7 @@ def check_user(request):
         params = request.POST
         try:
             uid = params["id"]
-            result = {'code': "OK", "document": mn.is_there_any_body(uid)}
+            result = {'code': "OK", "result": mn.is_there_any_body(uid)}
         except KeyError:
             result = {'code': "5001"}
 
