@@ -3,9 +3,10 @@ var block_id = "";
 
 function check_user(success) {
     user_id = findGetParameter("user_id");
+    block_id = findGetParameter("block_id");
 
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/check_user",
             method: "POST",
             data: {
                 id: user_id
@@ -13,14 +14,17 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            if (user_id == 120) {
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK" && response.document) {
                 success();
             } else {
                 $.redirectGet("index.html", {});
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+            $.redirectGet("index.html", {});
         });
 }
 
@@ -32,114 +36,112 @@ function back() {
 
 function ready(id) {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/test_script.txt",
             method: "POST",
             data: {
-                id: user_id
+                id: user_id,
+                piece_id: block_id
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                location.reload(true);
+            }
         })
-        .fail(function(jqXHR, status) {
-            location.reload(true);
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
-function save(id) {
+function save() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/test_script.txt",
             method: "POST",
             data: {
-                id: user_id
+                id: user_id,
+                piece_id: block_id
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                location.reload(true);
+            }
         })
-        .fail(function(jqXHR, status) {
-            location.reload(true);
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
+
+var piece;
 
 function init() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/find_piece",
             method: "POST",
             data: {
-                id: user_id
+                id: user_id,
+                piece_id: block_id
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            var text = [
-                `I am a very simple card. I am good at containing small bits of information.`,
-                `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
-                `I am convenient because`
-            ];
-            var translate = [
-                `FFF I am a very simple card. I am good at containing small bits of information.`,
-                `ormation.`,
-                `I am convenient because`
-            ];
-            var status = [
-                0,
-                0,
-                1
-            ];
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                piece = response.document;
 
-            for (var i = 0; i < text.length; ++i) {
-                var id = i;
+                for (var i = 0; i < piece.txt.length; ++i) {
+                    var translation_markup = "";
+                    if (piece.translation_status == 'UNDONE') {
+                        translation_markup = `
+                        <form class="col s12 translation-block">
+                        <div class="row slim">
+                            <div class="input-field col s12 slim">
+                            <textarea placeholder="Перевод" id="textarea` + i + `" class="materialize-textarea translation-edit">` + piece.translated_txt[i] + `</textarea>
+                            </div>
+                        </div>
+                        </form>
+                        `;
+                    } else {
+                        translation_markup = `
+                        <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp;` + piece.translated_txt[i] + `
+                        </p>`;
+                    }
 
-                var translation_markup = "";
-                if (status[i] == 0) {
-                    translation_markup = `
-                    <form class="col s12 translation-block">
-                    <div class="row slim">
-                        <div class="input-field col s12 slim">
-                        <textarea placeholder="Перевод" id="textarea` + id + `" class="materialize-textarea translation-edit">` + translate[i] + `</textarea>
+                    $("#translations").append(`
+                    <div class="col s12 m12">
+                    <div class="card">
+                        <div class="card-content">
+                        <div class="row">
+                            <div class="col s12 m6 l6">
+                                <p>
+                                &nbsp;&nbsp;&nbsp;&nbsp;` + piece.txt[i] + `
+                                </p>
+                            </div>
+    
+                            <div class="col s12 m6 l6">
+                                ` + translation_markup + `
+                            </div>
+                        </div> 
+                        </div>
+    
+                        <div class="translation-buttons">
+                            <a onclick="ready(` + i + `);" class="waves-effect waves-light btn yellow darken-2">Сохранить</a>
                         </div>
                     </div>
-                    </form>
-                    `;
-                } else {
-                    translation_markup = `
-                    <p>
-                        &nbsp;&nbsp;&nbsp;&nbsp;` + translate[i] + `
-                    </p>`;
+                    </div>
+                    `);
                 }
-
-                $("#translations").append(`
-                <div class="col s12 m12">
-                <div class="card">
-                    <div class="card-content">
-                    <div class="row">
-                        <div class="col s12 m6 l6">
-                            <p>
-                            &nbsp;&nbsp;&nbsp;&nbsp;` + text[i] + `
-                            </p>
-                        </div>
-
-                        <div class="col s12 m6 l6">
-                            ` + translation_markup + `
-                        </div>
-                    </div> 
-                    </div>
-
-                    <div class="translation-buttons">
-                        <a onclick="ready(` + id + `);" class="waves-effect waves-light btn yellow darken-2">Перевод завершён</a>
-                        <a onclick="save(` + id + `);" class="waves-effect waves-light btn green">Сохранить</a>
-                    </div>
-                </div>
-                </div>
-                `);
             }
-        });
+        })
+        .fail(function(jqXHR, status) {});
 }
 
 $(document).ready(function() {
