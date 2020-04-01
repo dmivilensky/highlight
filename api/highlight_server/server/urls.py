@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     path('registration', views.registration_cover, name='rg'),
     path('login', views.login_cover, name='lg'),
-    path('find_pieces', views.find_pieces_cover, name='fp'),
+    path('find_pieces', views.find_pieces_cover, name='fps'),
     path('verify', views.verify_cover, name='vf'),
     path('find_doc_by_lang', views.find_doc_by_lang_cover, name='fdbl'),
     path('get_from_db', views.get_from_db_cover, name='gfd'),
@@ -21,5 +21,6 @@ urlpatterns = [
     path('update_pieces', views.update_pieces_cover, name='up'),
     path('update_translating_pieces', views.update_translating_pieces_cover, name='utp'),
     path('let_my_people_pass', views.let_my_people_pass, name='lmpg'),
-    path('check_user', views.check_user, name='cu')
+    path('check_user', views.check_user, name='cu'),
+    path('find_piece', views.find_piece, name='fp')
 ]

@@ -44,7 +44,7 @@ def register(name, surname, mi, email, langs, login, password, status, vk=None, 
         return {"code": "1000"}
 
 
-def log_in(login, password):
+def log_in(login, password, type=None):
     """
     :param login:
     :param password:
@@ -54,7 +54,10 @@ def log_in(login, password):
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
-    user = acc.find_one({"login": login})
+    if type is None:
+        user = acc.find_one({"login": login})
+    else:
+        user = acc.find_one({"login": login, "status": type})
     if not (user is None):
         if user["password"] == password:
             if user["verified"]:
