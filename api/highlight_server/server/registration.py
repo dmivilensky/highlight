@@ -15,7 +15,8 @@ def register(name, surname, mi, email, langs, login, password, status, vk=None, 
     :param login: obvious
     :param password: obvious
     :param status: status translator/chief/both
-    :return: user id or None if failed
+    :return: user id or error if failed
+    :structure: dict('code': string, 'document': string)
     """
 
     a = {"name": name,
@@ -47,7 +48,8 @@ def log_in(login, password):
     """
     :param login:
     :param password:
-    :return: user id or None if failed
+    :return: user id or error if failed
+    :structure: dict('code': string, 'document': string)
     """
     client = MongoClient()
     db = client.highlight
@@ -66,6 +68,12 @@ def log_in(login, password):
 
 
 def verify(user_login, decision="ADMITTED"):
+    """
+    :param user_login: user login
+    :param decision: confirm or delete user (ADMITTED/anything else)
+    :return: code OK
+    :structure: dict('code': string)
+    """
     client = MongoClient()
     db = client.highlight
     acc = db.accounts

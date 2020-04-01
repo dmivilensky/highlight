@@ -13,6 +13,13 @@ BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
 def verify_file(doc_id, user_id, path=""):
+    """
+    :param doc_id: document mongo id
+    :param user_id: user mongo id
+    :param path: path to save file returned by php script
+    :return: code
+    :structure: dict('code': string)
+    """
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -35,6 +42,11 @@ def verify_file(doc_id, user_id, path=""):
 
 
 def is_there_any_body(uid):
+    """
+    :param uid: user mongo id
+    :return: is user in db
+    :structure: bool
+    """
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
@@ -46,8 +58,9 @@ def split_to_pieces(number, name, lang, doc):
        :param number: id number of document
        :param name: file name
        :param lang: language one of ENG, RUS, ESP, JAP, etc.
-       :param doc: document docx
+       :param doc: document .docx
        :return: pieces ids
+       :structure: list(ObjectId Bson)
    """
 
     ids = list()
@@ -97,6 +110,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     :param translation_status: whether translation done or not (DONE/UNDONE)
     :param chief: translates verifier
     :return: file mongo id in DB
+    :structure: ObjectId Bson
     """
 
     file = None
@@ -161,6 +175,11 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
 
 
 def update_importance(doc_id):
+    """
+    :param doc_id: document mongo id
+    :return: code
+    :structure: dict('code': string)
+    """
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -175,6 +194,8 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
     :param pieces_ids: mongo ids of pieces list
     :param to_lang: language file is translated to
     :return: response code
+    :structure: dict('code': string)
+    :description: creates piece taken by user
     """
     client = MongoClient()
     db = client.highlight
@@ -230,6 +251,8 @@ def update_docs(name, doc, lang, tags):
     :param lang: language
     :param tags: tags as array
     :return: file mongo id
+    :structure: dict('code': string, 'id': string)
+    :description: pushes loaded by admin file to db
     """
     client = MongoClient()
     db = client.highlight
@@ -246,7 +269,9 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
     :param piece_id: mongo id of piece
     :param tr_txt: translated text string
     :param tr_stat: status of translation DONE/UNDONE
-    :return: None or translated doc id
+    :return: error or translated doc id
+    :structure: dict('code': string, 'id': string)
+    :description: updates users piece information: whether translation done or not and ads translated text to piece. If all pieces of certain document are translated - creates translated document and deletes pieces
     """
     client = MongoClient()
     db = client.highlight
@@ -279,6 +304,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
     :param ps: one of pieces
     :param acc: accounts db
     :return: mongo id of created element
+    :description: creates translated document from pieces
     """
     file_data = find_file_by_path(doc["orig_path"])
     for p in pieces:
@@ -302,11 +328,20 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
 
 
 def delete_from_doc_storage(path):
+    """
+    :param path: file path
+    :return: code
+    """
     os.remove(path)
     return {"code": "OK"}
 
 
 def delete_from_db(doc_id):
+    """
+    :param doc_id: file mongo id
+    :return: Nothing
+    :description: deletes file from db and storage if any
+    """
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -317,6 +352,10 @@ def delete_from_db(doc_id):
 
 
 def find_file_by_path(path):
+    """
+    :param path: file path
+    :return: .docx document
+    """
     return Document(path)
 
 
