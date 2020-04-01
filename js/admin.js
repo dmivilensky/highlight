@@ -232,22 +232,29 @@ function add_document() {
 
 function load_stat() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/get_trans_and_docs",
             method: "POST",
-            data: {},
+            data: {
+                key: key_
+            },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                var stat = response.document;
+                $("#stat_untranslated").html(stat.documents);
+                $("#stat_translated").html(stat.translated_documents);
+                $("#stat_users").html(stat.translators);
+            }
         })
-        .fail(function(jqXHR, status) {
-            $("#stat_untranslated").html(1000);
-            $("#stat_translated").html(10);
-            $("#stat_users").html(200);
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
-function load_work() {
+function load_work() { // TODO
     $.ajax({
             url: "../api/test_script.txt",
             method: "POST",
@@ -296,101 +303,150 @@ function load_work() {
 
 function load_translators() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/get_translator_stats",
             method: "POST",
-            data: {},
+            data: {
+                key: key_
+            },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            $("#translators").empty();
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                $("#translators").empty();
 
-            for (var i = 0; i < 10; ++i) {
-                var name = "Иванов Иван Иванович";
-                var paragraphs = 100;
+                var data_translator = response.document;
+                for (var i = 0; i < data_translator.length; ++i) {
+                    var name = data_translator[i].name;
+                    var paragraphs = data_translator[i].translated;
 
-                var vk = "example";
-                var fb = "";
-                var tg = "";
+                    var vk = data_translator[i].vk;
+                    var fb = data_translator[i].fb;
+                    var tg = data_translator[i].tg;
 
-                var social_markup = "";
-                if (vk != "") {
-                    social_markup += "VK: " + vk + "<br>";
+                    var social_markup = "";
+                    if (vk && vk != "") {
+                        social_markup += "VK: " + vk + "<br>";
+                    }
+                    if (fb && fb != "") {
+                        social_markup += "FB: " + fb + "<br>";
+                    }
+                    if (tg && tg != "") {
+                        social_markup += "TG: " + tg + "<br>";
+                    }
+                    social_markup = social_markup.slice(0, -4);
+
+                    $("#translators").append(`
+                            <tr>
+                                <td>` + name + `<br>` + social_markup + `</td>
+                                <td>` + paragraphs + `</td>
+                            </tr>`);
                 }
-                if (fb != "") {
-                    social_markup += "FB: " + fb + "<br>";
-                }
-                if (tg != "") {
-                    social_markup += "TG: " + tg + "<br>";
-                }
-                social_markup = social_markup.slice(0, -4);
-
-                $("#translators").append(`
-                        <tr>
-                            <td>` + name + `<br>` + social_markup + `</td>
-                            <td>` + paragraphs + `</td>
-                        </tr>`);
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
 function load_documents() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/get_file_stat",
             method: "POST",
-            data: {},
+            data: {
+                key: key_
+            },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            $("#documents").empty();
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                $("#documents").empty();
 
-            for (var i = 0; i < 10; ++i) {
-                var document = "«" + "Disinfection instructions" + "»";
-                var status = 0;
-                var paragraphs_all = 20;
-                var paragraphs_ready = 5;
-                var stars = 100;
+                var data_doc = response.document;
+                for (var i = 0; i < data_doc.length; ++i) {
+                    var document = "«" + data_doc[i].name + "»";
+                    var status = data_doc[i].status;
+                    var paragraphs_all = data_doc[i].pieces_info.all_pieces;
+                    var paragraphs_ready = data_doc[i].pieces_info.done_pieces;
+                    var stars = data_doc[i].importance;
 
-                var status_text = "";
-                switch (status) {
-                    case 2:
-                        status_text = "Переведён и проверен";
-                        break;
-                    case 1:
-                        status_text = "Переведён";
-                        break;
-                    case 0:
-                        status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
+                    var status_text = "";
+                    switch (status) {
+                        case 'TRANSLATED':
+                            status_text = "Переведён и проверен";
+                            break;
+                        case 'NEED_CHECK':
+                            status_text = "Переведён";
+                            break;
+                        case 'WAITING_FOR_TRANSLATION':
+                            status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
+                    }
+
+                    $("#documents").append(`
+                            <tr>
+                                <td>` + document + `</td>
+                                <td>` + status_text + `</td>
+                                <td>` + stars + `</td>
+                            </tr>
+                    `);
                 }
-
-                $("#documents").append(`
-                        <tr>
-                            <td>` + document + `</td>
-                            <td>` + status_text + `</td>
-                            <td>` + stars + `</td>
-                        </tr>
-                `);
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
 function save_db() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/get_translator_stats",
             method: "POST",
-            data: {},
+            data: {
+                key: key_
+            },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                var db_data = "";
+
+                var data_translator = response.document;
+                for (var i = 0; i < data_translator.length; ++i) {
+                    var name = data_translator[i].name;
+                    var email = data_translator[i].email;
+                    var status = data_translator[i].status;
+                    var langs = data_translator[i].langs;
+                    var paragraphs = data_translator[i].translated;
+
+                    var vk = data_translator[i].vk;
+                    var fb = data_translator[i].fb;
+                    var tg = data_translator[i].tg;
+
+                    var social_markup = "";
+                    if (vk && vk != "") {
+                        social_markup += "VK: " + vk + ";";
+                    }
+                    if (fb && fb != "") {
+                        social_markup += "FB: " + fb + ";";
+                    }
+                    if (tg && tg != "") {
+                        social_markup += "TG: " + tg + ";";
+                    }
+                    social_markup = social_markup.slice(0, -4);
+
+                    db_data += status + ";" + name + ";" + langs + ";" + email + ";" + social_markup + ";" + paragraphs + "\n";
+                }
+
+                download_text(db_data, "users_db.txt");
+            }
         })
-        .fail(function(jqXHR, status) {
-            download_text("Текст!", "users_db.txt");
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
