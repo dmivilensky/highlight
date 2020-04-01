@@ -103,22 +103,34 @@ function signup() {
 
     var home_page = is_editor ? "main_editor.html" : "main.html";
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/registration",
             method: "POST",
             data: {
+                name: name_val,
+                surname: "",
+                mi: "",
+                email: email_val,
+                langs: lang,
                 login: login_val,
                 password: password_val,
-                type: is_editor ? 1 : 0
+                status: is_editor ? "chief" : "translator",
+                vk: vk,
+                fb: fb,
+                tg: tg
             },
             dataType: "json"
         })
         .done(function(data) {
+            alert(data);
             /**/
         })
-        .fail(function(jqXHR, status) {
-            var id = 120;
-            $.redirectGet(home_page, {
-                user_id: id
-            });
+        .fail(function(jqXHR, status, error) {
+            console.log(jqXHR);
+            console.log(status)
+            console.log(error);
+            // var id = 120;
+            // $.redirectGet(home_page, {
+            //     user_id: id
+            // });
         });
 }
