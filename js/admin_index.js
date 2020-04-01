@@ -6,17 +6,22 @@ function signin() {
             method: "POST",
             data: {
                 login: login_val,
-                password: password_val,
+                password: password_val
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                $.redirectGet("main.html", {
+                    code: response.key,
+                    login: login_val,
+                    password: password_val
+                });
+            }
         })
-        .fail(function(jqXHR, status) {
-            var id = 120;
-            $.redirectGet("main.html", {
-                code: hashCode(login_val + password_val)
-            });
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }

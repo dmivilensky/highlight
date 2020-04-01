@@ -1,23 +1,29 @@
 function check_user(success) {
+    login_ = findGetParameter("login");
+    password_ = findGetParameter("password");
     code = findGetParameter("code");
 
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/let_my_people_pass",
             method: "POST",
             data: {
-                id: code
+                login: login_,
+                password: password_
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            if (code) {
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK" && response.key == code) {
                 success();
             } else {
                 $.redirectGet("index.html", {});
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+            $.redirectGet("index.html", {});
         });
 }
 
