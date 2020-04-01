@@ -64,7 +64,7 @@ def hashCode(s):
 
 
 def test():
-    print(hashCode("adminadmin_pass"))
+    pass
 
 
 if __name__ == "__main__":
