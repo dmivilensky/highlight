@@ -63,6 +63,10 @@ def hashCode(s):
     return h
 
 
+def get_params(request):
+    return request.POST if (request.method == "POST") else request.GET
+
+
 def test():
     pass
 
