@@ -25,7 +25,7 @@ SECRET_KEY = 'c1&9=tpe3b#p83^hf_$69yaw$)swj2d71b-%&86mv%)ctf#)23'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.highlight.spb.ru', 'highlight.spb.ru', 'localhost', '127.0.0.1']
 
 
 # Application definition
