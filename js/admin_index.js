@@ -1,9 +1,8 @@
 function signin() {
     var login_val = $("#login").val();
     var password_val = $("#password").val();
-
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/let_my_people_pass",
             method: "POST",
             data: {
                 login: login_val,

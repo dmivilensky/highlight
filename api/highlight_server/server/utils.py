@@ -49,3 +49,23 @@ def handle_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
     return path
+
+
+def hashCode(s):
+    content = "" + s
+    h = 0
+    l = len(content)
+    i = 0
+    if (l > 0):
+        while (i < l):
+            h = (h << 5) - h + ord(content[i]) | 0
+            i += 1
+    return h
+
+
+def test():
+    print(hashCode("adminadmin_pass"))
+
+
+if __name__ == "__main__":
+    test()

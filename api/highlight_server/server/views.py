@@ -12,7 +12,7 @@ if __name__ != '__main__':
     from . import get_functions as gf
     from . import find_functions as ff
     from . import main as mn
-    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file
+    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode
 
 if __name__ == '__main__':
     # import registration as rg
@@ -22,6 +22,7 @@ if __name__ == '__main__':
     from utils import doc_ids_replace, users_replace_ids
 
 ADKEY = "5e82-?XCGf3b24sxw515b61"
+ADHASH = 75953932291808146177936
 
 
 @csrf_exempt
@@ -337,6 +338,39 @@ def update_translating_pieces_cover(request):
                 result = mn.update_translating_pieces(pid, tt, ts)
             else:
                 result = {'code': "2003"}
+        except KeyError:
+            result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+def let_my_people_pass(request):
+    result = {'code': "4040"}
+    if request.method == "POST":
+        params = request.POST
+        try:
+            log = params["login"]
+            pswd = params["password"]
+            adhash = hashCode(log+pswd)
+            if adhash == ADHASH:
+                result = {'code': "OK", "key": ADKEY}
+            else:
+                result = {'code': "2004"}
+        except KeyError:
+            result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+def check_user(request):
+    result = {'code': "4040"}
+    if request.method == "POST":
+        params = request.POST
+        try:
+            uid = params["id"]
+            result = {'code': "OK", "document": mn.is_there_any_body(uid)}
         except KeyError:
             result = {'code': "5001"}
 

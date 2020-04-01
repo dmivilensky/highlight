@@ -19,5 +19,6 @@ urlpatterns = [
     path('update_importance', views.update_importance_cover, name='ui'),
     path('update_docs', views.update_docs_cover, name='ud'),
     path('update_pieces', views.update_pieces_cover, name='up'),
-    path('update_translating_pieces', views.update_translating_pieces_cover, name='utp')
+    path('update_translating_pieces', views.update_translating_pieces_cover, name='utp'),
+    path('let_my_people_pass', views.let_my_people_pass, name='lmpg')
 ]
