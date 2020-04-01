@@ -27,7 +27,7 @@ function check_user(success) {
     user_id = findGetParameter("user_id");
 
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/check_user",
             method: "POST",
             data: {
                 id: user_id
@@ -35,14 +35,17 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            if (user_id == 120) {
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK" && response.result) {
                 success();
             } else {
                 $.redirectGet("index.html", {});
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+            $.redirectGet("index.html", {});
         });
 }
 
@@ -54,55 +57,67 @@ function edit_block(id) {
 }
 
 function list_blocks() {
-    for (var i = 0; i < 5; ++i) {
-        var id = i;
-        var title = "«" + "Disinfection instructions" + "»";
-        var text = [
-            `I am a very simple card. I am good at containing small bits of information.`,
-            `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
-            `I am convenient because`
-        ];
-        var url_text = text_uri(text.join("\n\n"));
+    $.ajax({
+            url: "api/find_pieces",
+            method: "POST",
+            data: {
+                id: user_id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                var pieces = response.document;
 
-        var translate = [
-            `FFF I am a very simple card. I am good at containing small bits of information.`,
-            `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
-            `I am convenient because`
-        ];
-        var url_translate = text_uri(translate.join("\n\n"));
+                for (var i = 0; i < pieces.length; ++i) {
+                    var tags = ",".split(",");
+                    var tags_markup = "";
+                    for (var j = 0; j < tags.length; ++j) {
+                        tags_markup += `<div class="chip">` + tags[j] + `</div>`;
+                    }
 
-        var tags = ["Английский", "Дезинфекция", "Массачусетс", "Городские мероприятия"];
+                    var text = [
+                        pieces[i].txt
+                    ];
+                    var url_text = text_uri(text.join("\n\n"));
 
-        var tags_markup = "";
-        for (var j = 0; j < tags.length; ++j) {
-            tags_markup += `<div class="chip">` + tags[j] + `</div>`;
-        }
+                    var translate = [
+                        pieces[i].translated_txt
+                    ];
+                    var url_translate = text_uri(translate.join("\n\n"));
 
-        $("#blocks").append(`
-                <div class="col s12 m4 l4">
-                    <div class="card">
+                    $("#blocks").append(`
+                        <div class="col s12 m4 l4">
+                            <div class="card">
 
-                        <div class="card-content">
-                        <span class="card-title">` + title + `</span>
-                        
-                        <div class="tags-markup">
-                        ` + tags_markup + `
+                                <div class="card-content">
+                                <span class="card-title">` + pieces[i].name + `</span>
+                                
+                                <div class="tags-markup">
+                                ` + tags_markup + `
+                                </div>
+                                <div class="download-url-or">
+                                <a href="` + url_text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
+                                </div>
+                                <div class="download-url-or">
+                                <a href="` + url_translate + `" download="translate.txt" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
+                                </div>
+                                <p class="preview">` + text[0].slice(0, 150) + `</p>
+                                </div>
+                                <div class="card-action edit-btn">
+                                <a onclick="edit_block('` + pieces[i]._id + `');" class="continue-tr">Продолжить перевод</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="download-url-or">
-                        <a href="` + url_text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
-                        </div>
-                        <div class="download-url-or">
-                        <a href="` + url_translate + `" download="translate.txt" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
-                        </div>
-                        <p class="preview">` + text[0].slice(0, 150) + `</p>
-                        </div>
-                        <div class="card-action edit-btn">
-                        <a onclick="edit_block(` + id + `);" class="continue-tr">Продолжить перевод</a>
-                        </div>
-                    </div>
-                </div>
-        `);
-    }
+                    `);
+                }
+            }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+        });
 }
 
 function close_modal() {
@@ -113,14 +128,18 @@ function close_modal() {
 }
 
 var selected_paragraphs = new Set();
+var selected_paragraphs_ids = [];
 var selected_document = "";
 
-function select_paragraph(id) {
+var pieces_dict;
+
+function select_paragraph(i, id) {
     if ($("#bar" + id).css("background-color") == "rgb(76, 175, 80)") {
-        selected_paragraphs.delete(id);
+        selected_paragraphs.delete(i);
         $("#bar" + id).css("background-color", "#aaaaaa");
     } else {
-        selected_paragraphs.add(id);
+        selected_paragraphs.add(i);
+        selected_paragraphs_ids[i] = id;
         $("#bar" + id).css("background-color", "#4caf50");
     }
 }
@@ -135,129 +154,114 @@ function create_block() {
         }
     }
 
+    var pids = [];
+    for (var i = 1; i < p.length; ++i) {
+        pids.push(selected_paragraphs_ids[i]);
+    }
+
     if (!all_correct) {
         alert("Выбирать можно только последовательно идущие абзацы!");
     } else {
         $.ajax({
-                url: "../api/test_script.txt",
+                url: "api/update_pieces",
                 method: "POST",
                 data: {
-                    id: user_id
+                    id: user_id,
+                    document_id: selected_document,
+                    pieces_id: pids
                 },
                 dataType: "json"
             })
             .done(function(data) {
-                /**/
+                console.log(data);
+                response = JSON.parse(data);
+                if (response.code == "OK") {
+                    close_modal();
+                    edit_block(response.id);
+                }
             })
-            .fail(function(jqXHR, status) {
-                close_modal();
-                var id = 12;
-                edit_block(id);
+            .fail(function(jqXHR, status, error) {
+                console.log(error);
             });
     }
 }
 
 function select_document(id) {
-    $.ajax({
-            url: "../api/test_script.txt",
-            method: "POST",
-            data: {
-                id: user_id
-            },
-            dataType: "json"
-        })
-        .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            $("#hint").show();
-            $("#get").show();
-            $("#paragraphs").empty();
-            selected_paragraphs.clear();
+    $("#hint").show();
+    $("#get").show();
+    $("#paragraphs").empty();
+    selected_paragraphs.clear();
 
-            selected_document = id;
-            $("#get").click(create_block);
+    selected_document = id;
+    $("#get").click(create_block);
 
-            var text = [{
-                text: `I am a very simple card. I am good at containing small bits of information.`,
-                status: 0
-            }, {
-                text: `I am a very simple card. I am good at containing small bits of information.`,
-                status: 0
-            }, {
-                text: `I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.`,
-                status: 1
-            }, {
-                text: `I am convenient because`,
-                status: 0
-            }, {
-                text: `I am convenient because`,
-                status: 0
-            }];
-
-            for (var i = 0; i < text.length; ++i) {
-                var id = i;
-
-                $("#paragraphs").append(`
-                <div class="row paragraphs-flex" id="p` + id + `" ` + (text[i].status == 0 ? `onclick="select_paragraph(` + id + `);"` : ``) + `>
-                    <div class="col s1">
-                        <div style="background: ` + (text[i].status == 0 ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + id + `"></div>
-                    </div>
-                    <div class="col s11">
-                        <p class="slim">
-                        &nbsp;&nbsp;&nbsp;&nbsp;` + text[i].text + `
-                        </p>
-                    </div>
-                </div>
-                `);
-            }
-        });
+    for (var i = 0; i < pieces_dict[selected_document].length; ++i) {
+        $("#paragraphs").append(`
+        <div class="row paragraphs-flex" id="p` + pieces_dict[selected_document][i].number + `" ` + (pieces_dict[selected_document][i].freedom ? `onclick="select_paragraph(` + i + `, '` + pieces_dict[selected_document][i]._id + `');"` : ``) + `>
+            <div class="col s1">
+                <div style="background: ` + (pieces_dict[selected_document][i].freedom ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + pieces_dict[selected_document][i].number + `"></div>
+            </div>
+            <div class="col s11">
+                <p class="slim">
+                &nbsp;&nbsp;&nbsp;&nbsp;` + pieces_dict[selected_document][i].txt + `
+                </p>
+            </div>
+        </div>
+        `);
+    }
 }
 
 function list_documents(lang) {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/find_doc_by_lang",
             method: "POST",
             data: {
-                id: user_id
+                language: lang
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            $("#hint").hide();
-            $("#get").hide();
-            $("#paragraphs").empty();
-            $("#docs").empty();
-            for (var i = 0; i < 7; ++i) {
-                var id = i;
-                var tags = ["Английский", "Дезинфекция", "Массачусетс", "Городские мероприятия"];
-                var title = "«" + "Disinfection instructions" + "»";
-                var ready = 20;
-                var total = 55;
-                var progress = ((ready / total) * 100).toFixed(1) + "%";
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                $("#hint").hide();
+                $("#get").hide();
+                $("#paragraphs").empty();
+                $("#docs").empty();
 
-                var tags_markup = "";
-                for (var j = 0; j < tags.length; ++j) {
-                    tags_markup += `<div class="chip">` + tags[j] + `</div>`;
+                var list = response.document;
+                for (var i = 0; i < list.length; ++i) {
+                    var tags = list[i].doc.tags.split(",");
+                    var tags_markup = "";
+
+                    pieces_dict[list[i].doc._id] = list[i].pieces;
+
+                    for (var j = 0; j < tags.length; ++j) {
+                        tags_markup += `<div class="chip">` + tags[j] + `</div>`;
+                    }
+
+                    var ready = list[i].pieces;
+                    var total = list[i].doc.piece_number; // TODO
+                    var progress = ((ready / total) * 100).toFixed(1) + "%";
+
+                    $("#docs").append(`
+                        <li class="collection-item avatar" onclick="select_document('` + list[i].doc._id + `');">
+                        <i class="material-icons circle">schedule</i>
+                        <p>
+                        ` + list[i].name + `
+                        </p>
+                        <div class="progress-bg"></div>
+                        <div class="progress-ind" style="width: ` + progress + `;"></div>
+                        <div class="tags-par">
+                        ` + tags_markup + `
+                        </div>
+                        </li>
+                    `);
                 }
-
-                $("#docs").append(`
-                    <li class="collection-item avatar" onclick="select_document(` + id + `);">
-                    <i class="material-icons circle">schedule</i>
-                    <p>
-                    ` + title + `
-                    </p>
-                    <div class="progress-bg"></div>
-                    <div class="progress-ind" style="width: ` + progress + `;"></div>
-                    <div class="tags-par">
-                    ` + tags_markup + `
-                    </div>
-                    </li>
-                `);
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
@@ -281,20 +285,7 @@ function init() {
     list_languages();
     $('select').formSelect();
 
-    $.ajax({
-            url: "../api/test_script.txt",
-            method: "POST",
-            data: {
-                id: user_id
-            },
-            dataType: "json"
-        })
-        .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            list_blocks();
-        });
+    list_blocks();
 }
 
 $(document).ready(function() {

@@ -6,22 +6,28 @@ function signin() {
     var home_page = is_editor ? "main_editor.html" : "main.html";
 
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "api/login",
             method: "POST",
             data: {
                 login: login_val,
-                password: password_val,
-                type: is_editor ? 1 : 0
+                password: password_val
             },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                var id = response.id;
+                $.redirectGet(home_page, {
+                    user_id: id
+                });
+            }
         })
-        .fail(function(jqXHR, status) {
-            var id = 120;
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
             $.redirectGet(home_page, {
-                user_id: id
+                user_id: 120
             });
         });
 }
