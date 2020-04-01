@@ -2,6 +2,8 @@ import json
 # Create your views here.
 
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
 from .forms import UploadFileForm
 from docx import Document
 
@@ -22,10 +24,12 @@ if __name__ == '__main__':
 ADKEY = "5e82-?XCGf3b24sxw515b61"
 
 
+@csrf_exempt
 def index(request):
     return HttpResponse("HELLO, USER")
 
 
+@csrf_exempt
 def registration_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -47,6 +51,7 @@ def registration_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def login_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -60,6 +65,7 @@ def login_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def verify_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -76,6 +82,7 @@ def verify_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def find_pieces_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -92,6 +99,7 @@ def find_pieces_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def find_doc_by_lang_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -107,6 +115,7 @@ def find_doc_by_lang_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def get_from_db_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -120,6 +129,7 @@ def get_from_db_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def get_from_db_for_chief_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -133,6 +143,7 @@ def get_from_db_for_chief_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def get_users_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -148,6 +159,7 @@ def get_users_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def get_trans_and_docs_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -162,6 +174,7 @@ def get_trans_and_docs_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def get_translator_stats_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -177,6 +190,7 @@ def get_translator_stats_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def get_file_stat_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -191,6 +205,7 @@ def get_file_stat_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def verify_file_cover(request):
     result = {'code': "4040"}
     path = None
@@ -213,6 +228,7 @@ def verify_file_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def update_importance_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -224,6 +240,7 @@ def update_importance_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def update_docs_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -244,6 +261,7 @@ def update_docs_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def update_pieces_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -261,6 +279,7 @@ def update_pieces_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def update_translating_pieces_cover(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -278,6 +297,7 @@ def update_translating_pieces_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def test():
     print(ADKEY)
 
