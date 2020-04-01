@@ -37,7 +37,7 @@ function check_user(success) {
         .done(function(data) {
             console.log(data);
             response = JSON.parse(data);
-            if (response.code == "OK" && response.result) {
+            if (response.code == "OK" && response.document) {
                 success();
             } else {
                 $.redirectGet("index.html", {});
