@@ -63,7 +63,11 @@ def login_cover(request):
         try:
             login1 = params["login"]
             pwd = params["password"]
-            result = rg.log_in(login1, pwd)
+            if "type" in params.keys():
+                type = params["type"]
+            else:
+                type = None
+            result = rg.log_in(login1, pwd, type=type)
         except KeyError:
             result = {'code': "5001"}
 
@@ -102,6 +106,26 @@ def find_pieces_cover(request):
                 result = ff.find_pieces(uid)
                 for p in result["document"]:
                     p["_id"] = str(p["_id"])
+            else:
+                result = {'code': "2003"}
+        except KeyError:
+            result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+@csrf_exempt
+def find_piece(request):
+    result = {'code': "4040"}
+    if request.method == "POST":
+        params = request.POST
+        try:
+            uid = params["id"]
+            pid = params["piece_id"]
+            if mn.is_there_any_body(uid):
+                result = ff.find_piece(pid)
+                result["document"]["_id"] = str(result["document"]["_id"])
             else:
                 result = {'code': "2003"}
         except KeyError:
@@ -344,6 +368,7 @@ def update_translating_pieces_cover(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def let_my_people_pass(request):
     result = {'code': "4040"}
     if request.method == "POST":
@@ -363,6 +388,7 @@ def let_my_people_pass(request):
     return HttpResponse(text)
 
 
+@csrf_exempt
 def check_user(request):
     result = {'code': "4040"}
     if request.method == "POST":

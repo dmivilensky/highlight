@@ -1,4 +1,6 @@
-:param number: id number of document
+Params:
+
+    :param number: id number of document
     :param name: file name
     :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION
     :param lang: language one of ENG, RUS, ESP, JAP, etc.
@@ -20,6 +22,7 @@
     :param chief: translates verifier
 
 Types:
+    
     User:
         {"name": name,
          "surname": surname,

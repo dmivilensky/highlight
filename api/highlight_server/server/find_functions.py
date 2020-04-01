@@ -17,6 +17,19 @@ def find_pieces(user_id):
     return {"code": "OK", "document": list(pieces)}
 
 
+def find_piece(piece_id):
+    """
+    :param piece_id: mongo id of piece
+    :return: piece taken by user
+    :structure: dict('code': string, 'document': type=Piece)
+    """
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    piece = lang_storage.find_one({"_id": ObjectId(piece_id)})
+    return {"code": "OK", "document": piece}
+
+
 def find_doc_by_lang(lang):
     """
     :param lang: language
