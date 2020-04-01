@@ -1,6 +1,6 @@
 function inc_importance(id_) {
     $.ajax({
-            url: "../api/update_importance",
+            url: "api/update_importance",
             method: "POST",
             data: {
                 id: id_
@@ -122,7 +122,7 @@ function update_search() {
     tags_list = tags_list.slice(0, -1);
 
     $.ajax({
-            url: "../api/get_from_db",
+            url: "api/get_from_db",
             method: "POST",
             data: {
                 search: $('#search').val(),
