@@ -16,7 +16,7 @@ function signin() {
         .fail(function(jqXHR, status) {
             var id = 120;
             $.redirectGet("main.html", {
-                code: hashCode(login_val + "/code/" + password_val)
+                code: hashCode(login_val + password_val)
             });
         });
 }
