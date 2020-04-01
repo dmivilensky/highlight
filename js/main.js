@@ -78,14 +78,10 @@ function list_blocks() {
                         tags_markup += `<div class="chip">` + tags[j] + `</div>`;
                     }
 
-                    var text = [
-                        pieces[i].txt
-                    ];
+                    var text = pieces[i].txt;
                     var url_text = text_uri(text.join("\n\n"));
 
-                    var translate = [
-                        pieces[i].translated_txt
-                    ];
+                    var translate = pieces[i].translated_txt;
                     var url_translate = text_uri(translate.join("\n\n"));
 
                     $("#blocks").append(`

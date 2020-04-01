@@ -7,6 +7,14 @@
     margin: 0 !important;
 }
 
+.wide {
+    width: 100% !important;
+}
+
+.right {
+    text-align: right;
+}
+
 .translation-block {
     background: #eee !important;
     border-radius: 5px !important;
