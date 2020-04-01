@@ -9,6 +9,7 @@ def get_from_db(search, tags, status=None):
     :param tags: tags
     :param status: list of statuses
     :return: matching docs of id, name, tags, status, path, etc.
+    :structure: dict('code': string, 'document': list(type=WaitingForTranslation or type=NeedCheck or type=Translated)
     """
     if status is None:
         status = {"TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"}
@@ -58,10 +59,19 @@ def get_from_db(search, tags, status=None):
 
 
 def get_for_chief_from_db(search, tags):
+    """
+    :param search: same as get_from_db
+    :param tags: same ag get_from_db
+    :return: same as get_from_db
+    """
     return get_from_db(search, tags, status={"NEED_CHECK"})
 
 
 def get_users():
+    """
+    :return: all unverified users
+    :structure: dict('code': string, 'document': list(type=User)
+    """
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
@@ -69,14 +79,22 @@ def get_users():
 
 
 def get_docs_and_trans():
+    """
+    :return: docs (translated and not) and translator count
+    :structure: dict('code': string, 'document': dict('documents': int, 'translators': int, 'translated_documents': int)
+    """
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
     l_s = db.files_info
-    return {"code": "OK", "document": {"documents": l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), "translators": acc.count_documents({"status": {"$in": ["translator", "both"]}, "verified": True}), "translated documents": l_s.count_documents({"status": "TRANSLATED"})}}
+    return {"code": "OK", "document": {"documents": l_s.count_documents({"status": "WAITING_FOR_TRANSLATION"}), "translators": acc.count_documents({"status": {"$in": ["translator", "both"]}, "verified": True}), "translated_documents": l_s.count_documents({"status": "TRANSLATED"})}}
 
 
 def get_translators_stat():
+    """
+    :return: all verified users
+    :structure: dict('code': string, 'document': list(type=User)
+    """
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
@@ -84,15 +102,19 @@ def get_translators_stat():
 
 
 def get_file_stat():
+    """
+    :return: file name, file pieces number (done and undone), importance
+    :structure: dict('code': string, 'document': list(dict('name': string, 'status': string, 'importance': int, 'pieces_info': dict('done_pieces': int, 'all_pieces': int) (or dict() if file is translated))))
+    """
     client = MongoClient()
     db = client.highlight
     l_s = db.files_info
     docs = []
     for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
         if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
-            docs.append({"name": ["name"], "pieces info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
+            docs.append({"name": ["name"], "pieces_info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
         else:
-            docs.append({"name": t["name"], "pieces info": {"done pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation status": "DONE"}), "all pieces": t["piece number"]}, "status": t["status"], "importance": t["importance"]})
+            docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
     return {"code": "OK", "document": docs}
 
 

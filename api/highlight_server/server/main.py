@@ -58,7 +58,7 @@ def split_to_pieces(number, name, lang, doc):
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
-                            {"$set": {"piece number": len(doc.paragraphs)}})
+                            {"$set": {"piece_number": len(doc.paragraphs)}})
     return ids
 
 
@@ -107,8 +107,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
         file = {"number": number,
                 "name": name,
                 "lang": lang,
-                "orig path": orig_path,
-                "piece number": pieces_count,
+                "orig_path": orig_path,
+                "piece_number": pieces_count,
                 "tags": tags,
                 "importance": importance,
                 "status": status,
@@ -130,13 +130,13 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
         file = {"number": number,
                 "name": name,
                 "lang": lang,
-                "piece begin": piece_begin,
-                "piece end": piece_end,
+                "piece_begin": piece_begin,
+                "piece_end": piece_end,
                 "txt": txt,
-                "translated txt": translated_txt,
+                "translated_txt": translated_txt,
                 "translator": translator,
-                "to lang": to_lang,
-                "translation status": translation_status,
+                "to_lang": to_lang,
+                "translation_status": translation_status,
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
 
@@ -145,8 +145,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "name": name,
                 "lang": lang,
                 "path": path,
-                "orig path": orig_path,
-                "to lang": to_lang,
+                "orig_path": orig_path,
+                "to_lang": to_lang,
                 "tags": tags,
                 "translator": translator,
                 "chief": chief,
@@ -203,7 +203,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         new_piece = {
             "name": document["name"],
             "indexes": [range(begin_index, end_index+1)],
-            "reservation date": datetime.datetime.utcnow()
+            "reservation_date": datetime.datetime.utcnow()
         }
         acc.update_one({"_id": ObjectId(user_id)}, {"$push": {"pieces": new_piece}})
         did1 = push_to_db(number=document["number"],
@@ -252,20 +252,20 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"_id": ObjectId(piece_id)}, {
-        "$set": {"translated txt": tr_txt, "translation status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
+        "$set": {"translated_txt": tr_txt, "translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
     if tr_stat == "DONE":
         ps = lang_storage.find_one({"_id": ObjectId(piece_id)})
         acc = db.accounts
         acc.update_one({"_id": ObjectId(ps["translator"])}, {"$inc": {"translated": 1}})
         doc = lang_storage.find_one(
             {"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "WAITING_FOR_TRANSLATION"})
-        pieces_count = doc["piece number"]
+        pieces_count = doc["piece_number"]
         taken_pieces_indexes = []
         pss = lang_storage.find({"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "PIECE",
-                                 "translation status": "DONE"})
-        pss = sorted(pss, key=lambda a: a["piece begin"])
+                                 "translation_status": "DONE"})
+        pss = sorted(pss, key=lambda a: a["piece_begin"])
         for p in pss:
-            taken_pieces_indexes.extend(range(p["piece begin"], p["piece end"] + 1))
+            taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
         if pieces_count <= len(taken_pieces_indexes):
             return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc)), "code": "OK"}
         else:
@@ -280,10 +280,10 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
     :param acc: accounts db
     :return: mongo id of created element
     """
-    file_data = find_file_by_path(doc["orig path"])
+    file_data = find_file_by_path(doc["orig_path"])
     for p in pieces:
-        txts = p["translated txt"]
-        for i in range(p["piece begin"], p["piece end"] + 1):
+        txts = p["translated_txt"]
+        for i in range(p["piece_begin"], p["piece_end"] + 1):
             file_data.paragraphs[i].text = txts[i]
 
     the_stat = "TRANSLATED"
@@ -292,9 +292,9 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
         if acc.find_one({"_id": tr_id})["status"] == "translator":
             the_stat = "NEED_CHECK"
 
-    did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig path"],
+    did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
                      path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'translated' + os.path.sep + doc[
-                         "name"], to_lang=ps["to lang"], tags=doc["tags"], translator=list({p["translator"] for p in pieces}),
+                         "name"], to_lang=ps["to_lang"], tags=doc["tags"], translator=list({p["translator"] for p in pieces}),
                      file_data=file_data)
     for p in pieces:
         delete_from_db(p["_id"])
