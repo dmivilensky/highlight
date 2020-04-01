@@ -1,7 +1,9 @@
+var key_;
+
 function check_user(success) {
     login_ = findGetParameter("login");
     password_ = findGetParameter("password");
-    code = findGetParameter("code");
+    key = findGetParameter("code");
 
     $.ajax({
             url: "/api/let_my_people_pass",
@@ -15,7 +17,7 @@ function check_user(success) {
         .done(function(data) {
             console.log(data);
             response = JSON.parse(data);
-            if (response.code == "OK" && response.key == code) {
+            if (response.code == "OK" && response.key == key_) {
                 success();
             } else {
                 $.redirectGet("index.html", {});
@@ -27,117 +29,113 @@ function check_user(success) {
         });
 }
 
-function approve_user(id) {
+function approve_user(id_) {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/verify",
             method: "POST",
-            data: {},
+            data: {
+                key: key_,
+                decision: 1,
+                id: id_
+            },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                load_users();
+            }
         })
-        .fail(function(jqXHR, status) {
-            load_users();
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
 function delete_user(id) {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/verify",
             method: "POST",
-            data: {},
+            data: {
+                key: key_,
+                decision: 0,
+                id: id_
+            },
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                load_users();
+            }
         })
-        .fail(function(jqXHR, status) {
-            load_users();
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
 function load_users() {
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "/api/get_users",
             method: "POST",
             data: {},
             dataType: "json"
         })
         .done(function(data) {
-            /**/
-        })
-        .fail(function(jqXHR, status) {
-            $("#users").empty();
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                $("#users").empty();
+                var users = response.document;
 
-            var users = [{
-                    id: 0,
-                    type: 1,
-                    name: "Иванов Иван Иванович",
-                    vk: "id25314918",
-                    fb: "",
-                    tg: ""
-                },
-                {
-                    id: 1,
-                    type: 0,
-                    name: "Цезарь Гай Юлий" + getRandomInt(5),
-                    vk: "id25314918",
-                    fb: "100004811492599",
-                    tg: ""
-                },
-                {
-                    id: 2,
-                    type: 0,
-                    name: "Марк Антоний",
-                    vk: "id25314918",
-                    fb: "",
-                    tg: ""
-                },
-                {
-                    id: 3,
-                    type: 1,
-                    name: "Марк Брут",
-                    vk: "id25314918",
-                    fb: "",
-                    tg: ""
+                for (var i = 0; i < users.length; ++i) {
+                    var social = "";
+                    if (users[i].vk != "")
+                        social += `
+                        <p>
+                        VK: <a href="https://vk.com/` + users[i].vk + `">` + users[i].vk + `</a>
+                        </p>
+                        `;
+                    if (users[i].fb != "")
+                        social += `
+                        <p>
+                        FB: <a href="https://www.facebook.com/profile.php?id=` + users[i].fb + `">` + users[i].fb + `</a>
+                        </p>
+                        `;
+                    if (users[i].tg != "")
+                        social += `
+                        <p>
+                        TG: <a>` + users[i].tg + `</a>
+                        </p>
+                        `;
+
+                    var status_string = "";
+                    if (users[i].status == "translator") {
+                        status_string = "Переводчик";
+                    } else if (users[i].status == "chief") {
+                        status_string = "Редактор";
+                    } else {
+                        status_string = "Переводчик, Редактор";
+                    }
+
+                    $("#users").append(`
+                        <li class="collection-item avatar user-card">
+                        <p class="user-status">` + status_string + `</p>
+                        <span class="title">` + users[i].name + `</span>
+                        ` + social + `
+                        <div class="secondary-content">
+                        <a onclick="approve_user('` + users[i]._id + `');" class="approve-btn"><i class="material-icons green-text">done</i></a>
+                        <a onclick="delete_user('` + users[i]._id + `');"><i class="material-icons red-text">clear</i></a>
+                        </div>
+                        
+                        </li>
+                    `);
                 }
-            ]
-
-            for (var i = 0; i < users.length; ++i) {
-                var social = "";
-                if (users[i].vk != "")
-                    social += `
-                    <p>
-                    VK: <a href="https://vk.com/` + users[i].vk + `">` + users[i].vk + `</a>
-                    </p>
-                    `;
-                if (users[i].fb != "")
-                    social += `
-                    <p>
-                    FB: <a href="https://www.facebook.com/profile.php?id=` + users[i].fb + `">` + users[i].fb + `</a>
-                    </p>
-                    `;
-                if (users[i].tg != "")
-                    social += `
-                    <p>
-                    TG: <a>` + users[i].tg + `</a>
-                    </p>
-                    `;
-
-                $("#users").append(`
-                    <li class="collection-item avatar user-card">
-                    <p class="user-status">` + (users[i].type == 0 ? 'Переводчик' : 'Редактор') + `</p>
-                    <span class="title">` + users[i].name + `</span>
-                    ` + social + `
-                    <div class="secondary-content">
-                    <a onclick="approve_user(` + users[i].id + `);" class="approve-btn"><i class="material-icons green-text">done</i></a>
-                    <a onclick="delete_user(` + users[i].id + `);"><i class="material-icons red-text">clear</i></a>
-                    </div>
-                    
-                    </li>
-                `);
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
