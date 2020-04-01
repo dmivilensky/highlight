@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import UploadFileForm
 from docx import Document
 
-HTTPMETHOD: str = "GET"
+HTTPMETHOD: str = "POST"
 
 if __name__ != '__main__':
     from . import registration as rg
