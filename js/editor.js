@@ -34,13 +34,18 @@ function back() {
     });
 }
 
-function ready(id) {
+var piece;
+
+function ready(i) {
+    piece[i].txt[i] = $("#textarea" + i).val();
+
     $.ajax({
-            url: "api/test_script.txt",
+            url: "api/update_translating_pieces",
             method: "POST",
             data: {
                 id: user_id,
-                piece_id: block_id
+                piece_id: block_id,
+                txt: piece[i].txt
             },
             dataType: "json"
         })
@@ -58,11 +63,12 @@ function ready(id) {
 
 function save() {
     $.ajax({
-            url: "api/test_script.txt",
+            url: "api/update_translating_pieces",
             method: "POST",
             data: {
                 id: user_id,
-                piece_id: block_id
+                piece_id: block_id,
+                status: "DONE"
             },
             dataType: "json"
         })
@@ -70,15 +76,15 @@ function save() {
             console.log(data);
             response = JSON.parse(data);
             if (response.code == "OK") {
-                location.reload(true);
+                $.redirectGet("main.index", {
+                    user_id: id
+                });
             }
         })
         .fail(function(jqXHR, status, error) {
             console.log(error);
         });
 }
-
-var piece;
 
 function init() {
     $.ajax({
