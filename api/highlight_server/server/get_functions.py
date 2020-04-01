@@ -33,7 +33,7 @@ def get_from_db(search, tags, status=None):
         elif doc_stat == "WAITING_FOR_TRANSLATION":
             relev += 0
         doc_name_set = set(doc["name"])
-        doc_tags_set = set(doc["tags"])
+        doc_tags_set = set(doc["tags"].split(","))
         doc_id = doc["number"]
         tag_inrsc = search_tags.intersection(doc_tags_set)
         name_inrsc = search_set.intersection(doc_name_set)
