@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import UploadFileForm
 from docx import Document
 
+HTTPMETHOD: str = "GET"
+
 if __name__ != '__main__':
     from . import registration as rg
     from . import get_functions as gf
@@ -30,11 +32,14 @@ def index(request):
     return HttpResponse("HELLO, USER")
 
 
+def get_params(request):
+    return request.POST if (HTTPMETHOD == "POST") else request.GET
+
 @csrf_exempt
 def registration_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)  
         try:
             name = params["name"]
             surn = params["surname"]
@@ -58,8 +63,8 @@ def registration_cover(request):
 @csrf_exempt
 def login_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             login1 = params["login"]
             pwd = params["password"]
@@ -78,8 +83,8 @@ def login_cover(request):
 @csrf_exempt
 def verify_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             key = params["key"]
             decision = params["decision"]
@@ -98,8 +103,8 @@ def verify_cover(request):
 @csrf_exempt
 def find_pieces_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             uid = params["id"]
             if mn.is_there_any_body(uid):
@@ -118,8 +123,8 @@ def find_pieces_cover(request):
 @csrf_exempt
 def find_piece(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             uid = params["id"]
             pid = params["piece_id"]
@@ -138,8 +143,8 @@ def find_piece(request):
 @csrf_exempt
 def find_doc_by_lang_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             lang = params["language"]
             result = ff.find_doc_by_lang(lang)
@@ -157,8 +162,8 @@ def find_doc_by_lang_cover(request):
 @csrf_exempt
 def get_from_db_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             sch = params["search"]
             tg = params["tags"]
@@ -174,8 +179,8 @@ def get_from_db_cover(request):
 @csrf_exempt
 def get_from_db_for_chief_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             sch = params["search"]
             tg = params["tags"]
@@ -191,8 +196,8 @@ def get_from_db_for_chief_cover(request):
 @csrf_exempt
 def get_users_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             key = params["key"]
             if key == ADKEY:
@@ -210,8 +215,8 @@ def get_users_cover(request):
 @csrf_exempt
 def get_trans_and_docs_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             key = params["key"]
             if key == ADKEY:
@@ -228,8 +233,8 @@ def get_trans_and_docs_cover(request):
 @csrf_exempt
 def get_translator_stats_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             key = params["key"]
             if key == ADKEY:
@@ -247,8 +252,8 @@ def get_translator_stats_cover(request):
 @csrf_exempt
 def get_file_stat_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             key = params["key"]
             if key == ADKEY:
@@ -266,13 +271,13 @@ def get_file_stat_cover(request):
 def verify_file_cover(request):
     result = {'code': "4040"}
     path = None
-    if request.method == "POST":
-        # form = UploadFileForm(request.POST, request.FILES)
+    if request.method == HTTPMETHOD:
+        # form = UploadFileForm(get_params(request), request.FILES)
         # if form.is_valid():
         #     path = handle_uploaded_file(request.FILES['file'])
         # else:
         #     path = None
-        params = request.POST
+        params = get_params(request)
         try:
             # file_data = mn.find_file_by_path(path) if not(path is None) else None
             did = params["decision"]
@@ -290,8 +295,8 @@ def verify_file_cover(request):
 @csrf_exempt
 def update_importance_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             did = params["id"]
             result = mn.update_importance(did)
@@ -305,13 +310,13 @@ def update_importance_cover(request):
 @csrf_exempt
 def update_docs_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        # form = UploadFileForm(request.POST, request.FILES)
+    if request.method == HTTPMETHOD:
+        # form = UploadFileForm(get_params(request), request.FILES)
         # if form.is_valid():
         #     path = handle_uploaded_file(request.FILES['file'])
         # else:
         #     path = None
-        params = request.POST
+        params = get_params(request)
         try:
             name = params["name"]
             lang = params["language"]
@@ -329,8 +334,8 @@ def update_docs_cover(request):
 @csrf_exempt
 def update_pieces_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             uid = params["id"]
             did = params["document_id"]
@@ -350,8 +355,8 @@ def update_pieces_cover(request):
 @csrf_exempt
 def update_translating_pieces_cover(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             uid = params["id"]
             pid = params["piece_id"]
@@ -371,8 +376,8 @@ def update_translating_pieces_cover(request):
 @csrf_exempt
 def let_my_people_pass(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             log = params["login"]
             pswd = params["password"]
@@ -391,8 +396,8 @@ def let_my_people_pass(request):
 @csrf_exempt
 def check_user(request):
     result = {'code': "4040"}
-    if request.method == "POST":
-        params = request.POST
+    if request.method == HTTPMETHOD:
+        params = get_params(request)
         try:
             uid = params["id"]
             result = {'code': "OK", "result": mn.is_there_any_body(uid)}
