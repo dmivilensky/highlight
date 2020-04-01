@@ -73,23 +73,33 @@ function signup() {
     var login_val = $("#login").val();
     var password_val = $("#password").val();
     var is_editor = $('#editor').is(':checked');
+    var is_translator = $('#translator').is(':checked');
 
-    var vk = "";
-    var fb = "";
-    var tg = "";
+    var status_ = "";
+    if (is_editor && is_translator) {
+        status_ = "both";
+    } else if (is_editor) {
+        status_ = "chief";
+    } else {
+        status_ = "translator";
+    }
+
+    var vk_ = "";
+    var fb_ = "";
+    var tg_ = "";
 
     for (var i = 0; i < social_idx; ++i) {
         if ($("#soc_value" + i).val() == "1") {
-            if (vk == "")
-                vk = $("#soc" + i).val();
+            if (vk_ == "")
+                vk_ = $("#soc" + i).val();
         }
         if ($("#soc_value" + i).val() == "2") {
-            if (fb == "")
-                fb = $("#soc" + i).val();
+            if (fb_ == "")
+                fb_ = $("#soc" + i).val();
         }
         if ($("#soc_value" + i).val() == "3") {
-            if (tg == "")
-                tg = $("#soc" + i).val();
+            if (tg_ == "")
+                tg_ = $("#soc" + i).val();
         }
     }
 
@@ -110,27 +120,27 @@ function signup() {
                 surname: "",
                 mi: "",
                 email: email_val,
-                langs: lang,
+                languages: lang,
                 login: login_val,
                 password: password_val,
-                status: is_editor ? "chief" : "translator",
-                vk: vk,
-                fb: fb,
-                tg: tg
+                status: status_,
+                vk: vk_,
+                fb: fb_,
+                tg: tg_
             },
             dataType: "json"
         })
         .done(function(data) {
-            alert(data);
-            /**/
+            console.log(data);
+            response = JSON.parse(data);
+            if (response.code == "OK") {
+                var id = response.id;
+                $.redirectGet(home_page, {
+                    user_id: id
+                });
+            }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(jqXHR);
-            console.log(status)
             console.log(error);
-            // var id = 120;
-            // $.redirectGet(home_page, {
-            //     user_id: id
-            // });
         });
 }
