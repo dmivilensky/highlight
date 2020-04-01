@@ -192,30 +192,40 @@ function add_document() {
     }
 
     var chips = M.Chips.getInstance($('#tags')).chipsData;;
-    var tags = "";
+    var tags_ = "";
     for (var i = 0; i < chips.length; ++i) {
-        tags += chips[i].tag + ",";
+        tags_ += chips[i].tag + ",";
     }
-    tags = tags.slice(0, -1);
+    tags_ = tags_.slice(0, -1);
 
     var extention = $("#corrections_path").val().slice(-4, -1) + $("#corrections_path").val().slice(-1);
     if (extention != "docx") {
         alert("Необходимо загрузить .docx файл!");
     } else {
-        $("#filename").val('new_file' + getRandomInt(10000) + '.docx');
+        var fname = 'new_file' + getRandomInt(10000) + '.docx';
+        $("#filename").val(fname);
         $("#file").submit();
 
         $.ajax({
-                url: "../api/test_script.txt",
+                url: "/api/update_docs",
                 method: "POST",
-                data: {},
+                data: {
+                    name: "",
+                    language: lang,
+                    tags: tags_.join(","),
+                    path: fname
+                },
                 dataType: "json"
             })
             .done(function(data) {
-                /**/
+                console.log(data);
+                response = JSON.parse(data);
+                if (response.code == "OK") {
+                    alert('Файл загружен!');
+                }
             })
-            .fail(function(jqXHR, status) {
-                /**/
+            .fail(function(jqXHR, status, error) {
+                console.log(error);
             });
     }
 }
