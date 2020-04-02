@@ -74,7 +74,7 @@ def split_to_pieces(number, name, lang, doc):
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
-                            {"$set": {"piece_number": max(counter, len(ids))}})
+                            {"$set": {"piece_number": counter}})
     return ids
 
 
@@ -131,7 +131,6 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
         # push_to_file_storage(orig_path, file_data)
-        split_to_pieces(number, name, lang, file_data)
 
     elif status == "WAITING_PIECE":
         file = {"number": number,
@@ -173,6 +172,9 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
 
     lang_storage = db.files_info
     file_id = lang_storage.insert_one(file).inserted_id
+
+    if status == "WAITING_FOR_TRANSLATION":
+        split_to_pieces(number, name, lang, file_data)
 
     return file_id
 
