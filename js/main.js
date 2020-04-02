@@ -208,6 +208,7 @@ function select_document(id) {
 }
 
 function list_documents(lang) {
+    console.log(lang);
     $.ajax({
             url: "api/find_doc_by_lang",
             method: "POST",
