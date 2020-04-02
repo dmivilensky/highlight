@@ -282,8 +282,12 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
-    lang_storage.update_one({"_id": ObjectId(piece_id)}, {
-        "$set": {"translated_txt": tr_txt, "translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
+    if tr_txt is None:
+        lang_storage.update_one({"_id": ObjectId(piece_id)}, {
+            "$set": {"translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
+    else:
+        lang_storage.update_one({"_id": ObjectId(piece_id)}, {
+            "$set": {"translated_txt": tr_txt, "translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
     if tr_stat == "DONE":
         ps = lang_storage.find_one({"_id": ObjectId(piece_id)})
         acc = db.accounts
@@ -299,7 +303,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
         # return {"pc": pieces_count, "tpi": len(taken_pieces_indexes)}
         if pieces_count <= len(taken_pieces_indexes):
-            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc).inserted_id), "code": "OK"}
+            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc)), "code": "OK"}
         else:
             return {"code": "OK", "document": "3002"}
     else:
