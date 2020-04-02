@@ -29,14 +29,14 @@ function check_user(success) {
         });
 }
 
-function approve_user(id_) {
+function approve_user(login) {
     $.ajax({
             url: "/api/verify",
             method: "POST",
             data: {
                 key: key_,
                 decision: 1,
-                id: id_
+                login: login
             },
             dataType: "json"
         })
@@ -52,14 +52,14 @@ function approve_user(id_) {
         });
 }
 
-function delete_user(id) {
+function delete_user(login) {
     $.ajax({
             url: "/api/verify",
             method: "POST",
             data: {
                 key: key_,
                 decision: 0,
-                id: id_
+                login: login
             },
             dataType: "json"
         })
@@ -109,6 +109,12 @@ function load_users() {
                         TG: <a>` + users[i].tg + `</a>
                         </p>
                         `;
+                    if (users[i].email != "")
+                        social += `
+                        <p>
+                        e-mail: <a>` + users[i].email + `</a>
+                        </p>
+                        `;
 
                     var status_string = "";
                     if (users[i].status == "translator") {
@@ -125,8 +131,8 @@ function load_users() {
                         <span class="title">` + users[i].name + `</span>
                         ` + social + `
                         <div class="secondary-content">
-                        <a onclick="approve_user('` + users[i]._id + `');" class="approve-btn"><i class="material-icons green-text">done</i></a>
-                        <a onclick="delete_user('` + users[i]._id + `');"><i class="material-icons red-text">clear</i></a>
+                        <a onclick="approve_user('` + users[i].login + `');" class="approve-btn"><i class="material-icons green-text">done</i></a>
+                        <a onclick="delete_user('` + users[i].login + `');"><i class="material-icons red-text">clear</i></a>
                         </div>
                         
                         </li>
