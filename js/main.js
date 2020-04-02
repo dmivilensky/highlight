@@ -231,7 +231,7 @@ function list_documents(lang) {
                     var tags = list[i].doc.tags.split(",");
                     var tags_markup = "";
 
-                    pieces_dict[list[i].doc._id] = list[i].pieces;
+                    pieces_dict[list[i].doc._id] = [];//list[i].pieces;
 
                     for (var j = 0; j < tags.length; ++j) {
                         tags_markup += `<div class="chip">` + tags[j] + `</div>`;

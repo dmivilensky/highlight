@@ -11,7 +11,7 @@ function inc_importance(id_) {
             console.log(data);
             response = data;
             if (response.code == "OK") {
-                document_info(id);
+                document_info(id_);
                 alert("Теперь этот файл будет иметь больший вес при переводе. Спасибо!")
             }
         })
