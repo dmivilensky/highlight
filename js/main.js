@@ -134,8 +134,8 @@ function select_paragraph(i, id) {
     if (i > max_checked) {
         var all_enable = true;
         for (var j = max_checked + 1; j < i; ++j) {
-            console.log($("#status" + i).html());
-            if ($("#status" + i).html() == "not") {
+            console.log($("#status" + j).html());
+            if ($("#status" + j).html() == "not") {
                 all_enable = false;
                 break;
             }
