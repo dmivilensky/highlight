@@ -37,7 +37,7 @@ function back() {
 var piece;
 
 function ready(i) {
-    piece.txt[i] = $("#textarea" + i).val();
+    piece.translated_txt[i] = $("#textarea" + i).val();
 
     $.ajax({
             url: "api/update_translating_pieces",
@@ -45,7 +45,7 @@ function ready(i) {
             data: {
                 id: user_id,
                 piece_id: block_id,
-                txt: piece.txt
+                txt: piece.translated_txt
             },
             dataType: "json"
         })
@@ -62,8 +62,8 @@ function ready(i) {
 }
 
 function save() {
-    for (var i = 0; i < piece.txt.length; ++i) {
-        piece.txt[i] = $("#textarea" + i).val();
+    for (var i = 0; i < piece.translated_txt.length; ++i) {
+        piece.translated_txt[i] = $("#textarea" + i).val();
     }
 
     $.ajax({
@@ -72,7 +72,7 @@ function save() {
             data: {
                 id: user_id,
                 piece_id: block_id,
-                txt: piece.txt,
+                txt: piece.translated_txt,
                 status: "DONE"
             },
             dataType: "json"
@@ -107,14 +107,21 @@ function init() {
             if (response.code == "OK") {
                 piece = response.document;
 
+                if (!piece.translated_txt) {
+                    piece.translated_txt = [];
+                    for (var i = 0; i < piece.txt.length; ++i) {
+                        piece.translated_txt.push("");
+                    }
+                }
                 for (var i = 0; i < piece.txt.length; ++i) {
                     var translation_markup = "";
+
                     if (piece.translation_status == 'UNDONE') {
                         translation_markup = `
                         <form class="col s12 translation-block">
                         <div class="row slim">
                             <div class="input-field col s12 slim">
-                            <textarea placeholder="Перевод" id="textarea` + i + `" class="materialize-textarea translation-edit">` + (piece.translated_txt ? piece.translated_txt[i] : "") + `</textarea>
+                            <textarea placeholder="Перевод" id="textarea` + i + `" class="materialize-textarea translation-edit">` + piece.translated_txt[i] + `</textarea>
                             </div>
                         </div>
                         </form>
