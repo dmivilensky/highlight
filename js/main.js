@@ -117,6 +117,7 @@ function close_modal() {
 var selected_paragraphs = new Set();
 var selected_paragraphs_ids = [];
 var selected_document = "";
+var max_checked = -1;
 
 var pieces_dict = {};
 
@@ -128,6 +129,26 @@ function select_paragraph(i, id) {
         selected_paragraphs.add(i);
         selected_paragraphs_ids[i] = id;
         $("#bar" + i).css("background-color", "#4caf50");
+    }
+
+    if (i > max_checked) {
+        var all_enable = true;
+        for (var j = i + 1; j < max_checked; ++j) {
+            console.log($("#status" + i).html());
+            if ($("#status" + i).html() == "not") {
+                all_enable = false;
+                break;
+            }
+        }
+        console.log(all_enable);
+        if (all_enable) {
+            for (var j = i + 1; j < max_checked; ++j) {
+                selected_paragraphs.add(j);
+                selected_paragraphs_ids[j] = id;
+                $("#bar" + j).css("background-color", "#4caf50");
+            }
+        }
+        max_checked = i;
     }
 }
 
@@ -189,6 +210,7 @@ function select_document(id) {
         <div class="row paragraphs-flex" id="p` + pieces_dict[selected_document][i].number + `" ` + (pieces_dict[selected_document][i].freedom ? `onclick="select_paragraph(` + i + `, '` + pieces_dict[selected_document][i]._id + `');"` : ``) + `>
             <div class="col s1">
                 <div style="background: ` + (pieces_dict[selected_document][i].freedom ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + i + `"></div>
+                <div id="status` + i + `" style="visibility: hidden;">` + (pieces_dict[selected_document][i].freedom ? "free" : "not") + `</div>
             </div>
             <div class="col s11">
                 <p class="slim">
