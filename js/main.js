@@ -133,18 +133,18 @@ function select_paragraph(i, id) {
 
     if (i > max_checked) {
         var all_enable = true;
-        for (var j = i + 1; j < max_checked; ++j) {
-            console.log($("#status" + i).html());
-            if ($("#status" + i).html() == "not") {
+        for (var j = max_checked + 1; j < i; ++j) {
+            console.log($("#status" + j).html());
+            if ($("#status" + j).html() != "free") {
                 all_enable = false;
                 break;
             }
         }
         console.log(all_enable);
         if (all_enable) {
-            for (var j = i + 1; j < max_checked; ++j) {
+            for (var j = max_checked + 1; j < i; ++j) {
                 selected_paragraphs.add(j);
-                selected_paragraphs_ids[j] = id;
+                selected_paragraphs_ids[j] = $("#status" + j).html();
                 $("#bar" + j).css("background-color", "#4caf50");
             }
         }
@@ -161,6 +161,8 @@ function create_block() {
             break;
         }
     }
+
+    console.log(p);
 
     var pids = [];
     for (var i = 0; i < p.length; ++i) {
@@ -210,7 +212,7 @@ function select_document(id) {
         <div class="row paragraphs-flex" id="p` + pieces_dict[selected_document][i].number + `" ` + (pieces_dict[selected_document][i].freedom ? `onclick="select_paragraph(` + i + `, '` + pieces_dict[selected_document][i]._id + `');"` : ``) + `>
             <div class="col s1">
                 <div style="background: ` + (pieces_dict[selected_document][i].freedom ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + i + `"></div>
-                <div id="status` + i + `" style="visibility: hidden;">` + (pieces_dict[selected_document][i].freedom ? "free" : "not") + `</div>
+                <div id="status` + i + `" style="visibility: hidden;">` + (pieces_dict[selected_document][i].freedom ? "free" : pieces_dict[selected_document][i]._id) + `</div>
             </div>
             <div class="col s11">
                 <p class="slim">
