@@ -67,9 +67,9 @@ def split_to_pieces(number, name, lang, doc):
     counter = 0
     for i in range(len(doc.paragraphs)):
         if doc.paragraphs[i].text.strip() != "":
-            counter += 1
-            did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=i, freedom=True)
+            did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=counter, freedom=True)
             ids.append(did)
+            counter += 1
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -301,7 +301,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         if pieces_count <= len(taken_pieces_indexes):
             return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc).inserted_id), "code": "OK"}
         else:
-            return {"code": "3002"}
+            return {"code": "OK", "document": "3002"}
     else:
         return {"code": "OK", "document": tr_txt}
 
@@ -320,9 +320,11 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
         txts = p["translated_txt"]
         ind = list(range(p["piece_begin"], p["piece_end"] + 1))
         i = 0
+        c = 0
         while i < len(ind):
             if file_data.paragraphs[i].text.strip() != "":
-                file_data.paragraphs[i].text = txts[i]
+                file_data.paragraphs[i].text = txts[c]
+                c += 1
             i += 1
 
     the_stat = "TRANSLATED"
