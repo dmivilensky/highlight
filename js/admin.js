@@ -182,7 +182,7 @@ function load_languages() {
     }
 }
 
-function add_document() {
+async function add_document() {
     var lang = "";
     var lang_set = false;
     for (var i = 0; i < languages.length; ++i) {
@@ -212,26 +212,28 @@ function add_document() {
         $("#filename").val(fname);
         $("#file").submit();
 
+        await sleep(2000);
+
         $.ajax({
-                url: "/api/update_docs",
-                method: "POST",
-                data: {
-                    name: 'new_file' + getRandomInt(10000),
-                    language: lang,
-                    tags: tags_,
-                    path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
-                    key: key_
-                },
-                dataType: "json"
-            })
-            .done(function(data) {
+            url: "/api/update_docs",
+            method: "POST",
+            data: {
+                name: 'new_file' + getRandomInt(10000),
+                language: lang,
+                tags: tags_,
+                path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
+                key: key_
+            },
+            dataType: "json"
+        })
+            .done(function (data) {
                 console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     alert('Файл загружен!');
                 }
             })
-            .fail(function(jqXHR, status, error) {
+            .fail(function (jqXHR, status, error) {
                 console.log(error);
             });
     }

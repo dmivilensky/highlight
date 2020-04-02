@@ -72,3 +72,7 @@ function text_uri(text) {
 function download_text(text, file) {
     downloadURI(text_uri(text), file);
 }
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
