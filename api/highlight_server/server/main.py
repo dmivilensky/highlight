@@ -27,7 +27,7 @@ def verify_file(doc_id, user_id, path=""):
     acc = db.accounts
     user = acc.find_one({"_id": ObjectId(user_id)})
     if is_there_any_body(user_id):
-        if user["status"] == "chief":
+        if user["status"] in {"chief", "both"}:
             if not(path == ""):
                 file = lang_storage.find_one({"_id": ObjectId(doc_id)})
                 delete_from_doc_storage(file["path"])
