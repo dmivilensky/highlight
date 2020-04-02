@@ -333,9 +333,11 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
 
     the_stat = "TRANSLATED"
 
+    chief_id = None
     for tr_id in list({p["translator"] for p in pieces}):
         if acc.find_one({"_id": ObjectId(tr_id)})["status"] == "translator":
             the_stat = "NEED_CHECK"
+            chief_id = ps["translator"]
 
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
                      path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'translated' + os.path.sep + doc[
