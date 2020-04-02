@@ -9,6 +9,7 @@ def doc_ids_replace(result):
     result1 = result
     for doc in result1["document"]:
         doc["_id"] = str(doc["_id"])
+        doc["lastModified"] = str(doc["lastModified"])
         if "translator" in doc.keys():
             for i in range(len(doc["translator"])):
                 uac = acc.find_one({"_id": ObjectId(doc["translator"][i])})
@@ -19,6 +20,18 @@ def doc_ids_replace(result):
             doc["chief"] = create_name_by_user(uac)
 
     return result1
+
+
+def replace_pieces_id(f, not_user=True):
+    f1 = f
+    for p in f1["pieces"]:
+        if not_user:
+            p["_id"] = str(p["_id"])
+            p["lastModified"] = str(p["lastModified"])
+        else:
+            p["reservation_date"] = str(p["reservation_date"])
+
+    return f1
 
 
 def users_replace_ids(result, replace_login=False, full_security=False):
@@ -34,6 +47,7 @@ def users_replace_ids(result, replace_login=False, full_security=False):
             us["tg"] = "not permitted"
             us["fb"] = "not permitted"
             us["email"] = "not permitted"
+        us = replace_pieces_id(us, not_user=False)
     return result1
 
 

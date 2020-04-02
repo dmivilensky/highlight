@@ -14,7 +14,7 @@ if __name__ != '__main__':
     from . import get_functions as gf
     from . import find_functions as ff
     from . import main as mn
-    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params
+    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id
 
 if __name__ == '__main__':
     # import registration as rg
@@ -107,8 +107,7 @@ def find_pieces_cover(request):
         uid = params["id"]
         if mn.is_there_any_body(uid):
             result = ff.find_pieces(uid)
-            for p in result["document"]:
-                p["_id"] = str(p["_id"])
+            replace_pieces_id(result["document"])
         else:
             result = {'code': "2003"}
     except KeyError:
@@ -129,6 +128,7 @@ def find_piece(request):
         if mn.is_there_any_body(uid):
             result = ff.find_piece(pid)
             result["document"]["_id"] = str(result["document"]["_id"])
+            result["document"]["lastModified"] = str(result["document"]["lastModified"])
         else:
             result = {'code': "2003"}
     except KeyError:
@@ -148,8 +148,8 @@ def find_doc_by_lang_cover(request):
         result = ff.find_doc_by_lang(lang)
         for f in result["document"]:
             f["doc"]["_id"] = str(f["doc"]["_id"])
-            for p in f["pieces"]:
-                p["_id"] = str(p["_id"])
+            f["doc"]["lastModified"] = str(f["doc"]["lastModified"])
+            f = replace_pieces_id(f)
     except KeyError:
         result = {'code': "5001"}
 
