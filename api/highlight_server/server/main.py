@@ -293,7 +293,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
         if pieces_count <= len(taken_pieces_indexes):
-            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc)), "code": "OK"}
+            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc).inserted_id), "code": "OK"}
         else:
             return {"code": "3002"}
 
