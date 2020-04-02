@@ -213,7 +213,7 @@ async function add_document() {
         $("#filename").val(fname);
         $("#file").submit();
 
-        await sleep(3000);
+        await sleep(5000);
 
         var finame = $("#fname").val();
         if (finame.trim() == "") {
