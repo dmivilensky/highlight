@@ -230,7 +230,7 @@ function list_documents(lang) {
                 for (var i = 0; i < list.length; ++i) {
                     var tags = list[i].doc.tags.split(",");
                     var tags_markup = "";
-                    console.log(list[i].doc._id);
+                    console.log(pieces_dict);
                     pieces_dict[list[i].doc._id] = list[i].pieces;
 
                     for (var j = 0; j < tags.length; ++j) {
