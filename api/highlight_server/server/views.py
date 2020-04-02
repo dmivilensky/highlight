@@ -343,7 +343,7 @@ def update_pieces_cover(request):
         pids = params["pcid"].split(",")
         tl = params["to_language"] if "to_language" in params.keys() else "RUS"
         if mn.is_there_any_body(uid):
-            result = mn.update_pieces(uid, did, pids, tl)
+            result = mn.update_pieces(uid, did, pids, to_lang=tl)
         else:
             result = {'code': "2003"}
     except KeyError:
@@ -364,7 +364,7 @@ def update_translating_pieces_cover(request):
         tt = params["txt"] if "txt" in params.keys() else None
         ts = params["status"] if "status" in params.keys() else "UNDONE"
         if mn.is_there_any_body(uid):
-            result = mn.update_translating_pieces(pid, tt, ts)
+            result = mn.update_translating_pieces(pid, tr_txt=tt, tr_stat=ts)
         else:
             result = {'code': "2003"}
     except KeyError:
