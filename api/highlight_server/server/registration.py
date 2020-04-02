@@ -61,7 +61,7 @@ def log_in(login, password, type=None):
     if not (user is None):
         if user["password"] == password:
             if user["verified"]:
-                return {"id": str(user["_id"]), "code": "0"}
+                return {"id": str(user["_id"]), "code": "OK"}
             else:
                 return {"code": "2002"}
         else:
