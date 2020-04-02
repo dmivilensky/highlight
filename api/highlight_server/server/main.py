@@ -223,7 +223,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         acc = db.accounts
         new_piece = {
             "name": document["name"],
-            "indexes": [range(begin_index, end_index+1)],
+            "indexes": list(range(begin_index, end_index+1)),
             "reservation_date": datetime.datetime.utcnow()
         }
         acc.update_one({"_id": ObjectId(user_id)}, {"$push": {"pieces": new_piece}})
