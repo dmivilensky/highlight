@@ -339,6 +339,7 @@ def update_pieces_cover(request):
     # try:
     uid = params["id"]
     did = params["document_id"]
+    return json.dumps({"document": params.keys})
     pids = params["pieces_id"]
     tl = params["to_language"] if "to_language" in params.keys() else "RUS"
     if mn.is_there_any_body(uid):
