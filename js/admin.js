@@ -216,25 +216,25 @@ async function add_document() {
         await sleep(3000);
 
         $.ajax({
-            url: "/api/update_docs",
-            method: "POST",
-            data: {
-                name: real_name.val().slice(0, -5),
-                language: lang,
-                tags: tags_,
-                path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
-                key: key_
-            },
-            dataType: "json"
-        })
-            .done(function (data) {
+                url: "/api/update_docs",
+                method: "POST",
+                data: {
+                    name: real_name.val().slice(0, -5),
+                    language: lang,
+                    tags: tags_,
+                    path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
+                    key: key_
+                },
+                dataType: "json"
+            })
+            .done(function(data) {
                 console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     alert('Файл загружен!');
                 }
             })
-            .fail(function (jqXHR, status, error) {
+            .fail(function(jqXHR, status, error) {
                 console.log(error);
             });
     }

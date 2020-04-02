@@ -208,7 +208,6 @@ function select_document(id) {
 }
 
 function list_documents(lang) {
-    alert(lang);
     $.ajax({
             url: "api/find_doc_by_lang",
             method: "POST",
@@ -238,7 +237,7 @@ function list_documents(lang) {
                     }
 
                     var ready = list[i].pieces;
-                    var total = list[i].doc.piece_number; // TODO
+                    var total = list[i].doc.piece_number;
                     var progress = ((ready / total) * 100).toFixed(1) + "%";
 
                     $("#docs").append(`
