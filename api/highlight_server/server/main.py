@@ -7,6 +7,7 @@ from pymongo import MongoClient
 import pymongo as pm
 import datetime
 import django
+import random
 
 
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
@@ -322,12 +323,15 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     file_data = find_file_by_path(doc["orig_path"])
     for p in pieces:
         txts = p["translated_txt"]
-        ind = list(range(p["piece_begin"], p["piece_end"] + 1))
+        # ind = list(range(p["piece_begin"], p["piece_end"] + 1))
         i = 0
         c = 0
-        while i < len(ind):
+        j = 0
+        while j <= p["piece_end"] - p["piece_begin"] + 1:
             if file_data.paragraphs[i].text.strip() != "":
-                file_data.paragraphs[i].text = txts[c]
+                if c >= p["piece_begin"]:
+                    file_data.paragraphs[i].text = txts[j]
+                    j += 1
                 c += 1
             i += 1
 
@@ -340,8 +344,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
             chief_id = ps["translator"]
 
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
-                     path="/var/www/html/highlight.spb.ru/public_html/files/" + doc[
-                         "name"]+".docx", to_lang=ps["to_lang"], tags=doc["tags"], translator=list({p["translator"] for p in pieces}),
+                     path="/var/www/html/highlight.spb.ru/public_html/files/" + str(random.randint(10000, 20000)) +".docx", to_lang=ps["to_lang"], tags=doc["tags"], translator=list({p["translator"] for p in pieces}),
                      file_data=file_data)
     for p in pieces:
         delete_from_db(p["_id"])

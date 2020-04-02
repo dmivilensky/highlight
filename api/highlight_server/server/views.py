@@ -281,12 +281,12 @@ def verify_file_cover(request):
         did = params["decision"]
         uid = params["id"]
         path = params["path"]
-        result = mn.verify_file(did, uid, path)
+        result = mn.verify_file(did, uid, "/var/www/html/highlight.spb.ru/public_html/files/" + path if not(path == "") else path)
     except KeyError:
         result = {'code': "5001"}
 
     text = json.dumps(result)
-    a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
+    # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
