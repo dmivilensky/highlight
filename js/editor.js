@@ -50,10 +50,11 @@ function ready(i) {
             dataType: "json"
         })
         .done(function(data) {
+            alert(piece.translated_txt.join(";") + "    " + block_id);
             console.log(data);
             response = data;
             if (response.code == "OK") {
-                location.reload(true);
+                // location.reload(true);
             }
         })
         .fail(function(jqXHR, status, error) {

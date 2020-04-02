@@ -297,7 +297,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         else:
             return {"code": "3002"}
     else:
-        return {"code": "OK"}
+        return {"code": "OK", "document": tr_txt}
 
 
 def create_translated_unverified_docs(pieces, doc, ps, acc):
