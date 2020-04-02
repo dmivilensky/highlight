@@ -244,12 +244,13 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         return {"id": str(did1), "code": "OK"}
 
 
-def update_docs(name, doc, lang, tags):
+def update_docs(name, doc, lang, tags, path=None):
     """
     :param name: file name
     :param doc: file data .docx
     :param lang: language
     :param tags: tags as array
+    :param path: path to file
     :return: file mongo id
     :structure: dict('code': string, 'id': string)
     :description: pushes loaded by admin file to db
@@ -259,7 +260,7 @@ def update_docs(name, doc, lang, tags):
     lang_storage = db.files_info
     did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, name,
                      "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
-                     orig_path=os.getcwd() + os.path.sep + 'file_storage' + os.path.sep + 'original' + os.path.sep + name,
+                     orig_path=path,
                      file_data=doc)
     return {"id": str(did), "code": "OK"}
 

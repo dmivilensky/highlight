@@ -321,7 +321,7 @@ def update_docs_cover(request):
         tags = params["tags"]
         path = params["path"]
         file_data = mn.find_file_by_path(path) if not(path == "") else None
-        result = mn.update_docs(name, file_data, lang, tags) if not(file_data is None) else {"code": "5000"}
+        result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
     except KeyError:
         result = {'code': "5001"}
 
