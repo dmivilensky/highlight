@@ -79,7 +79,7 @@ function load_users() {
     $.ajax({
             url: "/api/get_users",
             method: "POST",
-            data: {key: key_},
+            data: { key: key_ },
             dataType: "json"
         })
         .done(function(data) {
@@ -204,7 +204,7 @@ function add_document() {
     }
     tags_ = tags_.slice(0, -1);
 
-    var extention = $("#corrections_path").val().slice(-4, -1) + $("#corrections_path").val().slice(-1);
+    var extention = $("#filename").val().slice(-4, -1) + $("#filename").val().slice(-1);
     if (extention != "docx") {
         alert("Необходимо загрузить .docx файл!");
     } else {
@@ -216,10 +216,10 @@ function add_document() {
                 url: "/api/update_docs",
                 method: "POST",
                 data: {
-                    name: "",
+                    name: 'new_file' + getRandomInt(10000),
                     language: lang,
-                    tags: tags_.join(","),
-                    path: fname,
+                    tags: tags_,
+                    path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
                     key: key_
                 },
                 dataType: "json"
@@ -265,7 +265,7 @@ function load_work() { // TODO or NOT TODO :)
     $.ajax({
             url: "../api/get_translator_stats",
             method: "POST",
-            data: {key: key_},
+            data: { key: key_ },
             dataType: "json"
         })
         .done(function(data) {
