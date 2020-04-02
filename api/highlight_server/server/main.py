@@ -64,16 +64,17 @@ def split_to_pieces(number, name, lang, doc):
    """
 
     ids = list()
-    i = 0
+    counter = 0
     for i in range(len(doc.paragraphs)):
         if doc.paragraphs[i].text.strip() != "":
+            counter += 1
             did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=i, freedom=True)
             ids.append(did)
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
-                            {"$set": {"piece_number": i+1}})
+                            {"$set": {"piece_number": max(counter, len(ids))}})
     return ids
 
 
