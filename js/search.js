@@ -115,7 +115,7 @@ function document_info(i) {
 
 function update_search() {
     var tags_list = "";
-    var tags_data = $('#tags').material_chip('data');
+    var tags_data = M.Chips.getInstance($('#tags')).chipsData;
     for (var i = 0; i < tags_data.length; ++i) {
         tags_list += tags_data[i].tag + ",";
     }
