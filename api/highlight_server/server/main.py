@@ -363,7 +363,9 @@ def find_file_by_path(path):
 def test():
     client = MongoClient()
     db = client.highlight
-    pprint.pprint("gf " + ("mi" if type(1) == str else ""))
+    d = Document("/Users/sevakabrits/Downloads/new_file6391.docx")
+    for p in d.paragraphs:
+        print(p.text)
 
 
 if __name__ == '__main__':
