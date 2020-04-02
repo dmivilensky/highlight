@@ -127,8 +127,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "importance": importance,
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
-        push_to_file_storage(orig_path, file_data)
-        split_to_pieces(number, name, lang, file_data)
+        # push_to_file_storage(orig_path, file_data)
+        # split_to_pieces(number, name, lang, file_data)
 
     elif status == "WAITING_PIECE":
         file = {"number": number,
@@ -166,7 +166,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "chief": chief,
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
-        push_to_file_storage(path, file_data)
+        # push_to_file_storage(path, file_data)
 
     lang_storage = db.files_info
     file_id = lang_storage.insert_one(file).inserted_id
