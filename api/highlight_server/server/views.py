@@ -107,7 +107,7 @@ def find_pieces_cover(request):
         uid = params["id"]
         if mn.is_there_any_body(uid):
             result = ff.find_pieces(uid)
-            replace_pieces_id(result["document"])
+            replace_pieces_id(result["document"], find_in_list=True)
         else:
             result = {'code': "2003"}
     except KeyError:

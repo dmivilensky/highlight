@@ -22,14 +22,22 @@ def doc_ids_replace(result):
     return result1
 
 
-def replace_pieces_id(f, not_user=True):
+def replace_pieces_id(f, not_user=True, find_in_list=False):
     f1 = f
-    for p in f1["pieces"]:
-        if not_user:
-            p["_id"] = str(p["_id"])
-            p["lastModified"] = str(p["lastModified"])
-        else:
-            p["reservation_date"] = str(p["reservation_date"])
+    if find_in_list:
+        for p in f1:
+            if not_user:
+                p["_id"] = str(p["_id"])
+                p["lastModified"] = str(p["lastModified"])
+            else:
+                p["reservation_date"] = str(p["reservation_date"])
+    else:
+        for p in f1["pieces"]:
+            if not_user:
+                p["_id"] = str(p["_id"])
+                p["lastModified"] = str(p["lastModified"])
+            else:
+                p["reservation_date"] = str(p["reservation_date"])
 
     return f1
 
