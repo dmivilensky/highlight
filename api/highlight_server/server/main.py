@@ -64,6 +64,7 @@ def split_to_pieces(number, name, lang, doc):
    """
 
     ids = list()
+    i = 0
     for i in range(len(doc.paragraphs)):
         if i != "":
             did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=i, freedom=True)
@@ -72,7 +73,7 @@ def split_to_pieces(number, name, lang, doc):
     db = client.highlight
     lang_storage = db.files_info
     lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
-                            {"$set": {"piece_number": len(doc.paragraphs)}})
+                            {"$set": {"piece_number": i+1}})
     return ids
 
 
@@ -293,7 +294,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         pss = sorted(pss, key=lambda a: a["piece_begin"])
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
-        return {"pc": pieces_count, "tpi": len(taken_pieces_indexes)}
+        # return {"pc": pieces_count, "tpi": len(taken_pieces_indexes)}
         if pieces_count <= len(taken_pieces_indexes):
             return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc).inserted_id), "code": "OK"}
         else:
