@@ -303,14 +303,14 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
         # return {"pc": pieces_count, "tpi": len(taken_pieces_indexes)}
         if pieces_count <= len(taken_pieces_indexes):
-            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc)), "code": "OK"}
+            return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc, lang_storage=lang_storage)), "code": "OK"}
         else:
             return {"code": "OK", "document": "3002"}
     else:
         return {"code": "OK", "document": tr_txt}
 
 
-def create_translated_unverified_docs(pieces, doc, ps, acc):
+def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     """
     :param pieces: all text pieces (translated)
     :param doc: document in db format
@@ -345,6 +345,10 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
                      file_data=file_data)
     for p in pieces:
         delete_from_db(p["_id"])
+    if not(lang_storage is None):
+        for p in list(lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "WAITING_PIECE"})):
+            delete_from_db(p["_id"])
+    delete_from_db(doc["_id"])
     return did
 
 
@@ -357,9 +361,10 @@ def delete_from_doc_storage(path):
     return {"code": "OK"}
 
 
-def delete_from_db(doc_id):
+def delete_from_db(doc_id, with_path=True):
     """
     :param doc_id: file mongo id
+    :param with_path: delete file in storage as well
     :return: Nothing
     :description: deletes file from db and storage if any
     """
@@ -367,9 +372,11 @@ def delete_from_db(doc_id):
     db = client.highlight
     lang_storage = db.files_info
     doc = lang_storage.find_one({"_id": doc_id})
-    if "path" in doc.keys():
-        delete_from_doc_storage(doc["path"])
-    lang_storage.delete_one({"_id": doc_id})
+
+    if with_path:
+        if "path" in doc.keys():
+            delete_from_doc_storage(doc["path"])
+        lang_storage.delete_one({"_id": doc_id})
 
 
 def find_file_by_path(path):
