@@ -87,7 +87,8 @@ def verify_cover(request):
         decision = params["decision"]
         ulog = params["login"]
         if key == ADKEY:
-            result = rg.verify(ulog, "ADMITTED" if decision == 1 else "NOT")
+            result = rg.verify(ulog, "ADMITTED" if decision == "1" else "NOT")
+            result["document"] = "ADMITTED" if decision == "1" else "NOT"
         else:
             result = {'code': "2004"}
     except KeyError:
