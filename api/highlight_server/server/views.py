@@ -286,7 +286,7 @@ def verify_file_cover(request):
         result = {'code': "5001"}
 
     text = json.dumps(result)
-    a = mn.delete_from_doc_storage(path) if not(path is None) else ""
+    a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
