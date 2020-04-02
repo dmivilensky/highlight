@@ -127,7 +127,7 @@ var selected_paragraphs = new Set();
 var selected_paragraphs_ids = [];
 var selected_document = "";
 
-var pieces_dict;
+var pieces_dict = {};
 
 function select_paragraph(i, id) {
     if ($("#bar" + id).css("background-color") == "rgb(76, 175, 80)") {
