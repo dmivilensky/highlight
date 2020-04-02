@@ -72,17 +72,11 @@ function list_blocks() {
                 var pieces = response.document;
 
                 for (var i = 0; i < pieces.length; ++i) {
-                    var tags = ",".split(",");
-                    var tags_markup = "";
-                    for (var j = 0; j < tags.length; ++j) {
-                        tags_markup += `<div class="chip">` + tags[j] + `</div>`;
-                    }
-
                     var text = pieces[i].txt;
                     var url_text = text_uri(text.join("\n\n"));
 
                     var translate = pieces[i].translated_txt;
-                    var url_translate = text_uri(translate.join("\n\n"));
+                    var url_translate = text_uri(translate ? translate.join("\n\n") : "");
 
                     $("#blocks").append(`
                         <div class="col s12 m4 l4">
@@ -91,9 +85,6 @@ function list_blocks() {
                                 <div class="card-content">
                                 <span class="card-title">` + pieces[i].name + `</span>
                                 
-                                <div class="tags-markup">
-                                ` + tags_markup + `
-                                </div>
                                 <div class="download-url-or">
                                 <a href="` + url_text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
                                 </div>

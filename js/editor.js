@@ -37,7 +37,7 @@ function back() {
 var piece;
 
 function ready(i) {
-    piece[i].txt[i] = $("#textarea" + i).val();
+    piece.txt[i] = $("#textarea" + i).val();
 
     $.ajax({
             url: "api/update_translating_pieces",
@@ -45,7 +45,7 @@ function ready(i) {
             data: {
                 id: user_id,
                 piece_id: block_id,
-                txt: piece[i].txt
+                txt: piece.txt
             },
             dataType: "json"
         })
@@ -109,7 +109,7 @@ function init() {
                         <form class="col s12 translation-block">
                         <div class="row slim">
                             <div class="input-field col s12 slim">
-                            <textarea placeholder="Перевод" id="textarea` + i + `" class="materialize-textarea translation-edit">` + piece.translated_txt[i] + `</textarea>
+                            <textarea placeholder="Перевод" id="textarea` + i + `" class="materialize-textarea translation-edit">` + (piece.translated_txt ? piece.translated_txt[i] : "") + `</textarea>
                             </div>
                         </div>
                         </form>
