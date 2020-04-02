@@ -3,7 +3,7 @@ var key_;
 function check_user(success) {
     login_ = findGetParameter("login");
     password_ = findGetParameter("password");
-    key = findGetParameter("code");
+    key_ = findGetParameter("code");
 
     $.ajax({
             url: "/api/let_my_people_pass",
