@@ -36,7 +36,9 @@ Types:
          "tg": tg,
          "fb": fb,
          "translated": 0,
-         "pieces": [],
+         "pieces": {"name": document["name"],
+                    "indexes": [range(begin_index, end_index+1)],
+                    "reservation_date": datetime.datetime.utcnow()},
          "verified": False}
          
     WaitingForTranslation:

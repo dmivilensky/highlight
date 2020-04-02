@@ -79,7 +79,7 @@ function load_users() {
     $.ajax({
             url: "/api/get_users",
             method: "POST",
-            data: {},
+            data: {key: key_},
             dataType: "json"
         })
         .done(function(data) {
@@ -213,7 +213,8 @@ function add_document() {
                     name: "",
                     language: lang,
                     tags: tags_.join(","),
-                    path: fname
+                    path: fname,
+                    key: key_
                 },
                 dataType: "json"
             })
@@ -254,15 +255,52 @@ function load_stat() {
         });
 }
 
-function load_work() { // TODO
+function load_work() { // TODO or NOT TODO :)
     $.ajax({
-            url: "../api/test_script.txt",
+            url: "../api/get_translator_stats",
             method: "POST",
-            data: {},
+            data: {key: key_},
             dataType: "json"
         })
         .done(function(data) {
-            /**/
+            response = data;
+            $("#work").empty();
+
+            for (var i = 0; i < response.document.length; ++i) {
+                current_user = response.document[i];
+                for (var j = 0; j < current_user.pieces.length; ++j) {
+                    current_piece = current_user.pieces[j];
+                    var name = current_user.name + current_user.surname + current_user.mi;
+                    var document = "«" + current_piece.name + "»";
+                    var date = current_piece.reservation_date;
+                    var paragraph_begin = current_piece.pieces[j].indexes[0];
+                    var paragraph_end = current_piece.indexes[current_piece.indexes.length - 1];
+
+                    var vk = current_user.vk;
+                    var fb = current_user.fb;
+                    var tg = current_user.tg;
+
+                    var social_markup = "";
+                    if (vk != "") {
+                        social_markup += "VK: " + vk + "<br>";
+                    }
+                    if (fb != "") {
+                        social_markup += "FB: " + fb + "<br>";
+                    }
+                    if (tg != "") {
+                        social_markup += "TG: " + tg + "<br>";
+                    }
+                    social_markup = social_markup.slice(0, -1);
+
+                    $("#work").append(`
+                <tr>
+                    <td>` + name + `<br>` + social_markup + `</td>
+                    <td>` + document + `<br>Абзацы: ` + paragraph_begin + `-` + paragraph_end + `</td>
+                    <td>` + date + `</td>
+                </tr>
+                `);
+                }
+            }
         })
         .fail(function(jqXHR, status) {
             $("#work").empty();
