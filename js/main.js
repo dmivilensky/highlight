@@ -165,7 +165,7 @@ function create_block() {
                 data: {
                     id: user_id,
                     document_id: selected_document,
-                    pcid: pids,
+                    pcid: pids.join(","),
                     to_language: "RUS"
                 },
                 dataType: "json"
