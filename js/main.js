@@ -162,6 +162,8 @@ function create_block() {
         }
     }
 
+    console.log(p);
+
     var pids = [];
     for (var i = 0; i < p.length; ++i) {
         pids.push(selected_paragraphs_ids[p[i]]);
