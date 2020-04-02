@@ -204,7 +204,8 @@ async function add_document() {
     }
     tags_ = tags_.slice(0, -1);
 
-    var extention = $("#filename").val().slice(-4, -1) + $("#filename").val().slice(-1);
+    var real_name = $("#filename")
+    var extention = real_name.val().slice(-4, -1) + real_name.val().slice(-1);
     if (extention != "docx") {
         alert("Необходимо загрузить .docx файл!");
     } else {
@@ -212,13 +213,13 @@ async function add_document() {
         $("#filename").val(fname);
         $("#file").submit();
 
-        await sleep(10000);
+        await sleep(3000);
 
         $.ajax({
             url: "/api/update_docs",
             method: "POST",
             data: {
-                name: extention.val().slice(0, -5),
+                name: real_name.val().slice(0, -5),
                 language: lang,
                 tags: tags_,
                 path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
