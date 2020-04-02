@@ -133,7 +133,7 @@ function select_paragraph(i, id) {
 
     if (i > max_checked) {
         var all_enable = true;
-        for (var j = i + 1; j < max_checked; ++j) {
+        for (var j = max_checked + 1; j < i; ++j) {
             console.log($("#status" + i).html());
             if ($("#status" + i).html() == "not") {
                 all_enable = false;
@@ -142,7 +142,7 @@ function select_paragraph(i, id) {
         }
         console.log(all_enable);
         if (all_enable) {
-            for (var j = i + 1; j < max_checked; ++j) {
+            for (var j = max_checked + 1; j < i; ++j) {
                 selected_paragraphs.add(j);
                 selected_paragraphs_ids[j] = id;
                 $("#bar" + j).css("background-color", "#4caf50");
