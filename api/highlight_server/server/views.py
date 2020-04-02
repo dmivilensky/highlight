@@ -143,15 +143,15 @@ def find_doc_by_lang_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
-    # try:
-    lang = params["language"]
-    result = ff.find_doc_by_lang(lang)
-    for f in result["document"]:
-        f["doc"]["_id"] = str(f["doc"]["_id"])
-        f["doc"]["lastModified"] = str(f["doc"]["lastModified"])
-        f = replace_pieces_id(f)
-    # except KeyError:
-    #     result = {'code': "5001"}
+    try:
+        lang = params["language"]
+        result = ff.find_doc_by_lang(lang)
+        for f in result["document"]:
+            f["doc"]["_id"] = str(f["doc"]["_id"])
+            f["doc"]["lastModified"] = str(f["doc"]["lastModified"])
+            f = replace_pieces_id(f)
+    except KeyError:
+        result = {'code': "5001"}
 
     text = json.dumps(result)
     return HttpResponse(text)

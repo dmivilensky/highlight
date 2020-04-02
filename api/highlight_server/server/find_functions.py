@@ -57,7 +57,7 @@ def find_doc_by_lang(lang):
     for key in docs.keys():
         docs[key] = sorted(docs[key], key=lambda a: a["index"])
         out.append({"name": key, "pieces": docs[key], "doc": docs_o[key]})
-    out = sorted(out, key=lambda a: a[2], reverse=True)
+    out = sorted(out, key=lambda a: a["doc"]["importance"], reverse=True)
 
     return {"code": "OK", "document": out}
 
