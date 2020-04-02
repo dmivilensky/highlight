@@ -215,11 +215,16 @@ async function add_document() {
 
         await sleep(3000);
 
+        var finame = $("#fname").val();
+        if (finame.trim() == "") {
+            finame = real_name.val().slice(0, -5);
+        }
+
         $.ajax({
                 url: "/api/update_docs",
                 method: "POST",
                 data: {
-                    name: real_name.val().slice(0, -5),
+                    name: finame,
                     language: lang,
                     tags: tags_,
                     path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,

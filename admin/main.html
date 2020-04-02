@@ -20,6 +20,13 @@
 
             <div class="row">
                 <div class="col s12 m6 l6" style="padding-right: 40px; margin-bottom: 20px;">
+                    <div class="row">
+                        <div class="input-field col s12">
+                        <input id="fname" type="text" class="validate">
+                        <label for="fname">Имя файла</label>
+                        </div>
+                    </div>
+
                     <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
 
                     <form enctype="multipart/form-data" target="hiddenFrame" action="/php_scripts/save_file.php" method="POST" id="file">
