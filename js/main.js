@@ -130,13 +130,13 @@ var selected_document = "";
 var pieces_dict = {};
 
 function select_paragraph(i, id) {
-    if ($("#bar" + id).css("background-color") == "rgb(76, 175, 80)") {
+    if ($("#bar" + i).css("background-color") == "rgb(76, 175, 80)") {
         selected_paragraphs.delete(i);
-        $("#bar" + id).css("background-color", "#aaaaaa");
+        $("#bar" + i).css("background-color", "#aaaaaa");
     } else {
         selected_paragraphs.add(i);
         selected_paragraphs_ids[i] = id;
-        $("#bar" + id).css("background-color", "#4caf50");
+        $("#bar" + i).css("background-color", "#4caf50");
     }
 }
 
@@ -164,7 +164,8 @@ function create_block() {
                 data: {
                     id: user_id,
                     document_id: selected_document,
-                    pieces_id: pids
+                    pieces_id: pids,
+                    to_language: "RUS"
                 },
                 dataType: "json"
             })
@@ -195,7 +196,7 @@ function select_document(id) {
         $("#paragraphs").append(`
         <div class="row paragraphs-flex" id="p` + pieces_dict[selected_document][i].number + `" ` + (pieces_dict[selected_document][i].freedom ? `onclick="select_paragraph(` + i + `, '` + pieces_dict[selected_document][i]._id + `');"` : ``) + `>
             <div class="col s1">
-                <div style="background: ` + (pieces_dict[selected_document][i].freedom ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + pieces_dict[selected_document][i].number + `"></div>
+                <div style="background: ` + (pieces_dict[selected_document][i].freedom ? "#aaa" : "#fa0000") + ` !important;" class="indicator" id="bar` + i + `"></div>
             </div>
             <div class="col s11">
                 <p class="slim">
@@ -208,7 +209,11 @@ function select_document(id) {
 }
 
 function list_documents(lang) {
-    console.log(lang);
+    $("#hint").hide();
+    $("#get").hide();
+    $("#paragraphs").empty();
+    $("#docs").empty();
+
     $.ajax({
             url: "api/find_doc_by_lang",
             method: "POST",
@@ -221,10 +226,6 @@ function list_documents(lang) {
             console.log(data);
             response = data;
             if (response.code == "OK") {
-                $("#hint").hide();
-                $("#get").hide();
-                $("#paragraphs").empty();
-                $("#docs").empty();
 
                 var list = response.document;
                 for (var i = 0; i < list.length; ++i) {
