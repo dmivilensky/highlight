@@ -212,13 +212,13 @@ async function add_document() {
         $("#filename").val(fname);
         $("#file").submit();
 
-        await sleep(2000);
+        await sleep(10000);
 
         $.ajax({
             url: "/api/update_docs",
             method: "POST",
             data: {
-                name: 'new_file' + getRandomInt(10000),
+                name: extention.val().slice(0, -5),
                 language: lang,
                 tags: tags_,
                 path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
