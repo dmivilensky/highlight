@@ -361,7 +361,7 @@ def update_translating_pieces_cover(request):
     try:
         uid = params["id"]
         pid = params["piece_id"]
-        tt = params["txt"] if "txt" in params.keys() else None
+        tt = params["txt"].split("#del#") if "txt" in params.keys() else None
         ts = params["status"] if "status" in params.keys() else "UNDONE"
         if mn.is_there_any_body(uid):
             result = mn.update_translating_pieces(pid, tr_txt=tt, tr_stat=ts)
