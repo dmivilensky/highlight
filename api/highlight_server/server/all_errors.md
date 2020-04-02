@@ -9,6 +9,7 @@ responses:
 :errors 3000: pieces already taken
 :errors 3001: not a single piece (как у вас могут быть карты не в том порядке разложены?!)
 :errors 3002: not enough pieces
+:errors 3100: nothing was found
 :errors 4040: not http POST request
 :errors 5000: no file uploaded
 :errors 5001: wrong parameters (wrong key was used during forming http request)

@@ -42,7 +42,10 @@ def find_doc_by_lang(lang):
     lang_storage = db.files_info
     docs = dict()
     docs_o = dict()
-    for piece in lang_storage.find({"lang": lang, "status": "WAITING_PIECE"}):
+    querya = list(lang_storage.find({"lang": lang, "status": "WAITING_PIECE"}))
+    if len(querya) == 0:
+        return {"code": "3100"}
+    for piece in querya:
         orig_doc = lang_storage.find_one({"name": piece["name"], "number": piece["number"], "lang": piece["lang"], "status": "WAITING_FOR_TRANSLATION"})
         if piece["name"] in docs.keys():
             docs[piece["name"]].append(piece)
