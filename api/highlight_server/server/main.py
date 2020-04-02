@@ -288,8 +288,8 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
             {"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "WAITING_FOR_TRANSLATION"})
         pieces_count = doc["piece_number"]
         taken_pieces_indexes = []
-        pss = lang_storage.find({"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "PIECE",
-                                 "translation_status": "DONE"})
+        pss = list(lang_storage.find({"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "PIECE",
+                                 "translation_status": "DONE"}))
         pss = sorted(pss, key=lambda a: a["piece_begin"])
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
