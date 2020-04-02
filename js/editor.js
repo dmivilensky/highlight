@@ -45,7 +45,7 @@ function ready(i) {
             data: {
                 id: user_id,
                 piece_id: block_id,
-                txt: piece.translated_txt.join(",")
+                txt: piece.translated_txt.join("#del#")
             },
             dataType: "json"
         })
@@ -73,7 +73,7 @@ function save() {
             data: {
                 id: user_id,
                 piece_id: block_id,
-                txt: piece.translated_txt.join(","),
+                txt: piece.translated_txt.join("#del#"),
                 status: "DONE"
             },
             dataType: "json"
