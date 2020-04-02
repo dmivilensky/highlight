@@ -13,7 +13,7 @@ function check_user(success) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK" && response.document) {
                 success();
             } else {
@@ -49,7 +49,7 @@ function corrected() {
             })
             .done(function(data) {
                 console.log(data);
-                response = JSON.parse(data);
+                response = data;
                 if (response.code != "OK") {
                     alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
                 }
@@ -142,7 +142,7 @@ function update_search() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $("#docs").empty();
                 $("#details").empty();

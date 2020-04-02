@@ -15,7 +15,7 @@ function check_user(success) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK" && response.document) {
                 success();
             } else {
@@ -51,7 +51,7 @@ function ready(i) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 location.reload(true);
             }
@@ -74,7 +74,7 @@ function save() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $.redirectGet("main.index", {
                     user_id: id
@@ -98,7 +98,7 @@ function init() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 piece = response.document;
 

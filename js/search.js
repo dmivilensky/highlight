@@ -9,7 +9,7 @@ function inc_importance(id_) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 document_info(id);
                 alert("Теперь этот файл будет иметь больший вес при переводе. Спасибо!")
@@ -132,7 +132,7 @@ function update_search() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $("#docs").empty();
                 $("#details").empty();

@@ -132,7 +132,7 @@ function signup() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 var id = response.id;
                 $.redirectGet(home_page, {

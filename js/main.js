@@ -36,7 +36,7 @@ function check_user(success) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK" && response.document) {
                 success();
             } else {
@@ -67,7 +67,7 @@ function list_blocks() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 var pieces = response.document;
 
@@ -170,7 +170,7 @@ function create_block() {
             })
             .done(function(data) {
                 console.log(data);
-                response = JSON.parse(data);
+                response = data;
                 if (response.code == "OK") {
                     close_modal();
                     edit_block(response.id);
@@ -218,7 +218,7 @@ function list_documents(lang) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $("#hint").hide();
                 $("#get").hide();

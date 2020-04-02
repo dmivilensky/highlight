@@ -16,7 +16,7 @@ function check_user(success) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK" && response.key == key_) {
                 success();
             } else {
@@ -42,7 +42,7 @@ function approve_user(id_) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 load_users();
             }
@@ -65,7 +65,7 @@ function delete_user(id) {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 load_users();
             }
@@ -84,7 +84,7 @@ function load_users() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $("#users").empty();
                 var users = response.document;
@@ -219,7 +219,7 @@ function add_document() {
             })
             .done(function(data) {
                 console.log(data);
-                response = JSON.parse(data);
+                response = data;
                 if (response.code == "OK") {
                     alert('Файл загружен!');
                 }
@@ -241,7 +241,7 @@ function load_stat() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 var stat = response.document;
                 $("#stat_untranslated").html(stat.documents);
@@ -312,7 +312,7 @@ function load_translators() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $("#translators").empty();
 
@@ -361,7 +361,7 @@ function load_documents() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $("#documents").empty();
 
@@ -411,7 +411,7 @@ function save_db() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 var db_data = "";
 
