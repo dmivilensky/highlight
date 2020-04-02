@@ -336,17 +336,17 @@ def update_pieces_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
-    try:
-        uid = params["id"]
-        did = params["document_id"]
-        pids = params["pieces_id"]
-        tl = params["to_language"] if "to_language" in params.keys() else "RUS"
-        if mn.is_there_any_body(uid):
-            result = mn.update_pieces(uid, did, pids, tl)
-        else:
-            result = {'code': "2003"}
-    except KeyError:
-        result = {'code': "5001"}
+    # try:
+    uid = params["id"]
+    did = params["document_id"]
+    pids = params["pieces_id"]
+    tl = params["to_language"] if "to_language" in params.keys() else "RUS"
+    if mn.is_there_any_body(uid):
+        result = mn.update_pieces(uid, did, pids, tl)
+    else:
+        result = {'code': "2003"}
+    # except KeyError:
+    #     result = {'code': "5001"}
 
     text = json.dumps(result)
     return HttpResponse(text)
