@@ -81,8 +81,8 @@ function save() {
             console.log(data);
             response = data;
             if (response.code == "OK") {
-                $.redirectGet("main.index", {
-                    user_id: id
+                $.redirectGet("main.html", {
+                    user_id: user_id
                 });
             }
         })
