@@ -60,9 +60,12 @@ def users_replace_ids(result, replace_login=False, full_security=False):
 
 
 def create_name_by_user(uac):
-    return (uac["name"] if type(uac["name"]) == str else "") + " " + (
-        uac["surname"] if type(uac["surname"]) == str else "") + " " + (
-               uac["mi"] if type(uac["mi"]) == str else "")
+    if not(uac is None):
+        return (uac["name"] if type(uac["name"]) == str else "") + " " + (
+            uac["surname"] if type(uac["surname"]) == str else "") + " " + (
+                   uac["mi"] if type(uac["mi"]) == str else "")
+    else:
+        return "Без редактора"
 
 
 def handle_uploaded_file(f):
