@@ -197,7 +197,7 @@ function add_document() {
         lang = $("#lang_other_val").val();
     }
 
-    var chips = M.Chips.getInstance($('#tags')).chipsData;;
+    var chips = M.Chips.getInstance($('#tags')).chipsData;
     var tags_ = "";
     for (var i = 0; i < chips.length; ++i) {
         tags_ += chips[i].tag + ",";
