@@ -62,12 +62,17 @@ function ready(i) {
 }
 
 function save() {
+    for (var i = 0; i < piece.txt.length; ++i) {
+        piece.txt[i] = $("#textarea" + i).val();
+    }
+
     $.ajax({
             url: "api/update_translating_pieces",
             method: "POST",
             data: {
                 id: user_id,
                 piece_id: block_id,
+                txt: piece.txt,
                 status: "DONE"
             },
             dataType: "json"
