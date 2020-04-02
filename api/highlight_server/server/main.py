@@ -66,7 +66,7 @@ def split_to_pieces(number, name, lang, doc):
     ids = list()
     i = 0
     for i in range(len(doc.paragraphs)):
-        if i != "":
+        if doc.paragraphs[i].text.strip() != "":
             did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=i, freedom=True)
             ids.append(did)
     client = MongoClient()
@@ -318,7 +318,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc):
         ind = list(range(p["piece_begin"], p["piece_end"] + 1))
         i = 0
         while i < len(ind):
-            if file_data.paragraphs[i].text != "":
+            if file_data.paragraphs[i].text.strip() != "":
                 file_data.paragraphs[i].text = txts[i]
             i += 1
 
