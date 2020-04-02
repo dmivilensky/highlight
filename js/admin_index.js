@@ -12,7 +12,7 @@ function signin() {
         })
         .done(function(data) {
             console.log(data);
-            response = JSON.parse(data);
+            response = data;
             if (response.code == "OK") {
                 $.redirectGet("main.html", {
                     code: response.key,
