@@ -1,7 +1,3 @@
-Options All -Indexes
-IndexIgnore *
-IndexIgnore *.docx
-
 <Files .htaccess>
 	Order allow,deny
 	Deny from all
