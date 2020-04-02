@@ -138,6 +138,8 @@ function signup() {
                 $.redirectGet(home_page, {
                     user_id: id
                 });
+            } else if (response.code == "1000") {
+                alert("Пользователь с таким логинов уже существует!");
             }
         })
         .fail(function(jqXHR, status, error) {

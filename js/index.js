@@ -22,13 +22,16 @@ function signin() {
                 $.redirectGet(home_page, {
                     user_id: id
                 });
+            } else if (response.code == "2001") {
+                alert("Неверный пароль!");
+            } else if (response.code == "2000") {
+                alert("Неверный логин!");
+            } else if (response.code == "2002") {
+                alert("Аккаунт пока не подтверждён.");
             }
         })
         .fail(function(jqXHR, status, error) {
             console.log(error);
-            $.redirectGet(home_page, {
-                user_id: 120
-            });
         });
 }
 
