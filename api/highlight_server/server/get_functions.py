@@ -134,7 +134,7 @@ def get_pieces_stat():
     try:
         for t in l_s.find({"status": "PIECE", "translation_status": "UNDONE"}):
             acct = accs.find_one({"_id": ObjectId(t["translator"])})
-            docs.append({"translator": acct, "name": t["name"], "date": str(t["lastModified"])})
+            docs.append({"translator": acct["name"], "name": t["name"], "date": str(t["lastModified"])})
     except Exception as e:
         docs.append(str(e))
     return {"code": "OK", "document": docs}
