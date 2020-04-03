@@ -1,4 +1,4 @@
-function inc_importance(id_) {
+function inc_importance(i, id_) {
     $.ajax({
             url: "api/update_importance",
             method: "POST",
@@ -10,7 +10,7 @@ function inc_importance(id_) {
         .done(function(data) {
             response = data;
             if (response.code == "OK") {
-                document_info(id_);
+                document_info(i);
                 alert("Теперь этот файл будет иметь больший вес при переводе. Спасибо!")
             }
         })
@@ -95,7 +95,7 @@ function document_info(i) {
         <span class="title status-text">` + status_text + `</span><br>
         <span class="title">` + title + `</span>
                 
-        <a onclick="inc_importance('` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>
+        <a onclick="inc_importance(` + i + `, '` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>
         
         <div class="tags-block">
         ` + tags_markup + `
