@@ -59,8 +59,8 @@ def upt_d(params, result, iter=0):
         result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
         # result = {'code': "5001", 'document': type(path)}
     except docx.opc.exceptions.PackageNotFoundError:
-        if iter < 20:
-            time.sleep(5)
+        if iter < 8:
+            time.sleep(20)
             upt_d(params, result, iter=(iter + 1))
 
         result = {'code': path, 'document': str(os.path.isfile(path))}
