@@ -254,8 +254,13 @@ function list_documents(lang) {
                         tags_markup += `<div class="chip">` + tags[j] + `</div>`;
                     }
 
-                    var ready = list[i].pieces;
                     var total = list[i].doc.piece_number;
+                    var ready = 0;
+                    for (var j = 0; j < total; ++j) {
+                        if (!list[i].pieces[j].freedom) {
+                            ready += 1;
+                        }
+                    }
                     var progress = ((ready / total) * 100).toFixed(1) + "%";
 
                     $("#docs").append(`
