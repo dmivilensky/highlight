@@ -271,11 +271,15 @@ def get_pieces_stat_cover(request):
         result = {'code': "4040"}
         params = get_params(request)
         try:
-            key = params["key"]
-            if key == ADKEY:
-                result = gf.get_pieces_stat()
+            if "key" in params:
+                key = params["key"]
+                if key == ADKEY:
+                    result = gf.get_pieces_stat()
+                else:
+                    result = {'code': "2004"}
             else:
-                result = {'code': "2004"}
+                result = gf.get_pieces_stat()
+            
         except KeyError:
             result = {'code': "5001"}
     except Exception as e:
