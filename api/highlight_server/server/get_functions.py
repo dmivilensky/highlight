@@ -111,10 +111,10 @@ def get_file_stat():
     l_s = db.files_info
     docs = []
     for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
-        docs.append(t["status"])
+        # docs.append(t["status"])
         try:
             if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
-                docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
+                docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": 0})
         except Exception as e:
             docs.append(str(e))
         # else:
