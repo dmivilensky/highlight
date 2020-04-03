@@ -114,7 +114,7 @@ def get_file_stat():
         # docs.append(t["status"])
         try:
             if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
-                docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": 0})
+                docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"]})
         except Exception as e:
             docs.append(str(e))
         # else:
