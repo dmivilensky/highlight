@@ -111,14 +111,10 @@ def get_file_stat():
     l_s = db.files_info
     docs = []
     for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
-        # docs.append(t["status"])
-        try:
-            if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
-                docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"]})
-        except Exception as e:
-            docs.append(str(e))
-        # else:
-        #     docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
+        if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
+            docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"]})
+        else:
+            docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
     return {"code": "OK", "document": docs}
 
 
