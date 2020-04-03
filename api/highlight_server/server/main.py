@@ -327,14 +327,16 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
         i = 0
         c = 0
         j = 0
-        while j <= p["piece_end"] - p["piece_begin"]:
-            if file_data.paragraphs[i].text.strip() != "":
+        p_copy = list(file_data.paragraphs).copy()
+        while j <= p["piece_end"] - p["piece_begin"] and i < len(p_copy):
+            if p_copy[i].text.strip() != "":
                 if c >= p["piece_begin"]:
-                    file_data.paragraphs[i].text = txts[j]
+                    p_copy[i].text = txts[j]
                     j += 1
                 c += 1
             i += 1
 
+    file_data.paragraphs = p_copy
     the_stat = "TRANSLATED"
 
     chief_id = None
