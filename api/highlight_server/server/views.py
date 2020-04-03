@@ -346,10 +346,10 @@ def update_docs_cover(request, iter=0):
             # result = {'code': "5001", 'document': type(path)}
         except docx.opc.exceptions.PackageNotFoundError:
             if iter < 10:
-                time.sleep(1.5)
+                time.sleep(2)
                 update_docs_cover(request, iter=(iter+1))
 
-            result = {'code': "5000"}
+            result = {'code': path}
     except KeyError:
         result = {'code': "5001"}
 
