@@ -1,6 +1,10 @@
+import os
 import random
+import time
 
+import docx
 from bson import ObjectId
+from . import main as mn
 from pymongo import MongoClient
 
 
@@ -42,6 +46,25 @@ def replace_pieces_id(f, not_user=True, find_in_list=False):
                 p["reservation_date"] = str(p["reservation_date"])
 
     return f1
+
+
+def upt_d(params, result, iter=0):
+    name = params["name"]
+    lang = params["language"]
+    tags = params["tags"]
+    path = params["path"]
+    try:
+        file_data = mn.find_file_by_path(path) if not (path == "") else None
+        # file_data = "dfdfffff"
+        result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
+        # result = {'code': "5001", 'document': type(path)}
+    except docx.opc.exceptions.PackageNotFoundError:
+        if iter < 20:
+            time.sleep(5)
+            upt_d(params, result, iter=(iter + 1))
+
+        result = {'code': path, 'document': str(os.path.isfile(path))}
+    return result
 
 
 def users_replace_ids(result, replace_login=False, full_security=False):

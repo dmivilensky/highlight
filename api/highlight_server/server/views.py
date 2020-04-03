@@ -16,7 +16,8 @@ if __name__ != '__main__':
     from . import get_functions as gf
     from . import find_functions as ff
     from . import main as mn
-    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id
+    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, \
+    upt_d
 
 if __name__ == '__main__':
     # import registration as rg
@@ -342,25 +343,6 @@ def update_docs_cover(request):
 
     text = json.dumps(result)
     return HttpResponse(text)
-
-
-def upt_d(params, result, iter=0):
-    name = params["name"]
-    lang = params["language"]
-    tags = params["tags"]
-    path = params["path"]
-    try:
-        file_data = mn.find_file_by_path(path) if not (path == "") else None
-        # file_data = "dfdfffff"
-        # result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
-        # result = {'code': "5001", 'document': type(path)}
-    except docx.opc.exceptions.PackageNotFoundError:
-        if iter < 60:
-            time.sleep(5)
-            upt_d(params, result, iter=(iter + 1))
-
-        result = {'code': path, 'document': str(os.path.isfile(path))}
-    return result
 
 
 @csrf_exempt
