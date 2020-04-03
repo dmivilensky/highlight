@@ -110,11 +110,11 @@ def get_file_stat():
     db = client.highlight
     l_s = db.files_info
     docs = []
-    for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
-        if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
-            docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
-        else:
-            docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
+    # for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
+    #     if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
+    #         docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
+    #     else:
+    #         docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
     return {"code": "OK", "document": docs}
 
 
