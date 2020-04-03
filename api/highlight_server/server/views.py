@@ -267,17 +267,20 @@ def get_file_stat_cover(request):
 
 @csrf_exempt
 def get_pieces_stat_cover(request):
-    result = {'code': "4040"}
-    params = get_params(request)
     try:
-        key = params["key"]
-        if key == ADKEY:
-            result = gf.get_pieces_stat()
-        else:
-            result = {'code': "2004"}
+        result = {'code': "4040"}
+        params = get_params(request)
+        try:
+            key = params["key"]
+            if key == ADKEY:
+                result = gf.get_pieces_stat()
+            else:
+                result = {'code': "2004"}
             
-    except KeyError:
-        result = {'code': "5001"}
+        except KeyError:
+            result = {'code': "5001"}
+    except Exception as e:
+        result = {'code': str(e)}
 
     text = json.dumps(result)
     return HttpResponse(text)
