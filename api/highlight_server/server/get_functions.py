@@ -39,18 +39,19 @@ def get_from_db(search, tags, status=None):
         name_inrsc = search_set.intersection(doc_name_set)
 
         if len(search_tags) > 0:
-            if len(tag_inrsc) >= len(search_tags) * 0.8:
-                relev += len(tag_inrsc) / len(search_tags) * 7
+            relev += len(tag_inrsc) * 7
 
             if doc["lang"] in search_tags:
                 relev += 4
 
         if len(search_set) > 0:
-            if len(name_inrsc) >= 0.6 * len(doc_name_set):
-                relev += len(name_inrsc) / len(doc_name_set) * 10
+            relev += len(name_inrsc) * 20
 
             if doc_id in search_set_words:
                 relev += 8
+            
+            if doc["name"].find(search) != -1:
+                relev += 30
 
         if relev > 0:
             matching_docs.append((relev, doc))
