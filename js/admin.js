@@ -251,7 +251,6 @@ async function add_document() {
             });
             })
             .fail(async function (jqXHR, status, error) {
-                console.log(error);
                 await sleep(3000);
                 Ajax_server();
             });
