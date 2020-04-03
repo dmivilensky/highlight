@@ -335,7 +335,13 @@ def update_docs_cover(request):
     #     else:
     #         path = None
     params = get_params(request)
+    f = open('program_logs.txt', 'w+')
+    f.write('zas')
+    f.close()
     try:
+        f = open('program_logs.txt', 'w+')
+        f.write('zas')
+        f.close()
         result = upt_d(params, result)
     except KeyError:
         result = {'code': "5001"}
