@@ -1,4 +1,4 @@
-function inc_importance(id_) {
+function inc_importance(i, id_) {
     $.ajax({
             url: "api/update_importance",
             method: "POST",
@@ -8,10 +8,9 @@ function inc_importance(id_) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
-                document_info(id_);
+                document_info(i);
                 alert("Теперь этот файл будет иметь больший вес при переводе. Спасибо!")
             }
         })
@@ -79,6 +78,7 @@ function document_info(i) {
     var status = documents[i].status;
     var avatar = "";
     var status_text = "";
+    var importance_text = "";
     if (status == 'TRANSLATED') {
         avatar = `<i class="material-icons circle green">spellcheck</i>`;
         status_text = `Переведён и проверен`;
@@ -89,15 +89,14 @@ function document_info(i) {
         avatar = `<i class="material-icons circle">schedule</i>`;
         status_text = `В работе`;
     }
+    importance_text = `<a onclick="inc_importance(` + i + `, '` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>`;
 
     $("#details").append(`
     <li class="collection-item avatar">
         ` + avatar + `
         <span class="title status-text">` + status_text + `</span><br>
         <span class="title">` + title + `</span>
-                
-        <a onclick="inc_importance('` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>
-        
+        ` + importance_text + `
         <div class="tags-block">
         ` + tags_markup + `
         </div>
@@ -107,7 +106,7 @@ function document_info(i) {
             ` + original_text + `
         </div>
         <div class="row">
-            <div class="col s6">
+            <div class="col s12">
             <a class="waves-effect waves-light btn grey modal-trigger send-file" href="#modal1"><i class="material-icons left">send</i>Отправить на почту</a>
             </div>
         </div>
@@ -133,7 +132,6 @@ function update_search() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#docs").empty();
@@ -163,7 +161,7 @@ function update_search() {
                     $("#docs").append(`
                         <li class="collection-item avatar" onclick="document_info(` + i + `);">
                             ` + avatar + `
-                            <span class="title"><a href="">` + title + `</a></span>
+                            <span class="title"><a>` + title + `</a></span>
                             <div class="tags-mu">
                             ` + tags_markup + `
                             </div>

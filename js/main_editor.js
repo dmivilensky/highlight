@@ -12,7 +12,6 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK" && response.result) {
                 success();
@@ -28,9 +27,17 @@ function check_user(success) {
 
 var doc_id;
 
-function corrected() {
+async function corrected() {
     var extention = $("#corrections_path").val().slice(-4, -1) + $("#corrections_path").val().slice(-1);
+    if (extention != "docx") {
+        alert("Необходимо загрузить исправленный .docx файл!");
+    } else {
+        var fname = 'new_file' + getRandomInt(10000) + '.docx';
+        $("#corrections_path").val(fname);
+        $("#file").submit();
 
+        Ajax_server();
+    }
     function Ajax_server() {
         $.ajax({
             url: "api/verify_file",
@@ -47,6 +54,8 @@ function corrected() {
                 response = data;
                 if (response.code != "OK") {
                     alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
+                } else {
+                    alert('Файл загружен!');
                 }
             })
             .fail(async function (jqXHR, status, error) {
@@ -56,15 +65,6 @@ function corrected() {
             });
     }
 
-    if (extention != "docx") {
-        alert("Необходимо загрузить исправленный .docx файл!");
-    } else {
-        var fname = 'new_file' + getRandomInt(10000) + '.docx';
-        $("#corrections_path").val(fname);
-        $("#file").submit();
-
-        Ajax_server();
-    }
 }
 
 var title = "";
@@ -87,9 +87,10 @@ function document_info(i) {
     var original = documents[i].orig_path;
     var original_text = "";
     if (original) {
+        var or_s = original.split('/');
         original_text = `
         <div class="col s6">
-        <a href="` + original + `" target="_blank" class="waves-effect waves-green btn-flat download-btns"><i class="material-icons left">get_app</i>Скачать оригинал</a>
+        <a href="files/` + or_s[or_s.length - 1] + `" target="_blank" class="waves-effect waves-green btn-flat download-btns"><i class="material-icons left">get_app</i>Скачать оригинал</a>
         </div>
         `;
     }
@@ -97,9 +98,10 @@ function document_info(i) {
     translation = documents[i].path;
     var translation_text = "";
     if (translation) {
+        var tr_s = translation.split('/');
         translation_text = `
         <div class="col s6">
-        <a href="` + translation + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
+        <a href="files/` + tr_s[tr_s.length - 1] + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
         </div>
         `;
     }
@@ -114,12 +116,8 @@ function document_info(i) {
         </div>
         
         <div class="row editor-buttons">
-            <div class="col s6">
-            <a href="` + translation + `" target="_blank" class="waves-effect waves-light btn green download-translation"><i class="material-icons left">get_app</i>Скачать перевод</a>
-            </div>
-            <div class="col s6">
-            <a href="` + original + `" target="_blank" class="waves-effect waves-green btn-flat download-original"><i class="material-icons left">get_app</i>Скачать оригинал</a>
-            </div>
+            ` + translation_text + `
+            ` + original_text + `
         </div>
         <div class="row">
             <div class="col s6">
@@ -148,7 +146,6 @@ function update_search() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#docs").empty();
@@ -167,7 +164,7 @@ function update_search() {
                     $("#docs").append(`
                     <li class="collection-item avatar" onclick="document_info(` + i + `);">
                         <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">` + title + `</a></span>
+                        <span class="title"><a>` + title + `</a></span>
                         <div class="docs-tags">
                         ` + tags_markup + `
                         </div>

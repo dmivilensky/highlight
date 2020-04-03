@@ -15,7 +15,6 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK" && response.key == key_) {
                 success();
@@ -41,7 +40,6 @@ function approve_user(login) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 load_users();
@@ -64,7 +62,6 @@ function delete_user(login) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 load_users();
@@ -83,7 +80,6 @@ function load_users() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#users").empty();
@@ -206,7 +202,20 @@ async function add_document() {
 
     var real_name = $("#filename")
     var extention = real_name.val().slice(-4, -1) + real_name.val().slice(-1);
+    if (extention != "docx") {
+        alert("Необходимо загрузить .docx файл!");
+    } else {
+        var fname = 'new_file' + getRandomInt(10000) + '.docx';
+        $("#filename").val(fname);
+        $("#file").submit();
 
+        var finame = $("#fname").val();
+        if (finame.trim() == "") {
+            finame = real_name.val().slice(0, -5);
+        }
+
+        Ajax_server();
+    }
     function Ajax_server() {
         $.ajax({
             url: "/api/update_docs",
@@ -233,23 +242,6 @@ async function add_document() {
                 Ajax_server();
             });
     }
-
-    if (extention != "docx") {
-        alert("Необходимо загрузить .docx файл!");
-    } else {
-        var fname = 'new_file' + getRandomInt(10000) + '.docx';
-        $("#filename").val(fname);
-        $("#file").submit();
-
-        await sleep(5000);
-
-        var finame = $("#fname").val();
-        if (finame.trim() == "") {
-            finame = real_name.val().slice(0, -5);
-        }
-
-        Ajax_server();
-    }
 }
 
 function load_stat() {
@@ -262,7 +254,6 @@ function load_stat() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 var stat = response.document;
@@ -276,9 +267,9 @@ function load_stat() {
         });
 }
 
-function load_work() { // TODO or NOT TODO :)
+function load_work() {
     $.ajax({
-            url: "../api/get_translator_stats",
+            url: "/api/get_pieces_stat",
             method: "POST",
             data: { key: key_ },
             dataType: "json"
@@ -288,75 +279,23 @@ function load_work() { // TODO or NOT TODO :)
             $("#work").empty();
 
             for (var i = 0; i < response.document.length; ++i) {
-                current_user = response.document[i];
-                for (var j = 0; j < current_user.pieces.length; ++j) {
-                    current_piece = current_user.pieces[j];
-                    var name = current_user.name + current_user.surname + current_user.mi;
-                    var document = "«" + current_piece.name + "»";
-                    var date = current_piece.reservation_date;
-                    var paragraph_begin = current_piece.pieces[j].indexes[0];
-                    var paragraph_end = current_piece.indexes[current_piece.indexes.length - 1];
-
-                    var vk = current_user.vk;
-                    var fb = current_user.fb;
-                    var tg = current_user.tg;
-
-                    var social_markup = "";
-                    if (vk != "") {
-                        social_markup += "VK: " + vk + "<br>";
-                    }
-                    if (fb != "") {
-                        social_markup += "FB: " + fb + "<br>";
-                    }
-                    if (tg != "") {
-                        social_markup += "TG: " + tg + "<br>";
-                    }
-                    social_markup = social_markup.slice(0, -1);
-
-                    $("#work").append(`
-                <tr>
-                    <td>` + name + `<br>` + social_markup + `</td>
-                    <td>` + document + `<br>Абзацы: ` + paragraph_begin + `-` + paragraph_end + `</td>
-                    <td>` + date + `</td>
-                </tr>
-                `);
-                }
-            }
-        })
-        .fail(function(jqXHR, status) {
-            $("#work").empty();
-
-            for (var i = 0; i < 10; ++i) {
-                var name = "Иванов Иван Иванович";
-                var document = "«" + "Disinfection instructions" + "»";
-                var date = "01.01.1970";
-                var paragraph_begin = 10;
-                var paragraph_end = 30;
-
-                var vk = "example";
-                var fb = "";
-                var tg = "";
-
-                var social_markup = "";
-                if (vk != "") {
-                    social_markup += "VK: " + vk + "<br>";
-                }
-                if (fb != "") {
-                    social_markup += "FB: " + fb + "<br>";
-                }
-                if (tg != "") {
-                    social_markup += "TG: " + tg + "<br>";
-                }
-                social_markup = social_markup.slice(0, -1);
+                var name = response.document[i].translator;
+                var document = "«" + response.document[i].name + "»";
+                var date = response.document[i].date.split(" ")[0];
+                var pb = response.document[i].pb;
+                var pe = response.document[i].pe;
 
                 $("#work").append(`
                 <tr>
-                    <td>` + name + `<br>` + social_markup + `</td>
-                    <td>` + document + `<br>Абзацы: ` + paragraph_begin + `-` + paragraph_end + `</td>
+                    <td>` + name + `</td>
+                    <td>` + document + (pb == pe ? `<br>Абзацы: ` + pb + `-` + pe : `<br>Абзац: ` + pb) + `</td>
                     <td>` + date + `</td>
                 </tr>
                 `);
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
@@ -370,7 +309,6 @@ function load_translators() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#translators").empty();
@@ -378,7 +316,10 @@ function load_translators() {
                 var data_translator = response.document;
                 for (var i = 0; i < data_translator.length; ++i) {
                     var name = data_translator[i].name;
-                    var paragraphs = data_translator[i].translated;
+                    var paragraphs = 0;
+                    for (var j = 0; j < data_translator[i].pieces.length; ++j) {
+                        paragraphs += data_translator[i].pieces[j].indexes.length;
+                    }
 
                     var vk = data_translator[i].vk;
                     var fb = data_translator[i].fb;
@@ -419,7 +360,6 @@ function load_documents() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#documents").empty();
@@ -469,7 +409,6 @@ function save_db() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 var db_data = "";

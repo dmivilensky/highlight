@@ -35,7 +35,6 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK" && response.result) {
                 success();
@@ -56,6 +55,8 @@ function edit_block(id) {
     });
 }
 
+var inserted = [];
+
 function list_blocks() {
     $.ajax({
             url: "api/find_pieces",
@@ -66,12 +67,19 @@ function list_blocks() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
+            $("#blocks").empty();
+            inserted = [];
+
             response = data;
             if (response.code == "OK") {
                 var pieces = response.document;
 
                 for (var i = 0; i < pieces.length; ++i) {
+                    if (inserted.includes(pieces[i]._id)) {
+                        continue;
+                    }
+
+                    inserted.push(pieces[i]._id);
                     var text = pieces[i].txt;
                     var url_text = text_uri(text.join("\n\n"));
 
@@ -134,13 +142,11 @@ function select_paragraph(i, id) {
     if (i > max_checked) {
         var all_enable = true;
         for (var j = max_checked + 1; j < i; ++j) {
-            console.log($("#status" + j).html());
             if ($("#status" + j).html() == "not") {
                 all_enable = false;
                 break;
             }
         }
-        console.log(all_enable);
         if (all_enable) {
             for (var j = max_checked + 1; j < i; ++j) {
                 selected_paragraphs.add(j);
@@ -153,7 +159,12 @@ function select_paragraph(i, id) {
 }
 
 function create_block() {
+    if (selected_paragraphs.size == 0) {
+        return;
+    }
+
     var p = Array.from(selected_paragraphs).sort(function(a, b) { return a - b });
+    selected_paragraphs.empty();
     var all_correct = true;
     for (var i = 1; i < p.length; ++i) {
         if (p[i] - p[i - 1] != 1) {
@@ -161,8 +172,6 @@ function create_block() {
             break;
         }
     }
-
-    console.log(p);
 
     var pids = [];
     for (var i = 0; i < p.length; ++i) {
@@ -172,7 +181,6 @@ function create_block() {
     if (!all_correct) {
         alert("Выбирать можно только последовательно идущие абзацы!");
     } else {
-        console.log(user_id);
         $.ajax({
                 url: "api/update_pieces",
                 method: "POST",
@@ -185,7 +193,6 @@ function create_block() {
                 dataType: "json"
             })
             .done(function(data) {
-                console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     close_modal();
@@ -239,7 +246,6 @@ function list_documents(lang) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
 
@@ -247,15 +253,19 @@ function list_documents(lang) {
                 for (var i = 0; i < list.length; ++i) {
                     var tags = list[i].doc.tags.split(",");
                     var tags_markup = "";
-                    console.log(pieces_dict);
                     pieces_dict[list[i].doc._id] = list[i].pieces;
 
                     for (var j = 0; j < tags.length; ++j) {
                         tags_markup += `<div class="chip">` + tags[j] + `</div>`;
                     }
 
-                    var ready = list[i].pieces;
                     var total = list[i].doc.piece_number;
+                    var ready = 0;
+                    for (var j = 0; j < total; ++j) {
+                        if (!list[i].pieces[j].freedom) {
+                            ready += 1;
+                        }
+                    }
                     var progress = ((ready / total) * 100).toFixed(1) + "%";
 
                     $("#docs").append(`

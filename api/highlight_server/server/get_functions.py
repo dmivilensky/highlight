@@ -39,21 +39,21 @@ def get_from_db(search, tags, status=None):
         name_inrsc = search_set.intersection(doc_name_set)
 
         if len(search_tags) > 0:
-            if len(tag_inrsc) >= len(search_tags) * 0.8:
-                relev += len(tag_inrsc) / len(search_tags) * 7
+            relev += len(tag_inrsc) * 7
 
             if doc["lang"] in search_tags:
                 relev += 4
 
         if len(search_set) > 0:
-            if len(name_inrsc) >= 0.6 * len(doc_name_set):
-                relev += len(name_inrsc) / len(doc_name_set) * 10
+            relev += len(name_inrsc) * 20
 
             if doc_id in search_set_words:
                 relev += 8
+            
+            if doc["name"].find(search) != -1:
+                relev += 30
 
-        if relev > 0:
-            matching_docs.append((relev, doc))
+        matching_docs.append((relev, doc))
 
     return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[:50]}
 
@@ -111,10 +111,38 @@ def get_file_stat():
     l_s = db.files_info
     docs = []
     for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
-        if t["status"] in {"TRANSLATED", "NEED_CHECK"}:
-            docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
+        if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
+            docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"]})
         else:
-            docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
+            done_pieces = 0
+            for p in l_s.find({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}):
+                done_pieces += p["piece_end"] - p["piece_begin"] + 1
+            docs.append({"name": t["name"], "pieces_info": {"done_pieces": done_pieces, "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
+    return {"code": "OK", "document": docs}
+
+
+def get_pieces_stat():
+    """
+    :return: pieces
+    :structure: dict('code': string, 'document': list(dict('name': string, 'status': string, 'importance': int, 'pieces_info': dict('done_pieces': int, 'all_pieces': int) (or dict() if file is translated))))
+    """
+    client = MongoClient()
+    db = client.highlight
+    l_s = db.files_info
+    accs = db.accounts
+    docs = []
+    try:
+        for t in l_s.find({"status": "PIECE", "translation_status": "UNDONE"}):
+            acct = accs.find_one({"_id": ObjectId(t["translator"])})
+            docs.append({
+                "translator": acct["name"], 
+                "name": t["name"], 
+                "date": str(t["lastModified"]),
+                "pb": t["piece_begin"],
+                "pe": t["piece_end"]
+                })
+    except Exception as e:
+        docs.append(str(e))
     return {"code": "OK", "document": docs}
 
 
