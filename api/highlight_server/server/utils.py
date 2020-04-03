@@ -77,6 +77,23 @@ def upt_d(params, result):
     return result
 
 
+def for_verif(params, result):
+    did = params["decision"]
+    uid = params["id"]
+    path = params["path"]
+    iter = 0
+    while iter < 20:
+        if not(check_for_exeption(path)):
+            result = mn.verify_file(did, uid, (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path))
+            break
+        iter += 1
+        time.sleep(3)
+
+    if iter >= 20:
+        result = {'code': "5000"}
+    return result
+
+
 def users_replace_ids(result, replace_login=False, full_security=False):
     result1 = result
     for us in result1["document"]:

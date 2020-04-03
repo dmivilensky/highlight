@@ -36,6 +36,8 @@ async function corrected() {
         $("#corrections_path").val(fname);
         $("#file").submit();
 
+        await sleep(2000);
+
         Ajax_server();
     }
     function Ajax_server() {

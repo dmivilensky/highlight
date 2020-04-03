@@ -18,7 +18,7 @@ if __name__ != '__main__':
     from . import find_functions as ff
     from . import main as mn
     from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, \
-    upt_d
+    upt_d, for_verif
 
 if __name__ == '__main__':
     # import registration as rg
@@ -300,10 +300,8 @@ def verify_file_cover(request):
     params = get_params(request)
     try:
         # file_data = mn.find_file_by_path(path) if not(path is None) else None
-        did = params["decision"]
-        uid = params["id"]
-        path = params["path"]
-        result = mn.verify_file(did, uid, (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path))
+        result = for_verif(params, result)
+
     except KeyError:
         result = {'code': "5001"}
 
