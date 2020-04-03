@@ -8,6 +8,10 @@ from . import main as mn
 from pymongo import MongoClient
 import asyncio
 
+SECS = 5
+
+ITERATIONS = 30
+
 
 def doc_ids_replace(result):
     client = MongoClient()
@@ -64,7 +68,7 @@ def upt_d(params, result):
     tags = params["tags"]
     path = params["path"]
     iter = 0
-    while iter < 20:
+    while iter < ITERATIONS:
         if not(check_for_exeption(path)):
             file_data = mn.find_file_by_path(path) if not (path == "") else None
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
@@ -76,9 +80,9 @@ def upt_d(params, result):
         f.write('vi: ' + str(iter))
         f.close()
         iter += 1
-        time.sleep(3)
+        time.sleep(SECS)
 
-    if iter >= 20:
+    if iter >= ITERATIONS:
         result = {'code': "5000"}
     return result
 
@@ -88,7 +92,7 @@ def for_verif(params, result):
     uid = params["id"]
     path = params["path"]
     iter = 0
-    while iter < 20:
+    while iter < ITERATIONS:
         if not(check_for_exeption(path)):
             result = mn.verify_file(did, uid, (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path))
             f = open('program_logs.txt', 'w+')
@@ -99,9 +103,9 @@ def for_verif(params, result):
         f.write('fi: '+str(iter))
         f.close()
         iter += 1
-        time.sleep(3)
+        time.sleep(SECS)
 
-    if iter >= 20:
+    if iter >= ITERATIONS:
         result = {'code': "5000"}
     return result
 

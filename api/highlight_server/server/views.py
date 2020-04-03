@@ -346,6 +346,10 @@ def update_docs_cover(request):
     except KeyError:
         result = {'code': "5001"}
 
+    f = open('program_logs.txt', 'w+')
+    f.write(str(result))
+    f.close()
+
     text = json.dumps(result)
     return HttpResponse(text)
 
