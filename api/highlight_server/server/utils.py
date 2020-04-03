@@ -54,9 +54,9 @@ def check_for_exeption(path):
         return False
     try:
         mn.find_file_by_path(path)
-        return True
-    except docx.opc.exceptions.PackageNotFoundError:
         return False
+    except docx.opc.exceptions.PackageNotFoundError:
+        return True
 
 def upt_d(params, result):
     name = params["name"]
@@ -64,15 +64,15 @@ def upt_d(params, result):
     tags = params["tags"]
     path = params["path"]
     iter = 0
-    while iter < 12:
+    while iter < 20:
         if not(check_for_exeption(path)):
             file_data = mn.find_file_by_path(path) if not (path == "") else None
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
             break
         iter += 1
-        time.sleep(10)
+        time.sleep(3)
 
-    if iter >= 12:
+    if iter >= 20:
         result = {'code': "5000"}
     return result
 
