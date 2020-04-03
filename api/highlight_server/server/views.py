@@ -345,8 +345,8 @@ def update_docs_cover(request, iter=0):
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
             # result = {'code': "5001", 'document': type(path)}
         except docx.opc.exceptions.PackageNotFoundError:
-            if iter < 10:
-                time.sleep(2)
+            if iter < 100:
+                time.sleep(5)
                 update_docs_cover(request, iter=(iter+1))
 
             result = {'code': path}
