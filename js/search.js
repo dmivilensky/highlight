@@ -88,8 +88,8 @@ function document_info(i) {
     } else {
         avatar = `<i class="material-icons circle">schedule</i>`;
         status_text = `В работе`;
-        importance_text = `<a onclick="inc_importance(` + i + `, '` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>`;
     }
+    importance_text = `<a onclick="inc_importance(` + i + `, '` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>`;
 
     $("#details").append(`
     <li class="collection-item avatar">
