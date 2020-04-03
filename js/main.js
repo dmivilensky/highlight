@@ -55,6 +55,8 @@ function edit_block(id) {
     });
 }
 
+var inserted = [];
+
 function list_blocks() {
     $.ajax({
             url: "api/find_pieces",
@@ -65,11 +67,19 @@ function list_blocks() {
             dataType: "json"
         })
         .done(function(data) {
+            $("#blocks").empty();
+            inserted = [];
+
             response = data;
             if (response.code == "OK") {
                 var pieces = response.document;
 
                 for (var i = 0; i < pieces.length; ++i) {
+                    if (inserted.includes(pieces[i]._id)) {
+                        continue;
+                    }
+
+                    inserted.push(pieces[i]._id);
                     var text = pieces[i].txt;
                     var url_text = text_uri(text.join("\n\n"));
 
@@ -149,7 +159,12 @@ function select_paragraph(i, id) {
 }
 
 function create_block() {
+    if (selected_paragraphs.size == 0) {
+        return;
+    }
+
     var p = Array.from(selected_paragraphs).sort(function(a, b) { return a - b });
+    selected_paragraphs.empty();
     var all_correct = true;
     for (var i = 1; i < p.length; ++i) {
         if (p[i] - p[i - 1] != 1) {
