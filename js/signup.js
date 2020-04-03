@@ -75,6 +75,23 @@ function signup() {
     var is_editor = $('#editor').is(':checked');
     var is_translator = $('#translator').is(':checked');
 
+    if (name_val.trim() == "") {
+        alert("Необходимо ввести имя.");
+        return;
+    }
+    if (email_val.trim() == "") {
+        alert("Необходимо ввести почту.");
+        return;
+    }
+    if (login_val.trim() == "") {
+        alert("Необходимо ввести логин.");
+        return;
+    }
+    if (password_val.trim() == "") {
+        alert("Необходимо ввести пароль.");
+        return;
+    }
+
     var status_ = "";
     if (is_editor && is_translator) {
         status_ = "both";
@@ -111,6 +128,11 @@ function signup() {
     }
     lang = lang.slice(0, -1);
 
+    if (lang.trim() == "") {
+        alert("Необходимо выбрать хотя бы один язык.");
+        return;
+    }
+
     var home_page = is_editor ? "main_editor.html" : "main.html";
     $.ajax({
             url: "api/registration",
@@ -138,7 +160,7 @@ function signup() {
                     user_id: id
                 });
             } else if (response.code == "1000") {
-                alert("Пользователь с таким логинов уже существует!");
+                alert("Пользователь с таким логином уже существует!");
             }
         })
         .fail(function(jqXHR, status, error) {

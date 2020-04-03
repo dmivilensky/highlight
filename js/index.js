@@ -40,6 +40,15 @@ function signin() {
     var password_val = $("#password").val();
     var is_editor = $('#editor').is(':checked');
 
+    if (login_val.trim() == "") {
+        alert("Необходимо ввести логин.");
+        return;
+    }
+    if (password_val.trim() == "") {
+        alert("Необходимо ввести пароль.");
+        return;
+    }
+
     var home_page = is_editor ? "main_editor.html" : "main.html";
     var status = is_editor ? "chief" : "translator";
 
