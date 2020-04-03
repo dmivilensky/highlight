@@ -40,14 +40,6 @@ async function corrected() {
     }
     function Ajax_server() {
         $.ajax({
-            url: '../files/' + fname,
-            method: "POST",
-            data: {
-            },
-            dataType: "json"
-        })
-            .done(function (data) {
-                $.ajax({
             url: "api/verify_file",
             method: "POST",
             data: {
@@ -57,23 +49,20 @@ async function corrected() {
             },
             dataType: "json"
         })
-            .done(function (data) {
-                console.log(data);
-                response = data;
-                if (response.code != "OK") {
-                    alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
-                } else {
-                    alert('Файл загружен!');
-                }
-            })
-            .fail(async function (jqXHR, status, error) {
-                console.log(error);
-            });
-            })
-            .fail(async function (jqXHR, status, error) {
-                await sleep(3000);
-                Ajax_server();
-            });
+        .done(function (data) {
+            console.log(data);
+            response = data;
+            if (response.code != "OK") {
+                alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
+            } else {
+                alert('Файл загружен!');
+            }
+        })
+        .fail(async function (jqXHR, status, error) {
+            console.log(error);
+            await sleep(3000);
+            Ajax_server();
+        });
     }
 
 }

@@ -220,14 +220,6 @@ async function add_document() {
     }
     function Ajax_server() {
         $.ajax({
-            url: '../files/' + fname,
-            method: "POST",
-            data: {
-            },
-            dataType: "json"
-        })
-            .done(function (data) {
-                $.ajax({
             url: "/api/update_docs",
             method: "POST",
             data: {
@@ -239,21 +231,18 @@ async function add_document() {
             },
             dataType: "json"
         })
-            .done(function (data) {
-                console.log(data);
-                response = data;
-                if (response.code == "OK") {
-                    alert('Файл загружен!');
-                }
-            })
-            .fail(async function (jqXHR, status, error) {
-                console.log(error);
-            });
-            })
-            .fail(async function (jqXHR, status, error) {
-                await sleep(3000);
-                Ajax_server();
-            });
+        .done(function (data) {
+            console.log(data);
+            response = data;
+            if (response.code == "OK") {
+                alert('Файл загружен!');
+            }
+        })
+        .fail(async function (jqXHR, status, error) {
+            console.log(error);
+            await sleep(3000);
+            Ajax_server();
+        });
     }
 }
 
