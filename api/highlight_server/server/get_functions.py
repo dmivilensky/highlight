@@ -129,10 +129,12 @@ def get_pieces_stat():
     client = MongoClient()
     db = client.highlight
     l_s = db.files_info
+    accs = db.accounts
     docs = []
     try:
         for t in l_s.find({"status": "PIECE", "translation_status": "UNDONE"}):
-            docs.append({"translator": t["translator"], "name": t["name"], "date": str(t["lastModified"])})
+            acct = accs.find_one({"_id": t["translator"]})
+            docs.append({"translator": acct, "name": t["name"], "date": str(t["lastModified"])})
     except Exception as e:
         docs.append(str(e))
     return {"code": "OK", "document": docs}
