@@ -78,6 +78,7 @@ function document_info(i) {
     var status = documents[i].status;
     var avatar = "";
     var status_text = "";
+    var importance_text = "";
     if (status == 'TRANSLATED') {
         avatar = `<i class="material-icons circle green">spellcheck</i>`;
         status_text = `Переведён и проверен`;
@@ -87,6 +88,7 @@ function document_info(i) {
     } else {
         avatar = `<i class="material-icons circle">schedule</i>`;
         status_text = `В работе`;
+        importance_text = `<a onclick="inc_importance(` + i + `, '` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>`;
     }
 
     $("#details").append(`
@@ -94,9 +96,7 @@ function document_info(i) {
         ` + avatar + `
         <span class="title status-text">` + status_text + `</span><br>
         <span class="title">` + title + `</span>
-                
-        <a onclick="inc_importance(` + i + `, '` + documents[i]._id + `');" class="secondary-content tooltipped" data-position="left" data-tooltip="Очень нужно!"><i class="material-icons grey-star">star_border</i></a>
-        
+        ` + importance_text + `
         <div class="tags-block">
         ` + tags_markup + `
         </div>
