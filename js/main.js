@@ -164,7 +164,7 @@ function create_block() {
     }
 
     var p = Array.from(selected_paragraphs).sort(function(a, b) { return a - b });
-    selected_paragraphs.empty();
+    selected_paragraphs.clear();
     var all_correct = true;
     for (var i = 1; i < p.length; ++i) {
         if (p[i] - p[i - 1] != 1) {
