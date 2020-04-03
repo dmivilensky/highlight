@@ -69,6 +69,7 @@ def upt_d(params, result):
             file_data = mn.find_file_by_path(path) if not (path == "") else None
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
             break
+        iter += 1
         time.sleep(10)
 
     if iter >= 12:
