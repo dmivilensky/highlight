@@ -364,7 +364,10 @@ function load_translators() {
                 var data_translator = response.document;
                 for (var i = 0; i < data_translator.length; ++i) {
                     var name = data_translator[i].name;
-                    var paragraphs = data_translator[i].translated;
+                    var paragraphs = 0;
+                    for (var j = 0; j < data_translator[i].pieces.length; ++j) {
+                        paragraphs += data_translator[i].pieces[j].indexes.length;
+                    }
 
                     var vk = data_translator[i].vk;
                     var fb = data_translator[i].fb;
