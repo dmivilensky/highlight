@@ -193,6 +193,8 @@ function create_block() {
                 dataType: "json"
             })
             .done(function(data) {
+
+                console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     close_modal();
