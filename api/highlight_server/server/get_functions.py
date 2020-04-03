@@ -115,7 +115,7 @@ def get_file_stat():
         try:
             if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
                 docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": l_s.find_one({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "WAITING_FOR_TRANSLATION"})["importance"]})
-        except RuntimeError as e:
+        except Exception as e:
             docs.append(str(e))
         # else:
         #     docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
