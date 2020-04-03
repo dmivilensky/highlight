@@ -181,19 +181,19 @@ function create_block() {
     if (!all_correct) {
         alert("Выбирать можно только последовательно идущие абзацы!");
     } else {
+        console.log(pids);
         $.ajax({
                 url: "api/update_pieces",
                 method: "POST",
                 data: {
                     id: user_id,
                     document_id: selected_document,
-                    pcid: pids.join(","),
+                    pcid: pids.join("#del#"),
                     to_language: "RUS"
                 },
                 dataType: "json"
             })
             .done(function(data) {
-
                 console.log(data);
                 response = data;
                 if (response.code == "OK") {
