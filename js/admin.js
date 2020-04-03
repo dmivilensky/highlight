@@ -274,78 +274,24 @@ function load_work() {
             response = data;
             $("#work").empty();
 
-            console.log(response);
-
             for (var i = 0; i < response.document.length; ++i) {
-                current_user = response.document[i];
-                for (var j = 0; j < current_user.pieces.length; ++j) {
-                    current_piece = current_user.pieces[j];
-                    var name = current_user.name + current_user.surname + current_user.mi;
-                    var document = "«" + current_piece.name + "»";
-                    var date = current_piece.reservation_date;
-                    var paragraph_begin = current_piece.pieces[j].indexes[0];
-                    var paragraph_end = current_piece.indexes[current_piece.indexes.length - 1];
-
-                    var vk = current_user.vk;
-                    var fb = current_user.fb;
-                    var tg = current_user.tg;
-
-                    var social_markup = "";
-                    if (vk != "") {
-                        social_markup += "VK: " + vk + "<br>";
-                    }
-                    if (fb != "") {
-                        social_markup += "FB: " + fb + "<br>";
-                    }
-                    if (tg != "") {
-                        social_markup += "TG: " + tg + "<br>";
-                    }
-                    social_markup = social_markup.slice(0, -1);
-
-                    $("#work").append(`
-                <tr>
-                    <td>` + name + `<br>` + social_markup + `</td>
-                    <td>` + document + `<br>Абзацы: ` + paragraph_begin + `-` + paragraph_end + `</td>
-                    <td>` + date + `</td>
-                </tr>
-                `);
-                }
-            }
-        })
-        .fail(function(jqXHR, status) {
-            $("#work").empty();
-
-            for (var i = 0; i < 10; ++i) {
-                var name = "Иванов Иван Иванович";
-                var document = "«" + "Disinfection instructions" + "»";
-                var date = "01.01.1970";
-                var paragraph_begin = 10;
-                var paragraph_end = 30;
-
-                var vk = "example";
-                var fb = "";
-                var tg = "";
-
-                var social_markup = "";
-                if (vk != "") {
-                    social_markup += "VK: " + vk + "<br>";
-                }
-                if (fb != "") {
-                    social_markup += "FB: " + fb + "<br>";
-                }
-                if (tg != "") {
-                    social_markup += "TG: " + tg + "<br>";
-                }
-                social_markup = social_markup.slice(0, -1);
+                var name = response.document[i].translator;
+                var document = "«" + response.document[i].name + "»";
+                var date = response.document[i].date.split(" ")[0];
+                var pb = response.document[i].pb;
+                var pe = response.document[i].pe;
 
                 $("#work").append(`
                 <tr>
-                    <td>` + name + `<br>` + social_markup + `</td>
-                    <td>` + document + `<br>Абзацы: ` + paragraph_begin + `-` + paragraph_end + `</td>
+                    <td>` + name + `</td>
+                    <td>` + document + (pb == pe ? `<br>Абзацы: ` + pb + `-` + pe : `<br>Абзац: ` + pb) + `</td>
                     <td>` + date + `</td>
                 </tr>
                 `);
             }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
         });
 }
 
