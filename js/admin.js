@@ -220,7 +220,7 @@ async function add_document() {
     }
     function Ajax_server() {
         $.ajax({
-            url: 'highlight.spb.ru/files/' + fname,
+            url: '../files/' + fname,
             method: "POST",
             data: {
             },
