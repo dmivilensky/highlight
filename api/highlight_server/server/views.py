@@ -4,8 +4,9 @@ import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import UploadFileForm
-from docx import Document
+# from .forms import UploadFileForm
+import docx
+import time
 
 HTTPMETHOD: str = "POST"
 
@@ -324,7 +325,7 @@ def update_importance_cover(request):
 
 
 @csrf_exempt
-def update_docs_cover(request):
+def update_docs_cover(request, iter=0):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     #     form = UploadFileForm(get_params(request), request.FILES)
@@ -338,10 +339,17 @@ def update_docs_cover(request):
         lang = params["language"]
         tags = params["tags"]
         path = params["path"]
-        file_data = mn.find_file_by_path(path) if not(path == "") else None
-        # file_data = "dfdfffff"
-        result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
-        # result = {'code': "5001", 'document': type(path)}
+        try:
+            file_data = mn.find_file_by_path(path) if not(path == "") else None
+            # file_data = "dfdfffff"
+            result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
+            # result = {'code': "5001", 'document': type(path)}
+        except docx.opc.exceptions.PackageNotFoundError:
+            if iter < 10:
+                time.sleep(1.5)
+                update_docs_cover(request, iter=(iter+1))
+
+            result = {'code': "5000"}
     except KeyError:
         result = {'code': "5001"}
 
@@ -430,6 +438,10 @@ def check_user(request):
 @csrf_exempt
 def test():
     print(ADKEY)
+    try:
+        mn.find_file_by_path("fsfsdfsf")
+    except docx.opc.exceptions.PackageNotFoundError:
+        print('err')
 
 
 if __name__ == '__main__':

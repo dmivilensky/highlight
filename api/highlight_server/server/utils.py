@@ -1,3 +1,5 @@
+import random
+
 from bson import ObjectId
 from pymongo import MongoClient
 
@@ -69,7 +71,7 @@ def create_name_by_user(uac):
 
 
 def handle_uploaded_file(f):
-    path = 'name.docx'
+    path = '/var/www/html/highlight.spb.ru/public_html/files/new_file' + str(random.randint(0, 99999)) + str(random.randint(0, 99999))
     with open('name.docx', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)

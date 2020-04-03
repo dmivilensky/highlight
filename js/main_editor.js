@@ -53,7 +53,7 @@ async function corrected() {
             console.log(data);
             response = data;
             if (response.code != "OK") {
-                alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
+                alert('Проблемы соединения с сервером. Попробуйте повторить позже. Код ошибки: ' + response.code);
             } else {
                 alert('Файл загружен!');
             }
