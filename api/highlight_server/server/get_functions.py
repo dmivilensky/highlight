@@ -53,8 +53,7 @@ def get_from_db(search, tags, status=None):
             if doc["name"].find(search) != -1:
                 relev += 30
 
-        if relev > 0:
-            matching_docs.append((relev, doc))
+        matching_docs.append((relev, doc))
 
     return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[:50]}
 
