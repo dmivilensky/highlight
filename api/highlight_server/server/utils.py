@@ -10,7 +10,7 @@ import asyncio
 
 SECS = 5
 
-ITERATIONS = 30
+ITERATIONS = 50
 
 
 def doc_ids_replace(result):
