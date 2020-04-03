@@ -12,7 +12,6 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK" && response.result) {
                 success();
@@ -50,7 +49,6 @@ async function corrected() {
                 dataType: "json"
             })
             .done(function(data) {
-                console.log(data);
                 response = data;
                 if (response.code != "OK") {
                     alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
@@ -143,7 +141,6 @@ function update_search() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#docs").empty();

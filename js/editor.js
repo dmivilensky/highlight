@@ -14,7 +14,6 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK" && response.result) {
                 success();
@@ -50,7 +49,6 @@ function ready(i) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 location.reload(true);
@@ -78,7 +76,6 @@ function save() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $.redirectGet("main.html", {
@@ -102,7 +99,6 @@ function init() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 piece = response.document;

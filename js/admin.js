@@ -15,7 +15,6 @@ function check_user(success) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK" && response.key == key_) {
                 success();
@@ -41,7 +40,6 @@ function approve_user(login) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 load_users();
@@ -64,7 +62,6 @@ function delete_user(login) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 load_users();
@@ -83,7 +80,6 @@ function load_users() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#users").empty();
@@ -233,7 +229,6 @@ async function add_document() {
                 dataType: "json"
             })
             .done(function(data) {
-                console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     alert('Файл загружен!');
@@ -255,7 +250,6 @@ function load_stat() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 var stat = response.document;
@@ -363,7 +357,6 @@ function load_translators() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#translators").empty();
@@ -412,7 +405,6 @@ function load_documents() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#documents").empty();
@@ -462,7 +454,6 @@ function save_db() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 var db_data = "";

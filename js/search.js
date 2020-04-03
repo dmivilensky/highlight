@@ -8,7 +8,6 @@ function inc_importance(id_) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 document_info(id_);
@@ -133,7 +132,6 @@ function update_search() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#docs").empty();
