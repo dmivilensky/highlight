@@ -1,5 +1,6 @@
 import json
 # Create your views here.
+import os
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -349,7 +350,7 @@ def update_docs_cover(request, iter=0):
                 time.sleep(5)
                 update_docs_cover(request, iter=(iter+1))
 
-            result = {'code': path}
+            result = {'code': path, 'document': os.path.isfile(path)}
     except KeyError:
         result = {'code': "5001"}
 
