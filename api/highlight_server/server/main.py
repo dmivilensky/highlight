@@ -31,6 +31,9 @@ def verify_file(doc_id, user_id, path=""):
             if not(path == ""):
                 file = lang_storage.find_one({"_id": ObjectId(doc_id)})
                 delete_from_doc_storage(file["path"])
+                f = open('program_logs.txt', 'w')
+                f.write(file["path"])
+                f.close()
                 lang_storage.update_one({"_id": ObjectId(doc_id)},
                                         {"$set": {"status": "TRANSLATED", "chief": user_id, "path": path}})
             else:
