@@ -351,7 +351,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     if not(lang_storage is None):
         for p in list(lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "WAITING_PIECE"})):
             delete_from_db(p["_id"])
-    delete_from_db(doc["_id"])
+    delete_from_db(doc["_id"], with_path=False)
     return did
 
 

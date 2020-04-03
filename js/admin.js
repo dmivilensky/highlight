@@ -209,6 +209,8 @@ async function add_document() {
         $("#filename").val(fname);
         $("#file").submit();
 
+        await sleep(2000);
+
         var finame = $("#fname").val();
         if (finame.trim() == "") {
             finame = real_name.val().slice(0, -5);
@@ -218,6 +220,14 @@ async function add_document() {
     }
     function Ajax_server() {
         $.ajax({
+            url: 'highlight.spb.ru/files/' + fname,
+            method: "POST",
+            data: {
+            },
+            dataType: "json"
+        })
+            .done(function (data) {
+                $.ajax({
             url: "/api/update_docs",
             method: "POST",
             data: {
@@ -235,6 +245,10 @@ async function add_document() {
                 if (response.code == "OK") {
                     alert('Файл загружен!');
                 }
+            })
+            .fail(async function (jqXHR, status, error) {
+                console.log(error);
+            });
             })
             .fail(async function (jqXHR, status, error) {
                 console.log(error);

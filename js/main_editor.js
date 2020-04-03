@@ -40,12 +40,20 @@ async function corrected() {
     }
     function Ajax_server() {
         $.ajax({
+            url: 'highlight.spb.ru/files/' + fname,
+            method: "POST",
+            data: {
+            },
+            dataType: "json"
+        })
+            .done(function (data) {
+                $.ajax({
             url: "api/verify_file",
             method: "POST",
             data: {
                 id: user_id,
                 decision: doc_id,
-                path: 'new_file' + getRandomInt(10000) + '.docx'
+                path: fname
             },
             dataType: "json"
         })
@@ -57,6 +65,10 @@ async function corrected() {
                 } else {
                     alert('Файл загружен!');
                 }
+            })
+            .fail(async function (jqXHR, status, error) {
+                console.log(error);
+            });
             })
             .fail(async function (jqXHR, status, error) {
                 console.log(error);
