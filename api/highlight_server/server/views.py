@@ -306,8 +306,9 @@ def verify_file_cover(request):
         path = params["path"]
         result = mn.verify_file(did, uid, (
             ("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not (path == "") else path))
-
-
+        f = open('program_logs.txt', 'w+')
+        f.write('fsucsess i: ' + str(iter))
+        f.close()
     except KeyError:
         result = {'code': "5001"}
 
