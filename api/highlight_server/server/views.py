@@ -342,10 +342,10 @@ def update_docs_cover(request, iter=0):
         try:
             file_data = mn.find_file_by_path(path) if not(path == "") else None
             # file_data = "dfdfffff"
-            result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
+            # result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
             # result = {'code': "5001", 'document': type(path)}
         except docx.opc.exceptions.PackageNotFoundError:
-            if iter < 100:
+            if iter < 60:
                 time.sleep(5)
                 update_docs_cover(request, iter=(iter+1))
 
@@ -439,7 +439,7 @@ def check_user(request):
 def test():
     print(ADKEY)
     try:
-        mn.find_file_by_path("fsfsdfsf")
+        print(mn.find_file_by_path("/Users/Downloads/05_Sladkiy_mirazh.docx").paragraphs[10].text)
     except docx.opc.exceptions.PackageNotFoundError:
         print('err')
 

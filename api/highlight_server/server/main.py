@@ -393,7 +393,7 @@ def find_file_by_path(path):
 def test():
     client = MongoClient()
     db = client.highlight
-    d = Document("/Users/sevakabrits/Downloads/new_file6391.docx")
+    d = Document("/Users/Downloads/new_file6391.docx")
     for p in d.paragraphs:
         print(p.text)
 
