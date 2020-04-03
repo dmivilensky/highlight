@@ -106,7 +106,7 @@ function document_info(i) {
             ` + original_text + `
         </div>
         <div class="row">
-            <div class="col s6">
+            <div class="col s12">
             <a class="waves-effect waves-light btn grey modal-trigger send-file" href="#modal1"><i class="material-icons left">send</i>Отправить на почту</a>
             </div>
         </div>
@@ -161,7 +161,7 @@ function update_search() {
                     $("#docs").append(`
                         <li class="collection-item avatar" onclick="document_info(` + i + `);">
                             ` + avatar + `
-                            <span class="title"><a href="">` + title + `</a></span>
+                            <span class="title"><a>` + title + `</a></span>
                             <div class="tags-mu">
                             ` + tags_markup + `
                             </div>

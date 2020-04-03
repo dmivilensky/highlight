@@ -18,6 +18,11 @@
 
 .download-translation {
     width: 100% !important;
+    height: auto !important;
+    min-height: 20px !important;
+    line-height: 20px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
     border-radius: 20px!important;
 }
 

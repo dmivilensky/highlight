@@ -159,7 +159,7 @@ function update_search() {
                     $("#docs").append(`
                     <li class="collection-item avatar" onclick="document_info(` + i + `);">
                         <i class="material-icons circle yellow darken-2">find_in_page</i>
-                        <span class="title"><a href="">` + title + `</a></span>
+                        <span class="title"><a>` + title + `</a></span>
                         <div class="docs-tags">
                         ` + tags_markup + `
                         </div>

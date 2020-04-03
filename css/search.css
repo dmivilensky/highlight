@@ -25,11 +25,21 @@ nav {
 }
 
 .send-file {
+    height: auto !important;
+    min-height: 20px !important;
+    line-height: 20px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
     width: 100%;
     border-radius: 20px !important;
 }
 
 .download-btns {
+    height: auto !important;
+    min-height: 20px !important;
+    line-height: 20px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
     width: 100% !important;
     border-radius: 20px !important;
     text-align: center !important;
