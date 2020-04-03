@@ -326,7 +326,7 @@ def update_importance_cover(request):
 
 
 @csrf_exempt
-def update_docs_cover(request, iter=0):
+def update_docs_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     #     form = UploadFileForm(get_params(request), request.FILES)
@@ -336,26 +336,31 @@ def update_docs_cover(request, iter=0):
     #         path = None
     params = get_params(request)
     try:
-        name = params["name"]
-        lang = params["language"]
-        tags = params["tags"]
-        path = params["path"]
-        try:
-            file_data = mn.find_file_by_path(path) if not(path == "") else None
-            # file_data = "dfdfffff"
-            # result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
-            # result = {'code': "5001", 'document': type(path)}
-        except docx.opc.exceptions.PackageNotFoundError:
-            if iter < 60:
-                time.sleep(5)
-                update_docs_cover(request, iter=(iter+1))
-
-            result = {'code': path, 'document': os.path.isfile(path)}
+        result = upt_d(params, result)
     except KeyError:
         result = {'code': "5001"}
 
     text = json.dumps(result)
     return HttpResponse(text)
+
+
+def upt_d(params, result, iter=0):
+    name = params["name"]
+    lang = params["language"]
+    tags = params["tags"]
+    path = params["path"]
+    try:
+        file_data = mn.find_file_by_path(path) if not (path == "") else None
+        # file_data = "dfdfffff"
+        # result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
+        # result = {'code': "5001", 'document': type(path)}
+    except docx.opc.exceptions.PackageNotFoundError:
+        if iter < 60:
+            time.sleep(5)
+            upt_d(params, result, iter=(iter + 1))
+
+        result = {'code': path, 'document': str(os.path.isfile(path))}
+    return result
 
 
 @csrf_exempt
