@@ -6,6 +6,7 @@ import docx
 from bson import ObjectId
 from . import main as mn
 from pymongo import MongoClient
+import asyncio
 
 
 def doc_ids_replace(result):
@@ -59,11 +60,11 @@ def upt_d(params, result, iter=0):
         result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
         # result = {'code': "5001", 'document': type(path)}
     except docx.opc.exceptions.PackageNotFoundError:
-        if iter < 8:
-            time.sleep(20)
-            upt_d(params, result, iter=(iter + 1))
-
-        result = {'code': path, 'document': str(os.path.isfile(path))}
+        if iter < 12:
+            time.sleep(10)
+            result = upt_d(params, result, iter=(iter + 1))
+        else:
+            result = {'code': "5000"}
     return result
 
 
