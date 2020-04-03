@@ -236,6 +236,8 @@ async function add_document() {
             response = data;
             if (response.code == "OK") {
                 alert('Файл загружен!');
+            } else {
+                alert('Произошла ошибка: ' + response.code + ' во время загрузки файла.')
             }
         })
         .fail(async function (jqXHR, status, error) {
