@@ -206,6 +206,34 @@ async function add_document() {
 
     var real_name = $("#filename")
     var extention = real_name.val().slice(-4, -1) + real_name.val().slice(-1);
+
+    function Ajax_server() {
+        $.ajax({
+            url: "/api/update_docs",
+            method: "POST",
+            data: {
+                name: finame,
+                language: lang,
+                tags: tags_,
+                path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
+                key: key_
+            },
+            dataType: "json"
+        })
+            .done(function (data) {
+                console.log(data);
+                response = data;
+                if (response.code == "OK") {
+                    alert('Файл загружен!');
+                }
+            })
+            .fail(async function (jqXHR, status, error) {
+                console.log(error);
+                await sleep(3000);
+                Ajax_server();
+            });
+    }
+
     if (extention != "docx") {
         alert("Необходимо загрузить .docx файл!");
     } else {
@@ -220,28 +248,7 @@ async function add_document() {
             finame = real_name.val().slice(0, -5);
         }
 
-        $.ajax({
-                url: "/api/update_docs",
-                method: "POST",
-                data: {
-                    name: finame,
-                    language: lang,
-                    tags: tags_,
-                    path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
-                    key: key_
-                },
-                dataType: "json"
-            })
-            .done(function(data) {
-                console.log(data);
-                response = data;
-                if (response.code == "OK") {
-                    alert('Файл загружен!');
-                }
-            })
-            .fail(function(jqXHR, status, error) {
-                console.log(error);
-            });
+        Ajax_server();
     }
 }
 

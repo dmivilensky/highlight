@@ -281,7 +281,7 @@ def verify_file_cover(request):
         did = params["decision"]
         uid = params["id"]
         path = params["path"]
-        result = mn.verify_file(did, uid, "/var/www/html/highlight.spb.ru/public_html/files/" + path if not(path == "") else path)
+        result = mn.verify_file(did, uid, (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path))
     except KeyError:
         result = {'code': "5001"}
 

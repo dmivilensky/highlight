@@ -30,6 +30,32 @@ var doc_id;
 
 function corrected() {
     var extention = $("#corrections_path").val().slice(-4, -1) + $("#corrections_path").val().slice(-1);
+
+    function Ajax_server() {
+        $.ajax({
+            url: "api/verify_file",
+            method: "POST",
+            data: {
+                id: user_id,
+                decision: doc_id,
+                path: 'new_file' + getRandomInt(10000) + '.docx'
+            },
+            dataType: "json"
+        })
+            .done(function (data) {
+                console.log(data);
+                response = data;
+                if (response.code != "OK") {
+                    alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
+                }
+            })
+            .fail(async function (jqXHR, status, error) {
+                console.log(error);
+                await sleep(3000);
+                Ajax_server();
+            });
+    }
+
     if (extention != "docx") {
         alert("Необходимо загрузить исправленный .docx файл!");
     } else {
@@ -37,26 +63,7 @@ function corrected() {
         $("#corrections_path").val(fname);
         $("#file").submit();
 
-        $.ajax({
-                url: "api/verify_file",
-                method: "POST",
-                data: {
-                    id: user_id,
-                    decision: doc_id,
-                    path: 'new_file' + getRandomInt(10000) + '.docx'
-                },
-                dataType: "json"
-            })
-            .done(function(data) {
-                console.log(data);
-                response = data;
-                if (response.code != "OK") {
-                    alert('Проблемы соединения с сервером. Попробуйте повторить позже.');
-                }
-            })
-            .fail(function(jqXHR, status, error) {
-                console.log(error);
-            });
+        Ajax_server();
     }
 }
 
