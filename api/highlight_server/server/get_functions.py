@@ -114,7 +114,10 @@ def get_file_stat():
         if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
             docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"]})
         else:
-            docs.append({"name": t["name"], "pieces_info": {"done_pieces": l_s.count_documents({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}), "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
+            done_pieces = 0
+            for p in l_s.find({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}):
+                done_pieces += p["piece_end"] - p["piece_begin"]
+            docs.append({"name": t["name"], "pieces_info": {"done_pieces": done_pieces, "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
     return {"code": "OK", "document": docs}
 
 
