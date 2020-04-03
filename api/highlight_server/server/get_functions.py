@@ -121,6 +121,20 @@ def get_file_stat():
     return {"code": "OK", "document": docs}
 
 
+def get_pieces_stat():
+    """
+    :return: pieces
+    :structure: dict('code': string, 'document': list(dict('name': string, 'status': string, 'importance': int, 'pieces_info': dict('done_pieces': int, 'all_pieces': int) (or dict() if file is translated))))
+    """
+    client = MongoClient()
+    db = client.highlight
+    l_s = db.files_info
+    docs = []
+    for t in l_s.find({"status": "PIECE", "translation_status": "UNDONE"}):
+        docs.append({"translator": t["translator"], "name": t["name"], "date": t["lastModified"]})
+    return {"code": "OK", "document": docs}
+
+
 def test():
     client = MongoClient()
     db = client.highlight

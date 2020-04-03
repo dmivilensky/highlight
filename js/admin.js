@@ -263,9 +263,9 @@ function load_stat() {
         });
 }
 
-function load_work() { // TODO or NOT TODO :)
+function load_work() {
     $.ajax({
-            url: "../api/get_translator_stats",
+            url: "/api/get_pieces_stat",
             method: "POST",
             data: { key: key_ },
             dataType: "json"
@@ -273,6 +273,8 @@ function load_work() { // TODO or NOT TODO :)
         .done(function(data) {
             response = data;
             $("#work").empty();
+
+            console.log(response);
 
             for (var i = 0; i < response.document.length; ++i) {
                 current_user = response.document[i];
