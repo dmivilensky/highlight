@@ -49,22 +49,30 @@ def replace_pieces_id(f, not_user=True, find_in_list=False):
     return f1
 
 
-def upt_d(params, result, iter=0):
+def check_for_exeption(path):
+    if path == "":
+        return False
+    try:
+        mn.find_file_by_path(path)
+        return True
+    except docx.opc.exceptions.PackageNotFoundError:
+        return False
+
+def upt_d(params, result):
     name = params["name"]
     lang = params["language"]
     tags = params["tags"]
     path = params["path"]
-    try:
-        file_data = mn.find_file_by_path(path) if not (path == "") else None
-        # file_data = "dfdfffff"
-        result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
-        # result = {'code': "5001", 'document': type(path)}
-    except docx.opc.exceptions.PackageNotFoundError:
-        if iter < 12:
-            time.sleep(10)
-            result = upt_d(params, result, iter=(iter + 1))
-        else:
-            result = {'code': "5000"}
+    iter = 0
+    while iter < 12:
+        if not(check_for_exeption(path)):
+            file_data = mn.find_file_by_path(path) if not (path == "") else None
+            result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
+            break
+        time.sleep(10)
+
+    if iter >= 12:
+        result = {'code': "5000"}
     return result
 
 

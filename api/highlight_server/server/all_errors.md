@@ -13,5 +13,6 @@ responses:
 :errors 4040: not http POST request
 :errors 5000: no file uploaded
 :errors 5001: wrong parameters (wrong key was used during forming http request)
+:errors 7777: file already in db
 :success OK: no error occurred during operation
 """

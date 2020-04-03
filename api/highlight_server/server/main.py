@@ -264,6 +264,9 @@ def update_docs(name, doc, lang, tags, path=None):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
+    pf = lang_storage.find_one({"name": name, "status": "WAITING_FOR_TRANSLATION", "orig_path": path})
+    if not(pf is None):
+        return {"code": "7777"}
     did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, name,
                      "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
                      orig_path=path,
