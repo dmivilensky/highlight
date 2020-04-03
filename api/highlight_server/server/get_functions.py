@@ -130,8 +130,11 @@ def get_pieces_stat():
     db = client.highlight
     l_s = db.files_info
     docs = []
-    for t in l_s.find({"status": "PIECE", "translation_status": "UNDONE"}):
-        docs.append({"translator": t["translator"], "name": t["name"], "date": t["lastModified"]})
+    try:
+        for t in l_s.find({"status": "PIECE", "translation_status": "UNDONE"}):
+            docs.append({"translator": t["translator"], "name": t["name"], "date": t["lastModified"]})
+    except Exception as e:
+        docs.append(str(e))
     return {"code": "OK", "document": docs}
 
 
