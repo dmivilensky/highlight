@@ -69,8 +69,8 @@ def upt_d(params, result):
     path = params["path"]
     iter = 0
     while iter < ITERATIONS:
-        if not(check_for_exeption(path)):
-            file_data = mn.find_file_by_path(path) if not (path == "") else None
+        if not(check_for_exeption('/var/www/html/highlight.spb.ru/public_html/files/' + path)):
+            file_data = mn.find_file_by_path('/var/www/html/highlight.spb.ru/public_html/files/' + path) if not (path == "") else None
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
             f = open('program_logs.txt', 'w+')
             f.write('vsucsess i: ' + str(iter))
@@ -91,10 +91,11 @@ def for_verif(params, result):
     did = params["decision"]
     uid = params["id"]
     path = params["path"]
+    path = (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path)
     iter = 0
     while iter < ITERATIONS:
-        if not(check_for_exeption(path)):
-            result = mn.verify_file(did, uid, (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path))
+        if os.path.isfile(path):
+            result = mn.verify_file(did, uid,  path)
             f = open('program_logs.txt', 'w+')
             f.write('fsucsess i: ' + str(iter))
             f.close()

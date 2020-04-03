@@ -226,7 +226,7 @@ async function add_document() {
                 name: finame,
                 language: lang,
                 tags: tags_,
-                path: '/var/www/html/highlight.spb.ru/public_html/files/' + fname,
+                path: fname,
                 key: key_
             },
             dataType: "json"

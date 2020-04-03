@@ -300,12 +300,12 @@ def verify_file_cover(request):
     params = get_params(request)
     try:
         # file_data = mn.find_file_by_path(path) if not(path is None) else None
-        # result = for_verif(params, result)
-        did = params["decision"]
-        uid = params["id"]
-        path = params["path"]
-        result = mn.verify_file(did, uid, (
-            ("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not (path == "") else path))
+        result = for_verif(params, result)
+        # did = params["decision"]
+        # uid = params["id"]
+        # path = params["path"]
+        # result = mn.verify_file(did, uid, (
+        #     ("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not (path == "") else path))
         # f = open('program_logs.txt', 'w+')
         # f.write('fsucsess i: ' + str(iter))
         # f.close()
