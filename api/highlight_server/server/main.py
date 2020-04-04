@@ -386,7 +386,7 @@ def delete_from_db(doc_id, with_path=True):
     if with_path:
         if "path" in doc.keys():
             delete_from_doc_storage(doc["path"])
-        lang_storage.delete_one({"_id": doc_id})
+    lang_storage.delete_one({"_id": doc_id})
 
 
 def find_file_by_path(path):
