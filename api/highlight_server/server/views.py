@@ -256,14 +256,14 @@ def get_file_stat_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
-    try:
-        key = params["key"]
-        if key == ADKEY:
-            result = gf.get_file_stat()
-        else:
-            result = {'code': "2004"}
-    except KeyError:
-        result = {'code': "5001"}
+    # try:
+    key = params["key"]
+    if key == ADKEY:
+        result = gf.get_file_stat()
+    else:
+        result = {'code': "2004"}
+    # except KeyError:
+    #     result = {'code': "5001"}
 
     text = json.dumps(result)
     return HttpResponse(text)
