@@ -329,15 +329,15 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     """
     file_data = find_file_by_path(doc["orig_path"])
     f = open('program_logs.txt', 'w')
+    i = 0
+    c = 0
     for p in pieces:
         txts = p["translated_txt"]
         # ind = list(range(p["piece_begin"], p["piece_end"] + 1))
-        i = 0
-        c = 0
         j = 0
-        f.write('piece:\n' + str(p) + '\n\n')
+        f.write('piece:\n' + str(p) + '\n\n' + str(txts) + '\n\n')
         while j <= p["piece_end"] - p["piece_begin"] and i < len(file_data.paragraphs):
-            f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + str(file_data.paragraphs[i].text) + '\n\n' + str(txts[j]))
+            f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + str(file_data.paragraphs[i].text) + '\n\n' + str(txts[j]) + '\n\n\n')
             if file_data.paragraphs[i].text.strip() != "":
                 if c >= p["piece_begin"]:
                     file_data.paragraphs[i].text = txts[j]
