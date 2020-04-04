@@ -356,7 +356,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
             chief_id = ps["translator"]
 
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
-                     path="/var/www/html/highlight.spb.ru/public_html/files/" + str(random.randint(10000, 20000)) +".docx", to_lang=ps["to_lang"], tags=doc["tags"], translator=list({p["translator"] for p in pieces}),
+                     path="/var/www/html/highlight.spb.ru/public_html/files/" + str(random.randint(10000, 20000)) +".docx", to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}),
                      file_data=file_data)
     for p in pieces:
         delete_from_db(p["_id"])
