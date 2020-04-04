@@ -67,10 +67,11 @@ def upt_d(params, result):
     lang = params["language"]
     tags = params["tags"]
     path = params["path"]
+    path = '/var/www/html/highlight.spb.ru/public_html/files/' + path if not (path == "") else ""
     iter = 0
     while iter < ITERATIONS:
-        if not(check_for_exeption('/var/www/html/highlight.spb.ru/public_html/files/' + path)):
-            file_data = mn.find_file_by_path('/var/www/html/highlight.spb.ru/public_html/files/' + path) if not (path == "") else None
+        if not(check_for_exeption(path)):
+            file_data = mn.find_file_by_path(path) if not (path == "") else None
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
             f = open('program_logs.txt', 'w+')
             f.write('vsucsess i: ' + str(iter))
