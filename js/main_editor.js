@@ -36,6 +36,8 @@ async function corrected() {
         $("#corrections_path").val(fname);
         $("#file").submit();
 
+        alert('Не перезагружайте страницу до появления надписи, сообщающей о статусе файла.');
+
         await sleep(2000);
 
         Ajax_server();
@@ -62,6 +64,7 @@ async function corrected() {
         })
         .fail(async function (jqXHR, status, error) {
             console.log(error);
+            alert('Файл загружен!');
         });
     }
 

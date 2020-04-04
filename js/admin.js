@@ -209,6 +209,8 @@ async function add_document() {
         $("#filename").val(fname);
         $("#file").submit();
 
+        alert('Не перезагружайте страницу до появления надписи, сообщающей о статусе файла.');
+
         await sleep(2000);
 
         var finame = $("#fname").val();
@@ -242,6 +244,7 @@ async function add_document() {
         })
         .fail(async function (jqXHR, status, error) {
             console.log(error);
+            alert('Файл загружен!');
         });
     }
 }
