@@ -73,13 +73,13 @@ def upt_d(params, result):
         if not(check_for_exeption(path)):
             file_data = mn.find_file_by_path(path) if not (path == "") else None
             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
-            f = open('program_logs.txt', 'w+')
-            f.write('vsucsess i: ' + str(iter1))
-            f.close()
+            # f = open('program_logs.txt', 'w+')
+            # f.write('vsucsess i: ' + str(iter1))
+            # f.close()
             break
-        f = open('program_logs.txt', 'w+')
-        f.write('vi: ' + str(iter1))
-        f.close()
+        # f = open('program_logs.txt', 'w+')
+        # f.write('vi: ' + str(iter1))
+        # f.close()
         iter1 += 1
         time.sleep(SECS)
 
@@ -97,13 +97,13 @@ def for_verif(params, result):
     while iter1 < ITERATIONS:
         if os.path.isfile(path):
             result = mn.verify_file(did, uid,  path)
-            f = open('program_logs.txt', 'w+')
-            f.write('fsucsess i: ' + str(iter1))
-            f.close()
+            # f = open('program_logs.txt', 'w+')
+            # f.write('fsucsess i: ' + str(iter1))
+            # f.close()
             break
-        f = open('program_logs.txt', 'w+')
-        f.write('fi: '+str(iter1))
-        f.close()
+        # f = open('program_logs.txt', 'w+')
+        # f.write('fi: '+str(iter1))
+        # f.close()
         iter1 += 1
         time.sleep(SECS)
 

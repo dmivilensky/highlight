@@ -234,7 +234,7 @@ async function add_document() {
             dataType: "json"
         })
         .done(function (data) {
-            console.log(data);
+            // console.log(data);
             response = data;
             if (response.code == "OK") {
                 alert('Файл загружен!');
@@ -365,7 +365,7 @@ function load_documents() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
+            // console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#documents").empty();

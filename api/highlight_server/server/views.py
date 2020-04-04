@@ -342,20 +342,20 @@ def update_docs_cover(request):
     #     else:
     #         path = None
     params = get_params(request)
-    f = open('program_logs.txt', 'w+')
-    f.write('zas')
-    f.close()
+    # f = open('program_logs.txt', 'w+')
+    # f.write('zas')
+    # f.close()
     try:
-        f = open('program_logs.txt', 'w+')
-        f.write('zas')
-        f.close()
+        # f = open('program_logs.txt', 'w+')
+        # f.write('zas')
+        # f.close()
         result = upt_d(params, result)
     except KeyError:
         result = {'code': "5001"}
 
-    f = open('program_logs.txt', 'w+')
-    f.write(str(result))
-    f.close()
+    # f = open('program_logs.txt', 'w+')
+    # f.write(str(result))
+    # f.close()
 
     text = json.dumps(result)
     return HttpResponse(text)

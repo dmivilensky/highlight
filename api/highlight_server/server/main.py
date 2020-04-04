@@ -31,9 +31,9 @@ def verify_file(doc_id, user_id, path=""):
             if not(path == ""):
                 file = lang_storage.find_one({"_id": ObjectId(doc_id)})
                 delete_from_doc_storage(file["path"])
-                f = open('program_logs.txt', 'w')
-                f.write(file["path"])
-                f.close()
+                # f = open('program_logs.txt', 'w')
+                # f.write(file["path"])
+                # f.close()
                 lang_storage.update_one({"_id": ObjectId(doc_id)},
                                         {"$set": {"status": "TRANSLATED", "chief": user_id, "path": path}})
             else:
@@ -328,24 +328,24 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     :description: creates translated document from pieces
     """
     file_data = find_file_by_path(doc["orig_path"])
-    f = open('program_logs.txt', 'w')
+    # f = open('program_logs.txt', 'w')
     i = 0
     c = 0
     for p in pieces:
         txts = p["translated_txt"]
         # ind = list(range(p["piece_begin"], p["piece_end"] + 1))
         j = 0
-        f.write('piece:\n' + str(p) + '\n\n' + str(txts) + '\n\n')
+        # f.write('piece:\n' + str(p) + '\n\n' + str(txts) + '\n\n')
         while j <= p["piece_end"] - p["piece_begin"] and i < len(file_data.paragraphs):
-            f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + str(file_data.paragraphs[i].text) + '\n\n' + str(txts[j]) + '\n\n\n')
+            # f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + str(file_data.paragraphs[i].text) + '\n\n' + str(txts[j]) + '\n\n\n')
             if file_data.paragraphs[i].text.strip() != "":
                 if c >= p["piece_begin"]:
                     file_data.paragraphs[i].text = txts[j]
                     j += 1
                 c += 1
             i += 1
-        f.write('\n\n\n\n\n\n\n\n\n')
-    f.close()
+        # f.write('\n\n\n\n\n\n\n\n\n')
+    # f.close()
 
     the_stat = "TRANSLATED"
 

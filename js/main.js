@@ -181,7 +181,7 @@ function create_block() {
     if (!all_correct) {
         alert("Выбирать можно только последовательно идущие абзацы!");
     } else {
-        console.log(pids);
+        // console.log(pids);
         $.ajax({
                 url: "api/update_pieces",
                 method: "POST",
@@ -194,7 +194,7 @@ function create_block() {
                 dataType: "json"
             })
             .done(function(data) {
-                console.log(data);
+                // console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     close_modal();

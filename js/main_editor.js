@@ -54,7 +54,7 @@ async function corrected() {
             dataType: "json"
         })
         .done(function (data) {
-            console.log(data);
+            // console.log(data);
             response = data;
             if (response.code != "OK") {
                 alert('Проблемы соединения с сервером. Попробуйте повторить позже. Код ошибки: ' + response.code);
