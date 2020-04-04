@@ -2,6 +2,8 @@ from pymongo import MongoClient
 import pymongo as pm
 from bson.objectid import ObjectId
 
+ALL_LANGS = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
+
 
 def find_pieces(user_id):
     """
@@ -42,7 +44,10 @@ def find_doc_by_lang(lang):
     lang_storage = db.files_info
     docs = dict()
     docs_o = dict()
-    querya = list(lang_storage.find({"lang": lang, "status": "WAITING_PIECE"}))
+    if lang in set(ALL_LANGS):
+        querya = list(lang_storage.find({"lang": lang, "status": "WAITING_PIECE"}))
+    else:
+        querya = list(lang_storage.find({"lang": {"$nin": ALL_LANGS}, "status": "WAITING_PIECE"}))
     if len(querya) == 0:
         return {"code": "3100"}
     for piece in querya:

@@ -297,6 +297,11 @@ function list_languages() {
             <option value="` + languages[i].code + `">` + languages[i].name + `</option>
         `);
     }
+    drg = "Другой";
+    oth = "OTH"
+    $("#lang").append(`
+            <option value="` + oth + `">` + drg + `</option>
+        `);
 
     $("#lang").change(function() {
         list_documents($(this).val());
