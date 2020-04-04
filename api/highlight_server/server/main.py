@@ -337,7 +337,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
         j = 0
         f.write('piece:\n' + str(p) + '\n\n')
         while j <= p["piece_end"] - p["piece_begin"] and i < len(file_data.paragraphs):
-            f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + file_data.paragraphs[i].text + '\n\n' + [j])
+            f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + str(file_data.paragraphs[i].text) + '\n\n' + str(txts[j]))
             if file_data.paragraphs[i].text.strip() != "":
                 if c >= p["piece_begin"]:
                     file_data.paragraphs[i].text = txts[j]
