@@ -112,7 +112,7 @@ def get_file_stat():
     docs = []
     for t in l_s.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
         if t["status"] in ["TRANSLATED", "NEED_CHECK"]:
-            docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"]})
+            docs.append({"name": t["name"], "pieces_info": {}, "status": t["status"], "importance": t["importance"] if "importance" in t.keys() else 0})
         else:
             done_pieces = 0
             for p in l_s.find({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}):

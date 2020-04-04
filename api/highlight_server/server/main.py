@@ -168,6 +168,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "orig_path": orig_path,
                 "to_lang": to_lang,
                 "tags": tags,
+                "importance": importance,
                 "translator": translator,
                 "chief": chief,
                 "status": status,
