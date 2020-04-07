@@ -209,13 +209,13 @@ async function add_document() {
         $("#filename").val(fname);
 
         var finame = $("#fname").val();
-                if (finame.trim() == "") {
-                    finame = real_name.val().slice(0, -5);
-                }
+        if (finame.trim() == "") {
+            finame = real_name.val().slice(0, -5);
+        }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $('#file').on('submit', function (event) {
+            $('#file').on('submit', function(event) {
                 // event.preventDefault();
 
                 var post_data = new FormData($("#file")[0]);
@@ -225,17 +225,17 @@ async function add_document() {
                 post_data.append("key", key_);
 
                 $.ajax({
-                    xhr: function () {
+                    xhr: function() {
                         var xhr = new window.XMLHttpRequest();
 
-                        xhr.upload.addEventListener("progress", function (evt) {
+                        xhr.upload.addEventListener("progress", function(evt) {
                             var percent = Math.round(evt.loaded / evt.total * 100);
                             console.log(percent);
                             $('#submitting_button').attr('disabled', true);
                             $('#submitting_button').get(0).innerText = "Upload status: " + percent + '%'
                         }, false);
 
-                        xhr.upload.addEventListener("load", function (evt) {
+                        xhr.upload.addEventListener("load", function(evt) {
                             $('#submitting_button').css('background-color', 'green').delay(2000);
                             $('#submitting_button').get(0).innerText = "COMPLETE, refreshing..."
 
@@ -248,7 +248,7 @@ async function add_document() {
                     data: post_data,
                     processData: false,
                     contentType: false,
-                    success: function (result) {
+                    success: function(result) {
                         $('#submitting_button').attr('disabled', false);
                         alert("file uploaded!")
                     }
@@ -294,6 +294,7 @@ function load_work() {
             response = data;
             $("#work").empty();
 
+            // TODO document_S_
             for (var i = 0; i < response.document.length; ++i) {
                 var name = response.document[i].translator;
                 var document = "«" + response.document[i].name + "»";
