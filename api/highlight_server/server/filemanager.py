@@ -2,6 +2,7 @@ from enum import Enum
 
 from pickle import dump, load
 from os import getcwd, remove
+import os
 from os.path import sep
 
 from PyPDF2 import PdfFileWriter, PdfFileReader
