@@ -36,11 +36,17 @@ ADHASH = 75953932291808146177936
 
 @csrf_exempt
 def index(request):
+    """
+    :description: just says hello!
+    """
     return HttpResponse("HELLO, USER")
 
 
 @csrf_exempt
 def registration_cover(request):
+    """
+    :description: registers user by name, surname, mi, email, languages, login, password, status (translator/chief/verif), vk account, tg account and fb account
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -66,6 +72,9 @@ def registration_cover(request):
 
 @csrf_exempt
 def update_account(request):
+    """
+    :description: (requires old password) updates user account with name, surname, mi, email, languages, login, password, status (translator/chief/verif), vk account, tg account and fb account. (all parameters are optional except old password)
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -80,6 +89,9 @@ def update_account(request):
 
 @csrf_exempt
 def login_cover(request):
+    """
+    :description: logins user by login, password and status (called type) (translator/chief/verif)
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -100,6 +112,9 @@ def login_cover(request):
 
 @csrf_exempt
 def verify_cover(request):
+    """
+    :description: verifies user account by admin (key, decision, user account login)
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -121,6 +136,9 @@ def verify_cover(request):
 
 @csrf_exempt
 def find_pieces_cover(request):
+    """
+    :description: finds all pieces taken by user by user id
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -140,6 +158,9 @@ def find_pieces_cover(request):
 
 @csrf_exempt
 def find_piece(request):
+    """
+    :description: finds piece by its id and user id
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -161,6 +182,9 @@ def find_piece(request):
 
 @csrf_exempt
 def find_doc_by_lang_cover(request):
+    """
+    :description: finds all docs waiting for being translated on specific language
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -180,6 +204,9 @@ def find_doc_by_lang_cover(request):
 
 @csrf_exempt
 def get_from_db_cover(request):
+    """
+    :description: gets all documents matching search and tags
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -197,6 +224,9 @@ def get_from_db_cover(request):
 
 @csrf_exempt
 def get_from_db_for_chief_cover(request):
+    """
+    :description: gets all unverified documents matching search and tags for medics to check
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -214,6 +244,9 @@ def get_from_db_for_chief_cover(request):
 
 @csrf_exempt
 def get_from_db_for_verst_cover(request):
+    """
+    :description: gets all unformated documents matching search and tags for верстальщики to check
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -231,6 +264,9 @@ def get_from_db_for_verst_cover(request):
 
 @csrf_exempt
 def get_users_cover(request):
+    """
+    :description: gets all unverified users for admin
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -250,6 +286,9 @@ def get_users_cover(request):
 
 @csrf_exempt
 def get_trans_and_docs_cover(request):
+    """
+    :description: counts all verified translators and documents both translated and not
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -268,6 +307,9 @@ def get_trans_and_docs_cover(request):
 
 @csrf_exempt
 def get_translator_stats_cover(request):
+    """
+    :description: gets all verified translators and their info
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -287,6 +329,9 @@ def get_translator_stats_cover(request):
 
 @csrf_exempt
 def get_user_by_doc_or_piece_cover(request):
+    """
+    :description: gets all coworkers for user on the same document
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -307,6 +352,9 @@ def get_user_by_doc_or_piece_cover(request):
 
 @csrf_exempt
 def get_file_stat_cover(request):
+    """
+    :description: gets file info about status importance pieces and name
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -325,6 +373,9 @@ def get_file_stat_cover(request):
 
 @csrf_exempt
 def get_pieces_stat_cover(request):
+    """
+    :description: gets pieces and their translators (who is working on what)
+    """
     result = {'code': "4040"}
     params = get_params(request)
     try:
@@ -343,6 +394,9 @@ def get_pieces_stat_cover(request):
 
 @csrf_exempt
 def verify_file_cover(request):
+    """
+    :description: verifies file as medic
+    """
     result = {'code': "4040"}
     lgr, path = file_loader_module(request)
     params = get_params(request)
@@ -360,12 +414,15 @@ def verify_file_cover(request):
 
     text = json.dumps(result)
     # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
-    # a = mn.delete_from_doc_storage("/Users/sevakabrits/Downloads/files_test/" + path) if not(path is None) else ""
+    # a = mn.delete_from_doc_storage("/Users/Downloads/files_test/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
 @csrf_exempt
 def markup_file(request):
+    """
+    :description: verifies file as markuper
+    """
     result = {'code': "4040"}
     lgr, path = file_loader_module(request)
     params = get_params(request)
@@ -383,12 +440,15 @@ def markup_file(request):
 
     text = json.dumps(result)
     # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
-    # a = mn.delete_from_doc_storage("/Users/sevakabrits/Downloads/files_test/" + path) if not(path is None) else ""
+    # a = mn.delete_from_doc_storage("/Users/Downloads/files_test/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
 @csrf_exempt
 def update_importance_cover(request):
+    """
+    :description: updates importance
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -404,6 +464,9 @@ def update_importance_cover(request):
 
 @csrf_exempt
 def update_docs_cover(request):
+    """
+    :description: uploads file as admin
+    """
     lgr, path = file_loader_module(request)
     params = get_params(request)
     # f = open('program_logs.txt', 'w+')
@@ -429,7 +492,7 @@ def update_docs_cover(request):
     # f = open('program_logs.txt', 'w+')
     # f.write(str(result))
     # f.close()
-    # a = mn.delete_from_doc_storage("/Users/sevakabrits/Downloads/files_test/" + path) if not(path is None) else ""
+    # a = mn.delete_from_doc_storage("/Users/Downloads/files_test/" + path) if not(path is None) else ""
 
     text = json.dumps(result)
     return HttpResponse(text)
@@ -437,6 +500,9 @@ def update_docs_cover(request):
 
 @csrf_exempt
 def update_pieces_cover(request):
+    """
+    :description: reserves pieces for translator
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -459,6 +525,9 @@ def update_pieces_cover(request):
 
 @csrf_exempt
 def update_translating_pieces_cover(request):
+    """
+    :description: updates translating piece
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     lgr, path = file_loader_module(request)
@@ -481,6 +550,9 @@ def update_translating_pieces_cover(request):
 
 @csrf_exempt
 def delete_file(request):
+    """
+    :description: deletes file
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -500,6 +572,9 @@ def delete_file(request):
 
 @csrf_exempt
 def let_my_people_pass(request):
+    """
+    :description: login for admin
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
@@ -520,6 +595,9 @@ def let_my_people_pass(request):
 
 @csrf_exempt
 def check_user(request):
+    """
+    :description: checks authorisation
+    """
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     params = get_params(request)
