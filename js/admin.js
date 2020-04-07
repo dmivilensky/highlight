@@ -213,46 +213,43 @@ async function add_document() {
             finame = real_name.val().slice(0, -5);
         }
 
-        $(document).ready(function() {
+        $('#file').on('submit', function(event) {
+            // event.preventDefault();
 
-            $('#file').on('submit', function(event) {
-                // event.preventDefault();
+            var post_data = new FormData($("#file")[0]);
+            post_data.append("name", finame);
+            post_data.append("language", lang);
+            post_data.append("tags", tags_);
+            post_data.append("key", key_);
 
-                var post_data = new FormData($("#file")[0]);
-                post_data.append("name", finame);
-                post_data.append("language", lang);
-                post_data.append("tags", tags_);
-                post_data.append("key", key_);
+            $.ajax({
+                xhr: function() {
+                    var xhr = new window.XMLHttpRequest();
 
-                $.ajax({
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        var percent = Math.round(evt.loaded / evt.total * 100);
+                        console.log(percent);
+                        $('#submitting_button').attr('disabled', true);
+                        $('#submitting_button').get(0).innerText = "Upload status: " + percent + '%'
+                    }, false);
 
-                        xhr.upload.addEventListener("progress", function(evt) {
-                            var percent = Math.round(evt.loaded / evt.total * 100);
-                            console.log(percent);
-                            $('#submitting_button').attr('disabled', true);
-                            $('#submitting_button').get(0).innerText = "Upload status: " + percent + '%'
-                        }, false);
+                    xhr.upload.addEventListener("load", function(evt) {
+                        $('#submitting_button').css('background-color', 'green').delay(2000);
+                        $('#submitting_button').get(0).innerText = "COMPLETE, refreshing..."
 
-                        xhr.upload.addEventListener("load", function(evt) {
-                            $('#submitting_button').css('background-color', 'green').delay(2000);
-                            $('#submitting_button').get(0).innerText = "COMPLETE, refreshing..."
+                    }, false);
 
-                        }, false);
-
-                        return xhr;
-                    },
-                    url: "/api/update_docs",
-                    type: "POST",
-                    data: post_data,
-                    processData: false,
-                    contentType: false,
-                    success: function(result) {
-                        $('#submitting_button').attr('disabled', false);
-                        alert("file uploaded!")
-                    }
-                });
+                    return xhr;
+                },
+                url: "/api/update_docs",
+                type: "POST",
+                data: post_data,
+                processData: false,
+                contentType: false,
+                success: function(result) {
+                    $('#submitting_button').attr('disabled', false);
+                    alert("file uploaded!")
+                }
             });
         });
 
