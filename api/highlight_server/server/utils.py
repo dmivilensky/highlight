@@ -5,6 +5,9 @@ import time
 import docx
 from bson import ObjectId
 
+from .forms import UploadFileForm
+from .views import HTTPMETHOD
+from .main import PATH_TO_FILES
 from .logger import Logger
 from . import main as mn
 from pymongo import MongoClient
@@ -70,7 +73,7 @@ def upt_d(params, result):
     tags = params["tags"]
     path = params["path"]
     # path = '/var/www/html/highlight.spb.ru/public_html/files/' + path if not (path == "") else ""
-    path = '/Users/sevakabrits/Downloads/files_test' + path if not (path == "") else ""
+    path = '/Users/Downloads/files_test' + path if not (path == "") else ""
     iter1 = 0
     while iter1 < ITERATIONS:
         if not(check_for_exeption(path)):
@@ -95,7 +98,7 @@ def for_verif(params, result):
     did = params["decision"]
     uid = params["id"]
     path = params["path"]
-    path = (("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path == "") else path)
+    path = ((PATH_TO_FILES + path) if not(path == "") else path)
     iter1 = 0
     while iter1 < ITERATIONS:
         if os.path.isfile(path):
@@ -142,7 +145,9 @@ def create_name_by_user(uac):
 
 
 def handle_uploaded_file(f):
-    path = '/var/www/html/highlight.spb.ru/public_html/files/new_file' + str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + ".docx"
+    path = PATH_TO_FILES + str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + ".pdf"
+    while os.path.isfile(path):
+        path = path[:-len(path.split(".")[-1])+1] + str(random.randint(0, 99999)) + ".pdf"
     # path = '/Users/files_test/' + str(random.randint(0, 99999)) + str(
     #     random.randint(0, 99999))
     lgr = Logger()
@@ -164,6 +169,25 @@ def hashCode(s):
             h = (h << 5) - h + ord(content[i]) | 0
             i += 1
     return h
+
+
+def file_loader_module(request):
+    path = ""
+    result = {'code': "4040"}
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "loading")
+    if request.method == HTTPMETHOD:
+        # lgr.log("log", "loader status: ", "request = post")
+        form = UploadFileForm(get_params(request), request.FILES)
+        # lgr.log("log", "form status: ", form)
+        # lgr.log("log", "form status: ", request.FILES)
+        # lgr.log("log", "form status: ", form.is_valid())
+        # lgr.log("log", "form status: ", form.errors)
+        if form.is_valid():
+            path = handle_uploaded_file(request.FILES['file'])
+        else:
+            path = ""
+    return lgr, path
 
 
 def get_params(request):

@@ -21,7 +21,7 @@ if __name__ != '__main__':
     from . import find_functions as ff
     from . import main as mn
     from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, \
-    upt_d, for_verif
+    upt_d, for_verif, file_loader_module
 
 if __name__ == '__main__':
     # import registration as rg
@@ -293,21 +293,14 @@ def get_pieces_stat_cover(request):
 @csrf_exempt
 def verify_file_cover(request):
     result = {'code': "4040"}
-    path = ""
-    if request.method == HTTPMETHOD:
-        form = UploadFileForm(get_params(request), request.FILES)
-        if form.is_valid():
-            path = handle_uploaded_file(request.FILES['file'])
-        else:
-            path = ""
+    lgr, path = file_loader_module(request)
     params = get_params(request)
     try:
-        file_data = mn.find_file_by_path(path) if not(path == "") else None
         # result = for_verif(params, result)
         did = params["document_id"]
         uid = params["id"]
         # path = params["path"]
-        result = mn.verify_file(did, uid, file_data)
+        result = mn.verify_file(did, uid, path if path != "" else None)
         # f = open('program_logs.txt', 'w+')
         # f.write('fsucsess i: ' + str(iter))
         # f.close()
@@ -337,21 +330,7 @@ def update_importance_cover(request):
 
 @csrf_exempt
 def update_docs_cover(request):
-    path = ""
-    result = {'code': "4040"}
-    lgr = Logger()
-    lgr.log("log", "loader status: ", "loading")
-    if request.method == HTTPMETHOD:
-        # lgr.log("log", "loader status: ", "request = post")
-        form = UploadFileForm(get_params(request), request.FILES)
-        # lgr.log("log", "form status: ", form)
-        # lgr.log("log", "form status: ", request.FILES)
-        # lgr.log("log", "form status: ", form.is_valid())
-        # lgr.log("log", "form status: ", form.errors)
-        if form.is_valid():
-            path = handle_uploaded_file(request.FILES['file'])
-        else:
-            path = ""
+    lgr, path = file_loader_module(request)
     params = get_params(request)
     # f = open('program_logs.txt', 'w+')
     # f.write('zas')
@@ -408,11 +387,12 @@ def update_pieces_cover(request):
 def update_translating_pieces_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
+    lgr, path = file_loader_module(request)
     params = get_params(request)
     try:
         uid = params["id"]
         pid = params["piece_id"]
-        tt = params["txt"].split("#del#") if "txt" in params.keys() else None
+        tt = path if not(path == "") else None
         ts = params["status"] if "status" in params.keys() else "UNDONE"
         if mn.is_there_any_body(uid):
             result = mn.update_translating_pieces(pid, tr_txt=tt, tr_stat=ts)

@@ -96,3 +96,9 @@ class FileManager:
     def delete_files(self, *files):
         for file in files:
             remove(self.path + file)
+
+    def create_path(self, fname):
+        name = (fname + '_{0}.pdf').format(self.last_index)
+        self.update_state()
+        return name
+

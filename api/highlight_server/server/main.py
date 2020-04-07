@@ -8,18 +8,21 @@ import pymongo as pm
 import datetime
 import django
 import random
+import shutil as sh
 
 from .logger import Logger
 from .filemanager import MergeStatus, FileManager
 
+PATH_TO_FILES = "/var/www/html/highlight.spb.ru/public_html/files"
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
+FM = FileManager(PATH_TO_FILES)
 
 
-def verify_file(doc_id, user_id, file_data=None):
+def verify_file(doc_id, user_id, file_path=None):
     """
     :param doc_id: document mongo id
     :param user_id: user mongo id
-    :param path: path to save file returned by php script
+    :param file_path: path to save file returned by php script
     :return: code
     :structure: dict('code': string)
     """
@@ -30,15 +33,15 @@ def verify_file(doc_id, user_id, file_data=None):
     user = acc.find_one({"_id": ObjectId(user_id)})
     if is_there_any_body(user_id):
         if user["status"] in {"chief", "both"}:
-            if not(file_data is None):
+            if not(file_path is None):
                 file = lang_storage.find_one({"_id": ObjectId(doc_id)})
                 delete_from_doc_storage(file["path"])
-                push_to_file_storage(file["path"], file_data)
+                # push_to_file_storage(file["path"], file_data)
                 # f = open('program_logs.txt', 'w')
                 # f.write(file["path"])
                 # f.close()
                 lang_storage.update_one({"_id": ObjectId(doc_id)},
-                                        {"$set": {"status": "TRANSLATED", "chief": user_id}})
+                                        {"$set": {"status": "TRANSLATED", "chief": user_id, "path": file_path}})
             else:
                 lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
             return {"code": "OK"}
@@ -72,10 +75,9 @@ def split_to_pieces(number, name, lang, doc_path):
 
     ids = list()
     counter = 0
-    fm = FileManager("/var/www/html/highlight.spb.ru/public_html/files")
-    piece_pages = fm.split_pdf(doc_path.split("/")[-1])
+    piece_pages = FM.split_pdf(doc_path.split("/")[-1])
     for i in range(len(piece_pages)):
-        did = push_to_db(number, name, "WAITING_PIECE", lang, txt_paths=piece_pages[i], index=counter, freedom=True)
+        did = push_to_db(number, name, "WAITING_PIECE", lang, txt_path=piece_pages[i], index=counter, freedom=True)
         ids.append(did)
         counter += 1
     client = MongoClient()
@@ -99,8 +101,8 @@ def push_to_file_storage(path, file):
 
 def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path=None, orig_path=None, file_data=None,
                tags=None,
-               freedom=True, index=None, to_lang="RUS", translator=None, piece_begin=None, piece_end=None, txt_paths=None,
-               translated_txt_paths=None, translation_status="UNDONE", chief=None):
+               freedom=True, index=None, to_lang="RUS", translator=None, piece_begin=None, piece_end=None, txt_path=None,
+               translated_txt_path=None, translation_status="UNDONE", chief=None):
     """
     :param number: id number of document
     :param name: file name
@@ -118,8 +120,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     :param translator: mongo id of translator
     :param piece_begin: piece beginning paragraph
     :param piece_end: piece ending paragraph
-    :param txt_paths: piece text
-    :param translated_txt_paths: translated piece
+    :param txt_path: piece text
+    :param translated_txt_path: translated piece
     :param translation_status: whether translation done or not (DONE/UNDONE)
     :param chief: translates verifier
     :return: file mongo id in DB
@@ -147,7 +149,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
         file = {"number": number,
                 "name": name,
                 "lang": lang,
-                "txt": txt_paths,
+                "txt_path": txt_path,
                 "index": index,
                 "freedom": freedom,
                 "status": status,
@@ -159,8 +161,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "lang": lang,
                 "piece_begin": piece_begin,
                 "piece_end": piece_end,
-                "txt": txt_paths,
-                "translated_txt": translated_txt_paths,
+                "txt_path": txt_path,
+                "translated_txt_path": translated_txt_path,
                 "translator": translator,
                 "to_lang": to_lang,
                 "translation_status": translation_status,
@@ -226,16 +228,19 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
             no_intersections = False
             return {"code": "3000"}
     pieces = sorted(pieces, key=lambda a: a["index"])
-    txt = [pieces[0]["txt"]]
+    txt = [pieces[0]["txt_path"]]
     for i in range(1, len(pieces)):
         if pieces[i]["index"] - pieces[i - 1]["index"] != 1:
             return {"code": "3001"}
-        txt.append(pieces[i]["txt"])
+        txt.append(pieces[i]["txt_path"])
     begin_index = pieces[0]["index"]
     end_index = pieces[-1]["index"]
     if not no_intersections:
         return {"code": "3000"}
     else:
+        txt_real = FM.compose_files(txt, status=MergeStatus.piece, delete=False)
+        tname = FM.create_path("translated")
+        sh.copy(PATH_TO_FILES + txt_real, PATH_TO_FILES + tname)
         acc = db.accounts
         new_piece = {
             "name": document["name"],
@@ -248,8 +253,8 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
                           lang=document["lang"],
                           piece_begin=begin_index,
                           piece_end=end_index,
-                          txt_paths=txt,
-                          translated_txt_paths=None,
+                          txt_path=txt_real,
+                          translated_txt_path=tname,
                           translator=user_id,
                           to_lang=to_lang,
                           status="PIECE",
@@ -303,7 +308,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
             "$set": {"translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
     else:
         lang_storage.update_one({"_id": ObjectId(piece_id)}, {
-            "$set": {"translated_txt": tr_txt, "translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
+            "$set": {"translated_txt_path": tr_txt, "translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
     if tr_stat == "DONE":
         ps = lang_storage.find_one({"_id": ObjectId(piece_id)})
         acc = db.accounts
@@ -335,25 +340,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     :return: mongo id of created element
     :description: creates translated document from pieces
     """
-    file_data = find_file_by_path(doc["orig_path"])
-    # f = open('program_logs.txt', 'w')
-    i = 0
-    c = 0
-    for p in pieces:
-        txts = p["translated_txt"]
-        # ind = list(range(p["piece_begin"], p["piece_end"] + 1))
-        j = 0
-        # f.write('piece:\n' + str(p) + '\n\n' + str(txts) + '\n\n')
-        while j <= p["piece_end"] - p["piece_begin"] and i < len(file_data.paragraphs):
-            # f.write('i: ' + str(i) + '\n' + 'j: ' + str(j) + '\n' + 'c: ' + str(c) + '\n\n\n' + str(file_data.paragraphs[i].text) + '\n\n' + str(txts[j]) + '\n\n\n')
-            if file_data.paragraphs[i].text.strip() != "":
-                if c >= p["piece_begin"]:
-                    file_data.paragraphs[i].text = txts[j]
-                    j += 1
-                c += 1
-            i += 1
-        # f.write('\n\n\n\n\n\n\n\n\n')
-    # f.close()
+    file_path = FM.compose_files([p["translated_txt_path"] for p in pieces], status=MergeStatus.composition, delete=False)
 
     the_stat = "TRANSLATED"
 
@@ -364,13 +351,12 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
             chief_id = ps["translator"]
 
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
-                     path="/var/www/html/highlight.spb.ru/public_html/files/" + str(random.randint(10000, 20000)) +".docx", to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}),
-                     file_data=file_data)
+                     path=PATH_TO_FILES + file_path, to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}))
     for p in pieces:
         delete_from_db(p["_id"])
-    if not(lang_storage is None):
-        for p in list(lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "WAITING_PIECE"})):
-            delete_from_db(p["_id"])
+    # if not(lang_storage is None):
+    #     for p in list(lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "WAITING_PIECE"})):
+    #         delete_from_db(p["_id"])
     delete_from_db(doc["_id"], with_path=False)
     return did
 

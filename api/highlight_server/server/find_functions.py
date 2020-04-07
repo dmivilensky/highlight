@@ -14,7 +14,7 @@ def find_pieces(user_id):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
-    pieces = sorted(lang_storage.find({"translator": user_id, "status": "PIECE", "translation_status": "UNDONE"}),
+    pieces = sorted(lang_storage.find({"translator": user_id, "status": "PIECE"}),
                     key=lambda a: a["lastModified"], reverse=True)
     return {"code": "OK", "document": list(pieces)}
 
