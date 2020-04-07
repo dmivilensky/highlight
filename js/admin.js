@@ -488,6 +488,6 @@ function init() {
 }
 
 $(document).ready(function() {
-    // check_user(init);
-    init()
+    check_user(init);
+    // init()
 });

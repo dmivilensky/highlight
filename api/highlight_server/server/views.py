@@ -342,6 +342,7 @@ def update_docs_cover(request):
     lgr = Logger()
     lgr.log("log", "loader status: ", "loading")
     if request.method == HTTPMETHOD:
+        lgr.log("log", "loader status: ", "request = post")
         form = UploadFileForm(get_params(request), request.FILES)
         if form.is_valid():
             path = handle_uploaded_file(request.FILES['file'])
@@ -359,6 +360,8 @@ def update_docs_cover(request):
         # f.write('zas')
         # f.close()
         # result = upt_d(params, result)
+        lgr = Logger()
+        lgr.log("log", "loader status: ", "main function")
         file_data = mn.find_file_by_path(path) if not (path == "") else None
         result = mn.update_docs(name, file_data, lang, tags, path=path) if not (file_data is None) else {"code": "5000"}
     except KeyError:

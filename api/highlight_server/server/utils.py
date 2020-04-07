@@ -4,6 +4,8 @@ import time
 
 import docx
 from bson import ObjectId
+
+from .logger import Logger
 from . import main as mn
 from pymongo import MongoClient
 import asyncio
@@ -140,11 +142,14 @@ def create_name_by_user(uac):
 
 
 def handle_uploaded_file(f):
-    path = '/var/www/html/highlight.spb.ru/public_html/files/new_file' + str(random.randint(0, 99999)) + str(random.randint(0, 99999))
+    path = '/var/www/html/highlight.spb.ru/public_html/files/new_file/' + str(random.randint(0, 99999)) + str(random.randint(0, 99999))
     # path = '/Users/files_test/' + str(random.randint(0, 99999)) + str(
     #     random.randint(0, 99999))
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "saving chunks")
     with open('name.docx', 'wb+') as destination:
         for chunk in f.chunks():
+            lgr.log("log", "loading chunks: ", "chunk loaded")
             destination.write(chunk)
     return path
 

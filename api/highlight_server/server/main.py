@@ -9,6 +9,7 @@ import datetime
 import django
 import random
 
+from .logger import Logger
 
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
@@ -90,6 +91,8 @@ def push_to_file_storage(path, file):
     :return: Nothing
     """
     file.save(path)
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "file saved")
 
 
 def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path=None, orig_path=None, file_data=None,
@@ -135,6 +138,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "importance": importance,
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
+        lgr = Logger()
+        lgr.log("log", "loader status: ", "saved to db")
         push_to_file_storage(orig_path, file_data)
 
     elif status == "WAITING_PIECE":
@@ -272,6 +277,8 @@ def update_docs(name, doc, lang, tags, path=None):
     pf = lang_storage.find_one({"name": name, "status": "WAITING_FOR_TRANSLATION", "orig_path": path})
     if not(pf is None):
         return {"code": "7777"}
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "saving to db")
     did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, name,
                      "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
                      orig_path=path,
