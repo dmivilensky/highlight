@@ -353,6 +353,7 @@ def update_docs_cover(request):
     # f.write('zas')
     # f.close()
     try:
+        lgr.log("log", "loader status: ", "in try/catch")
         name = params["name"]
         lang = params["language"]
         tags = params["tags"]
@@ -360,12 +361,13 @@ def update_docs_cover(request):
         # f.write('zas')
         # f.close()
         # result = upt_d(params, result)
-        lgr = Logger()
         lgr.log("log", "loader status: ", "main function")
         file_data = mn.find_file_by_path(path) if not (path == "") else None
         result = mn.update_docs(name, file_data, lang, tags, path=path) if not (file_data is None) else {"code": "5000"}
     except KeyError:
         result = {'code': "5001"}
+
+    lgr.log("log", "result: ", result)
 
     # f = open('program_logs.txt', 'w+')
     # f.write(str(result))

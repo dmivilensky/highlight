@@ -12,7 +12,7 @@ class Logger:
         isobject = type(message) != str
         
         with open(self.path + log_filename, 'a+') as file:
-            file.write('{0}: {1}'.format(
+            file.write('{0}: {1} \n'.format(
                 status.upper(),
                 message if not isobject 
                 else pformat(message, indent=4)
