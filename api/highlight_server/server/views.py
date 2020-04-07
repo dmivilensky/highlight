@@ -342,12 +342,12 @@ def update_docs_cover(request):
     lgr = Logger()
     lgr.log("log", "loader status: ", "loading")
     if request.method == HTTPMETHOD:
-        lgr.log("log", "loader status: ", "request = post")
+        # lgr.log("log", "loader status: ", "request = post")
         form = UploadFileForm(get_params(request), request.FILES)
-        lgr.log("log", "form status: ", form)
-        lgr.log("log", "form status: ", request.FILES)
-        lgr.log("log", "form status: ", form.is_valid())
-        lgr.log("log", "form status: ", form.errors)
+        # lgr.log("log", "form status: ", form)
+        # lgr.log("log", "form status: ", request.FILES)
+        # lgr.log("log", "form status: ", form.is_valid())
+        # lgr.log("log", "form status: ", form.errors)
         if form.is_valid():
             path = handle_uploaded_file(request.FILES['file'])
         else:

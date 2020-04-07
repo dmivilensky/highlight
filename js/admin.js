@@ -218,7 +218,7 @@ async function add_document() {
 
             var post_data = new FormData($("#file")[0]);
             console.log(post_data);
-            // post_data.append("name", finame);
+            post_data.append("name", finame);
             post_data.append("language", lang);
             post_data.append("tags", tags_);
             post_data.append("key", key_);
