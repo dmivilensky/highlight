@@ -34,38 +34,48 @@ async function corrected() {
     } else {
         var fname = 'new_file' + getRandomInt(10000) + '.docx';
         $("#corrections_path").val(fname);
-        $("#file").submit();
 
-        alert('Не перезагружайте страницу до появления надписи, сообщающей о статусе файла.');
+        $(document).ready(function () {
 
-        await sleep(2000);
+            $('#file').on('submit', function (event) {
+                // event.preventDefault();
 
-        Ajax_server();
-    }
-    function Ajax_server() {
-        $.ajax({
-            url: "api/verify_file",
-            method: "POST",
-            data: {
-                id: user_id,
-                decision: doc_id,
-                path: fname
-            },
-            dataType: "json"
-        })
-        .done(function (data) {
-            // console.log(data);
-            response = data;
-            if (response.code != "OK") {
-                alert('Проблемы соединения с сервером. Попробуйте повторить позже. Код ошибки: ' + response.code);
-            } else {
-                alert('Файл загружен!');
-            }
-        })
-        .fail(async function (jqXHR, status, error) {
-            console.log(error);
-            alert('Файл загружен!');
+                var post_data = new FormData($("#file")[0]);
+                post_data.append("id", user_id);
+                post_data.append("document_id", doc_id);
+
+                $.ajax({
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            var percent = Math.round(evt.loaded / evt.total * 100);
+                            console.log(percent);
+                            $('#submitting_button').attr('disabled', true);
+                            $('#submitting_button').get(0).innerText = "Upload status: " + percent + '%'
+                        }, false);
+
+                        xhr.upload.addEventListener("load", function (evt) {
+                            $('#submitting_button').css('background-color', 'green').delay(2000);
+                            $('#submitting_button').get(0).innerText = "COMPLETE, refreshing..."
+
+                        }, false);
+
+                        return xhr;
+                    },
+                    url: "/api/verify_file",
+                    type: "POST",
+                    data: post_data,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        $('#submitting_button').attr('disabled', false);
+                        alert("file uploaded!")
+                    }
+                });
+            });
         });
+        $("#file").submit();
     }
 
 }

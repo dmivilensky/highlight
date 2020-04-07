@@ -67,7 +67,8 @@ def upt_d(params, result):
     lang = params["language"]
     tags = params["tags"]
     path = params["path"]
-    path = '/var/www/html/highlight.spb.ru/public_html/files/' + path if not (path == "") else ""
+    # path = '/var/www/html/highlight.spb.ru/public_html/files/' + path if not (path == "") else ""
+    path = '/Users/sevakabrits/Downloads/files_test' + path if not (path == "") else ""
     iter1 = 0
     while iter1 < ITERATIONS:
         if not(check_for_exeption(path)):
@@ -140,6 +141,8 @@ def create_name_by_user(uac):
 
 def handle_uploaded_file(f):
     path = '/var/www/html/highlight.spb.ru/public_html/files/new_file' + str(random.randint(0, 99999)) + str(random.randint(0, 99999))
+    # path = '/Users/files_test/' + str(random.randint(0, 99999)) + str(
+    #     random.randint(0, 99999))
     with open('name.docx', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)

@@ -200,52 +200,63 @@ async function add_document() {
     }
     tags_ = tags_.slice(0, -1);
 
-    var real_name = $("#filename")
+    var real_name = $("#filename");
     var extention = real_name.val().slice(-4, -1) + real_name.val().slice(-1);
     if (extention != "docx") {
         alert("Необходимо загрузить .docx файл!");
     } else {
         var fname = 'new_file' + getRandomInt(10000) + '.docx';
         $("#filename").val(fname);
-        $("#file").submit();
-
-        alert('Не перезагружайте страницу до появления надписи, сообщающей о статусе файла.');
-
-        await sleep(2000);
 
         var finame = $("#fname").val();
-        if (finame.trim() == "") {
-            finame = real_name.val().slice(0, -5);
-        }
+                if (finame.trim() == "") {
+                    finame = real_name.val().slice(0, -5);
+                }
 
-        Ajax_server();
-    }
-    function Ajax_server() {
-        $.ajax({
-            url: "/api/update_docs",
-            method: "POST",
-            data: {
-                name: finame,
-                language: lang,
-                tags: tags_,
-                path: fname,
-                key: key_
-            },
-            dataType: "json"
-        })
-        .done(function (data) {
-            // console.log(data);
-            response = data;
-            if (response.code == "OK") {
-                alert('Файл загружен!');
-            } else {
-                alert('Произошла ошибка: ' + response.code + ' во время загрузки файла.')
-            }
-        })
-        .fail(async function (jqXHR, status, error) {
-            console.log(error);
-            alert('Файл загружен!');
+        $(document).ready(function () {
+
+            $('#file').on('submit', function (event) {
+                // event.preventDefault();
+
+                var post_data = new FormData($("#file")[0]);
+                post_data.append("name", finame);
+                post_data.append("lang", lang);
+                post_data.append("tags", tags_);
+                post_data.append("key", key_);
+
+                $.ajax({
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+
+                        xhr.upload.addEventListener("progress", function (evt) {
+                            var percent = Math.round(evt.loaded / evt.total * 100);
+                            console.log(percent);
+                            $('#submitting_button').attr('disabled', true);
+                            $('#submitting_button').get(0).innerText = "Upload status: " + percent + '%'
+                        }, false);
+
+                        xhr.upload.addEventListener("load", function (evt) {
+                            $('#submitting_button').css('background-color', 'green').delay(2000);
+                            $('#submitting_button').get(0).innerText = "COMPLETE, refreshing..."
+
+                        }, false);
+
+                        return xhr;
+                    },
+                    url: "/api/update_docs",
+                    type: "POST",
+                    data: post_data,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        $('#submitting_button').attr('disabled', false);
+                        alert("file uploaded!")
+                    }
+                });
+            });
         });
+
+        $("#file").submit();
     }
 }
 
@@ -477,5 +488,6 @@ function init() {
 }
 
 $(document).ready(function() {
-    check_user(init);
+    // check_user(init);
+    init()
 });

@@ -10,6 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 import docx
 import time
 
+from .logger import Logger
+from .forms import UploadFileForm
+
 HTTPMETHOD: str = "POST"
 
 if __name__ != '__main__':
@@ -290,22 +293,21 @@ def get_pieces_stat_cover(request):
 @csrf_exempt
 def verify_file_cover(request):
     result = {'code': "4040"}
-    path = None
-    # if request.method == HTTPMETHOD:
-    #     form = UploadFileForm(get_params(request), request.FILES)
-    #     if form.is_valid():
-    #         path = handle_uploaded_file(request.FILES['file'])
-    #     else:
-    #         path = None
+    path = ""
+    if request.method == HTTPMETHOD:
+        form = UploadFileForm(get_params(request), request.FILES)
+        if form.is_valid():
+            path = handle_uploaded_file(request.FILES['file'])
+        else:
+            path = ""
     params = get_params(request)
     try:
-        # file_data = mn.find_file_by_path(path) if not(path is None) else None
-        result = for_verif(params, result)
-        # did = params["decision"]
-        # uid = params["id"]
+        file_data = mn.find_file_by_path(path) if not(path == "") else None
+        # result = for_verif(params, result)
+        did = params["document_id"]
+        uid = params["id"]
         # path = params["path"]
-        # result = mn.verify_file(did, uid, (
-        #     ("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not (path == "") else path))
+        result = mn.verify_file(did, uid, file_data)
         # f = open('program_logs.txt', 'w+')
         # f.write('fsucsess i: ' + str(iter))
         # f.close()
@@ -314,6 +316,7 @@ def verify_file_cover(request):
 
     text = json.dumps(result)
     # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
+    a = mn.delete_from_doc_storage("/Users/sevakabrits/Downloads/files_test/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
@@ -334,28 +337,37 @@ def update_importance_cover(request):
 
 @csrf_exempt
 def update_docs_cover(request):
+    path = ""
     result = {'code': "4040"}
-    # if request.method == HTTPMETHOD:
-    #     form = UploadFileForm(get_params(request), request.FILES)
-    #     if form.is_valid():
-    #         path = handle_uploaded_file(request.FILES['file'])
-    #     else:
-    #         path = None
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "loading")
+    if request.method == HTTPMETHOD:
+        form = UploadFileForm(get_params(request), request.FILES)
+        if form.is_valid():
+            path = handle_uploaded_file(request.FILES['file'])
+        else:
+            path = ""
     params = get_params(request)
     # f = open('program_logs.txt', 'w+')
     # f.write('zas')
     # f.close()
     try:
+        name = params["name"]
+        lang = params["language"]
+        tags = params["tags"]
         # f = open('program_logs.txt', 'w+')
         # f.write('zas')
         # f.close()
-        result = upt_d(params, result)
+        # result = upt_d(params, result)
+        file_data = mn.find_file_by_path(path) if not (path == "") else None
+        result = mn.update_docs(name, file_data, lang, tags, path=path) if not (file_data is None) else {"code": "5000"}
     except KeyError:
         result = {'code': "5001"}
 
     # f = open('program_logs.txt', 'w+')
     # f.write(str(result))
     # f.close()
+    # a = mn.delete_from_doc_storage("/Users/sevakabrits/Downloads/files_test/" + path) if not(path is None) else ""
 
     text = json.dumps(result)
     return HttpResponse(text)

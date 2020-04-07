@@ -13,7 +13,7 @@ import random
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
 
-def verify_file(doc_id, user_id, path=""):
+def verify_file(doc_id, user_id, file_data=None):
     """
     :param doc_id: document mongo id
     :param user_id: user mongo id
@@ -28,14 +28,15 @@ def verify_file(doc_id, user_id, path=""):
     user = acc.find_one({"_id": ObjectId(user_id)})
     if is_there_any_body(user_id):
         if user["status"] in {"chief", "both"}:
-            if not(path == ""):
+            if not(file_data is None):
                 file = lang_storage.find_one({"_id": ObjectId(doc_id)})
                 delete_from_doc_storage(file["path"])
+                push_to_file_storage(file["path"], file_data)
                 # f = open('program_logs.txt', 'w')
                 # f.write(file["path"])
                 # f.close()
                 lang_storage.update_one({"_id": ObjectId(doc_id)},
-                                        {"$set": {"status": "TRANSLATED", "chief": user_id, "path": path}})
+                                        {"$set": {"status": "TRANSLATED", "chief": user_id}})
             else:
                 lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
             return {"code": "OK"}
@@ -134,7 +135,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "importance": importance,
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
-        # push_to_file_storage(orig_path, file_data)
+        push_to_file_storage(orig_path, file_data)
 
     elif status == "WAITING_PIECE":
         file = {"number": number,
