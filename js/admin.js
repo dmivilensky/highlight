@@ -201,8 +201,8 @@ async function add_document() {
     tags_ = tags_.slice(0, -1);
 
     var real_name = $("#filename");
-    var extention = real_name.val().slice(-4, -1) + real_name.val().slice(-1);
-    if (extention != "docx") {
+    var extention = real_name.val().slice(-3, -1) + real_name.val().slice(-1);
+    if (extention != "pdf") {
         alert("Необходимо загрузить .docx файл!");
     } else {
         var fname = 'new_file' + getRandomInt(10000) + '.docx';

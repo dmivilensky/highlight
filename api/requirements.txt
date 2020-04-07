@@ -2,4 +2,5 @@ django==3.0.4
 docx==0.2.4
 python-docx==0.8.10
 pymongo==3.10.1
-asyncio==3.4.3
+PyPDF2==1.26.0
+docx2pdf==0.1.5

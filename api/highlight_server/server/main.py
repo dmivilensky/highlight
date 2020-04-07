@@ -10,6 +10,7 @@ import django
 import random
 
 from .logger import Logger
+from .filemanager import MergeStatus, FileManager
 
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 
@@ -59,23 +60,24 @@ def is_there_any_body(uid):
     return not(acc.find_one({"_id": ObjectId(uid), "verified": True}) is None)
 
 
-def split_to_pieces(number, name, lang, doc):
+def split_to_pieces(number, name, lang, doc_path):
     """
        :param number: id number of document
        :param name: file name
        :param lang: language one of ENG, RUS, ESP, JAP, etc.
-       :param doc: document .docx
+       :param doc_path: document path
        :return: pieces ids
        :structure: list(ObjectId Bson)
    """
 
     ids = list()
     counter = 0
-    for i in range(len(doc.paragraphs)):
-        if doc.paragraphs[i].text.strip() != "":
-            did = push_to_db(number, name, "WAITING_PIECE", lang, txt=doc.paragraphs[i].text, index=counter, freedom=True)
-            ids.append(did)
-            counter += 1
+    fm = FileManager("/var/www/html/highlight.spb.ru/public_html/files")
+    piece_pages = fm.split_pdf(doc_path.split("/")[-1])
+    for i in range(len(piece_pages)):
+        did = push_to_db(number, name, "WAITING_PIECE", lang, txt_paths=piece_pages[i], index=counter, freedom=True)
+        ids.append(did)
+        counter += 1
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -97,8 +99,8 @@ def push_to_file_storage(path, file):
 
 def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path=None, orig_path=None, file_data=None,
                tags=None,
-               freedom=True, index=None, to_lang="RUS", translator=None, piece_begin=None, piece_end=None, txt=None,
-               translated_txt=None, translation_status="UNDONE", chief=None):
+               freedom=True, index=None, to_lang="RUS", translator=None, piece_begin=None, piece_end=None, txt_paths=None,
+               translated_txt_paths=None, translation_status="UNDONE", chief=None):
     """
     :param number: id number of document
     :param name: file name
@@ -116,8 +118,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     :param translator: mongo id of translator
     :param piece_begin: piece beginning paragraph
     :param piece_end: piece ending paragraph
-    :param txt: piece text
-    :param translated_txt: translated piece
+    :param txt_paths: piece text
+    :param translated_txt_paths: translated piece
     :param translation_status: whether translation done or not (DONE/UNDONE)
     :param chief: translates verifier
     :return: file mongo id in DB
@@ -140,13 +142,12 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "lastModified": datetime.datetime.utcnow()}
         lgr = Logger()
         lgr.log("log", "loader status: ", "saved to db")
-        push_to_file_storage(orig_path, file_data)
 
     elif status == "WAITING_PIECE":
         file = {"number": number,
                 "name": name,
                 "lang": lang,
-                "txt": txt,
+                "txt": txt_paths,
                 "index": index,
                 "freedom": freedom,
                 "status": status,
@@ -158,8 +159,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "lang": lang,
                 "piece_begin": piece_begin,
                 "piece_end": piece_end,
-                "txt": txt,
-                "translated_txt": translated_txt,
+                "txt": txt_paths,
+                "translated_txt": translated_txt_paths,
                 "translator": translator,
                 "to_lang": to_lang,
                 "translation_status": translation_status,
@@ -179,13 +180,12 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "chief": chief,
                 "status": status,
                 "lastModified": datetime.datetime.utcnow()}
-        push_to_file_storage(path, file_data)
 
     lang_storage = db.files_info
     file_id = lang_storage.insert_one(file).inserted_id
 
     if status == "WAITING_FOR_TRANSLATION":
-        split_to_pieces(number, name, lang, file_data)
+        split_to_pieces(number, name, lang, orig_path)
 
     return file_id
 
@@ -244,16 +244,16 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         }
         acc.update_one({"_id": ObjectId(user_id)}, {"$push": {"pieces": new_piece}})
         did1 = push_to_db(number=document["number"],
-                   name=document["name"],
-                   lang=document["lang"],
-                   piece_begin=begin_index,
-                   piece_end=end_index,
-                   txt=txt,
-                   translated_txt=None,
-                   translator=user_id,
-                   to_lang=to_lang,
-                   status="PIECE",
-                   translation_status="UNDONE")
+                          name=document["name"],
+                          lang=document["lang"],
+                          piece_begin=begin_index,
+                          piece_end=end_index,
+                          txt_paths=txt,
+                          translated_txt_paths=None,
+                          translator=user_id,
+                          to_lang=to_lang,
+                          status="PIECE",
+                          translation_status="UNDONE")
         for p in pieces:
             lang_storage.update_one({"_id": p["_id"]},
                                     {"$set": {"freedom": False, "lastModified": datetime.datetime.utcnow()}})
