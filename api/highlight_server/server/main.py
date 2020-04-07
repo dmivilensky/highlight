@@ -23,6 +23,7 @@ def verify_file(doc_id, user_id, file_path=None):
     :param doc_id: document mongo id
     :param user_id: user mongo id
     :param file_path: path to save file returned by php script
+    :param file_status: status of the file after verification
     :return: code
     :structure: dict('code': string)
     """
@@ -44,6 +45,20 @@ def verify_file(doc_id, user_id, file_path=None):
                                         {"$set": {"status": "TRANSLATED", "chief": user_id, "path": file_path}})
             else:
                 lang_storage.update_one({"_id": ObjectId(doc_id)}, {"$set": {"status": "TRANSLATED", "chief": user_id}})
+            return {"code": "OK"}
+        elif user["status"] == "verif":
+            if not (file_path is None):
+                file = lang_storage.find_one({"_id": ObjectId(doc_id)})
+                delete_from_doc_storage(file["path"])
+                # push_to_file_storage(file["path"], file_data)
+                # f = open('program_logs.txt', 'w')
+                # f.write(file["path"])
+                # f.close()
+                lang_storage.update_one({"_id": ObjectId(doc_id)},
+                                        {"$set": {"substatus": "DONE", "path": file_path}})
+            else:
+                lang_storage.update_one({"_id": ObjectId(doc_id)},
+                                        {"$set": {"substatus": "DONE"}})
             return {"code": "OK"}
         else:
             return {"code": "2004"}
@@ -106,7 +121,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     """
     :param number: id number of document
     :param name: file name
-    :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION
+    :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION/MARKUP
     :param lang: language one of ENG, RUS, ESP, JAP, etc.
     :param importance: number, how this doc is needed
     :param pieces_count: amount of pieces in document
@@ -181,6 +196,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "translator": translator,
                 "chief": chief,
                 "status": status,
+                "substatus": "MARKUP",
                 "lastModified": datetime.datetime.utcnow()}
 
     lang_storage = db.files_info
@@ -359,6 +375,21 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     #         delete_from_db(p["_id"])
     delete_from_db(doc["_id"], with_path=False)
     return did
+
+
+def delete_from_db_all(did):
+    """
+    :param did: document id
+    :return: code
+    """
+    client = MongoClient()
+    db = client.highlight
+    lang_storage = db.files_info
+    doc = lang_storage.find_one({"_id": did})
+    for p in list(lang_storage.find(
+            {"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": {"$in": ["WAITING_PIECE", "PIECE", "NEED_CHECK", "TRANSLATED", "MARKUP"]}})):
+        delete_from_db(p["_id"])
+    return {"code": "OK"}
 
 
 def delete_from_doc_storage(path):

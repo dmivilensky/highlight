@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import pymongo as pm
 from bson.objectid import ObjectId
 
+from .main import is_there_any_body
 from . import get_functions as gf
 
 
@@ -14,7 +15,7 @@ def register(name, surname, mi, email, langs, login, password, status, vk=None, 
     :param langs: user languages
     :param login: obvious
     :param password: obvious
-    :param status: status translator/chief/both
+    :param status: status translator/chief/both/verif
     :return: user id or error if failed
     :structure: dict('code': string, 'document': string)
     """
@@ -42,6 +43,50 @@ def register(name, surname, mi, email, langs, login, password, status, vk=None, 
         return {"id": str(user_id), "code": "OK"}
     except pm.errors.DuplicateKeyError:
         return {"code": "1000"}
+
+
+def update_acc(params):
+    """
+    :param params: params you want to have updated and current password
+    :return: code
+    """
+    uid = params["id"]
+    name = params["name"] if "name" in params.keys() else None
+    surn = params["surname"] if "surname" in params.keys() else None
+    mi = params["mi"] if "mi" in params.keys() else None
+    email = params["email"] if "email" in params.keys() else None
+    login1 = params["login"] if "login" in params.keys() else None
+    opwd = params["password"]
+    pwd = params["npassword"] if "npassword" in params.keys() else None
+    stat = params["status"] if "status" in params.keys() else None
+    langs = params["languages"] if "languages" in params.keys() else None
+    vk = params["vk"] if "vk" in params.keys() else None
+    fb = params["fb"] if "fb" in params.keys() else None
+    tg = params["tg"] if "tg" in params.keys() else None
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    usr = acc.find_one({"_id": ObjectId(uid), "password": opwd})
+    if is_there_any_body(uid):
+        if usr is None:
+            return {"code": "2001"}
+        a = {"name": name if not(name is None) else usr["name"],
+             "surname": surn if not(surn is None) else usr["surname"],
+             "mi": mi if not(mi is None) else usr["mi"],
+             "email": email if not(email is None) else usr["email"],
+             "login": login1 if not(login1 is None) else usr["login"],
+             "password": pwd if not(pwd is None) else usr["password"],
+             "status": stat if not(stat is None) else usr["status"],
+             "langs": langs,
+             "vk": vk if not(vk is None) else usr["vk"],
+             "tg": tg if not(tg is None) else usr["tg"],
+             "fb": fb if not(fb is None) else usr["fb"],
+             "verified": True if stat is None and langs is None and name is None else False}
+        acc.update_one({"_id": ObjectId(uid)},
+                                {"$set": a})
+        return {"code": "OK"}
+    else:
+        return {"code": "2003"}
 
 
 def log_in(login, password, type=None):

@@ -65,6 +65,20 @@ def registration_cover(request):
 
 
 @csrf_exempt
+def update_account(request):
+    result = {'code': "4040"}
+    # if request.method == HTTPMETHOD:
+    params = get_params(request)
+    try:
+        result = rg.update_acc(params)
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+@csrf_exempt
 def login_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
@@ -199,6 +213,23 @@ def get_from_db_for_chief_cover(request):
 
 
 @csrf_exempt
+def get_from_db_for_verst_cover(request):
+    result = {'code': "4040"}
+    # if request.method == HTTPMETHOD:
+    params = get_params(request)
+    try:
+        sch = params["search"]
+        tg = params["tags"]
+        result = gf.get_for_verst_from_db(sch, tg)
+        result = doc_ids_replace(result)
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+@csrf_exempt
 def get_users_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
@@ -255,6 +286,26 @@ def get_translator_stats_cover(request):
 
 
 @csrf_exempt
+def get_user_by_doc_or_piece_cover(request):
+    result = {'code': "4040"}
+    # if request.method == HTTPMETHOD:
+    params = get_params(request)
+    try:
+        uid = params["id"]
+        rid = params["find_id"]
+        if mn.is_there_any_body(uid):
+            result = gf.get_users_by_doc_or_piece(rid)
+            result = users_replace_ids(result, replace_partly=True)
+        else:
+            result = {'code': "2004"}
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+@csrf_exempt
 def get_file_stat_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
@@ -292,6 +343,29 @@ def get_pieces_stat_cover(request):
 
 @csrf_exempt
 def verify_file_cover(request):
+    result = {'code': "4040"}
+    lgr, path = file_loader_module(request)
+    params = get_params(request)
+    try:
+        # result = for_verif(params, result)
+        did = params["document_id"]
+        uid = params["id"]
+        # path = params["path"]
+        result = mn.verify_file(did, uid, path if path != "" else None)
+        # f = open('program_logs.txt', 'w+')
+        # f.write('fsucsess i: ' + str(iter))
+        # f.close()
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
+    # a = mn.delete_from_doc_storage("/Users/sevakabrits/Downloads/files_test/" + path) if not(path is None) else ""
+    return HttpResponse(text)
+
+
+@csrf_exempt
+def markup_file(request):
     result = {'code': "4040"}
     lgr, path = file_loader_module(request)
     params = get_params(request)
@@ -398,6 +472,25 @@ def update_translating_pieces_cover(request):
             result = mn.update_translating_pieces(pid, tr_txt=tt, tr_stat=ts)
         else:
             result = {'code': "2003"}
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+@csrf_exempt
+def delete_file(request):
+    result = {'code': "4040"}
+    # if request.method == HTTPMETHOD:
+    params = get_params(request)
+    try:
+        key = params["key"]
+        did = params["document_id"]
+        if key == ADKEY:
+            result = mn.delete_from_db_all(did)
+        else:
+            result = {'code': "2004"}
     except KeyError:
         result = {'code': "5001"}
 

@@ -2,7 +2,7 @@ Params:
 
     :param number: id number of document
     :param name: file name
-    :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION
+    :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION/MARKUP
     :param lang: language one of ENG, RUS, ESP, JAP, etc.
     :param importance: number, how this doc is needed
     :param pieces_count: amount of pieces in document
@@ -16,8 +16,8 @@ Params:
     :param translator: mongo id of translator or list of mongo ids of translators
     :param piece_begin: piece beginning paragraph
     :param piece_end: piece ending paragraph
-    :param txt: piece text
-    :param translated_txt: translated piece
+    :param txt_path: piece text
+    :param translated_txt_path: translated piece
     :param translation_status: whether translation done or not (DONE/UNDONE)
     :param chief: translates verifier
 
@@ -68,8 +68,8 @@ Types:
         "lang": lang,
         "piece_begin": piece_begin,
         "piece_end": piece_end,
-        "txt": txt,
-        "translated_txt": translated_txt,
+        "txt_path": txt,
+        "translated_txt_path": translated_txt,
         "translator": translator,
         "to_lang": to_lang,
         "translation_status": translation_status,

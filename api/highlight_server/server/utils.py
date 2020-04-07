@@ -118,19 +118,27 @@ def for_verif(params, result):
     return result
 
 
-def users_replace_ids(result, replace_login=False, full_security=False):
+def users_replace_ids(result, replace_login=False, replace_partly=False, full_security=False):
     result1 = result
     for us in result1["document"]:
         us["_id"] = "not permitted"
         us["password"] = "not permitted"
         if replace_login:
             us["login"] = "not permitted"
+        if replace_partly:
+            us["login"] = "not permitted"
+            us["translated"] = "not permitted"
+            us["pieces"] = "not permitted"
+            us["verified"] = "not permitted"
         if full_security:
             us["login"] = "not permitted"
             us["vk"] = "not permitted"
             us["tg"] = "not permitted"
             us["fb"] = "not permitted"
             us["email"] = "not permitted"
+            us["translated"] = "not permitted"
+            us["pieces"] = "not permitted"
+            us["verified"] = "not permitted"
         us = replace_pieces_id(us, not_user=False)
     return result1
 

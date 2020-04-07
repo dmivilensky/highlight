@@ -232,12 +232,12 @@ async function add_document() {
                         var percent = Math.round(evt.loaded / evt.total * 100);
                         console.log(percent);
                         $('#submitting_button').attr('disabled', true);
-                        $('#submitting_button').get(0).innerText = "Upload status: " + percent + '%'
+                        $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%'
                     }, false);
 
                     xhr.upload.addEventListener("load", function(evt) {
                         $('#submitting_button').css('background-color', 'green').delay(2000);
-                        $('#submitting_button').get(0).innerText = "COMPLETE, refreshing..."
+                        $('#submitting_button').get(0).innerText = "Готово, ждём ответа сервера..."
 
                     }, false);
 
@@ -250,7 +250,8 @@ async function add_document() {
                 contentType: false,
                 success: function(result) {
                     $('#submitting_button').attr('disabled', false);
-                    alert("file uploaded!")
+                    alert("Файл загружен!");
+                    $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
                 }
             });
         });

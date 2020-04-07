@@ -3,7 +3,7 @@ import pymongo as pm
 from bson.objectid import ObjectId
 
 
-def get_from_db(search, tags, status=None):
+def get_from_db(search, tags, status=None, substatus=None):
     """
     :param search: user input
     :param tags: tags
@@ -55,7 +55,11 @@ def get_from_db(search, tags, status=None):
 
         matching_docs.append((relev, doc))
 
-    return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[:50]}
+    if substatus is None:
+        return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[:50]}
+    else:
+        return {"code": "OK", "document": list(
+            d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status if "substatus" in d.keys() if d["substatus"] == substatus)[:50]}
 
 
 def get_for_chief_from_db(search, tags):
@@ -67,15 +71,39 @@ def get_for_chief_from_db(search, tags):
     return get_from_db(search, tags, status={"NEED_CHECK"})
 
 
+def get_for_verst_from_db(search, tags):
+    """
+    :param search: same as get_from_db
+    :param tags: same ag get_from_db
+    :return: same as get_from_db
+    """
+    return get_from_db(search, tags, substatus="MARKUP")
+
+
 def get_users():
     """
     :return: all unverified users
-    :structure: dict('code': string, 'document': list(type=User)
+    :structure: dict('code': string, 'document': list(type=User))
     """
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
     return {"code": "OK", "document": list(acc.find({"verified": False}))}
+
+
+def get_users_by_doc_or_piece(rid):
+    """
+    :param rid: file or piece mongo id
+    :return: users working on corresponding document
+    :structure: dict('code': string, 'document': list(type=User))
+    """
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    l_s = db.files_info
+    ps = l_s.find_one({"_id": rid})
+    pieces = list(l_s.find({"name": ps["name"], "number": ps["number"], "lang": ps["lang"], "status": "PIECE"}))
+    return {"code": "OK", "document": [acc.find_one({"_id": ObjectId(p["translator"])}) for p in pieces]}
 
 
 def get_docs_and_trans():
