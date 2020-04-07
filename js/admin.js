@@ -217,10 +217,12 @@ async function add_document() {
             // event.preventDefault();
 
             var post_data = new FormData($("#file")[0]);
-            post_data.append("name", finame);
+            console.log(post_data);
+            // post_data.append("name", finame);
             post_data.append("language", lang);
             post_data.append("tags", tags_);
             post_data.append("key", key_);
+            console.log(post_data);
 
             $.ajax({
                 xhr: function() {
