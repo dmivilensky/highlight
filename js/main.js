@@ -181,7 +181,7 @@ function create_block() {
     if (!all_correct) {
         alert("Выбирать можно только последовательно идущие абзацы!");
     } else {
-        // console.log(pids);
+        console.log(pids);
         $.ajax({
                 url: "api/update_pieces",
                 method: "POST",
@@ -216,6 +216,7 @@ function select_document(id) {
     selected_document = id;
     $("#get").click(create_block);
 
+    console.log(pieces_dict[selected_document]);
     for (var i = 0; i < pieces_dict[selected_document].length; ++i) {
         $("#paragraphs").append(`
         <div class="row paragraphs-flex" id="p` + pieces_dict[selected_document][i].number + `" ` + (pieces_dict[selected_document][i].freedom ? `onclick="select_paragraph(` + i + `, '` + pieces_dict[selected_document][i]._id + `');"` : ``) + `>
@@ -225,11 +226,12 @@ function select_document(id) {
             </div>
             <div class="col s11">
                 <p class="slim">
-                &nbsp;&nbsp;&nbsp;&nbsp;` + pieces_dict[selected_document][i].txt + `
+                <canvas id="canvas` + pieces_dict[selected_document][i]._id + `" style="border:1px solid black"></canvas>
                 </p>
             </div>
         </div>
         `);
+        load_pdf_pages('files/' + pieces_dict[selected_document][i].txt_path, 'canvas' + pieces_dict[selected_document][i]._id, 0.7);
     }
 }
 

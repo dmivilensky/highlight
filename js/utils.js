@@ -74,5 +74,25 @@ function download_text(text, file) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function load_pdf_pages(path, canvas_id, scale) {
+    var loadingTask = pdfjsLib.getDocument(path);
+    loadingTask.promise.then(function(pdf) {
+        pdf.getPage(1).then(function(page) {
+            var viewport = page.getViewport({ scale: scale, });
+
+            var canvas = document.getElementById(canvas_id);
+            var context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    });
 }

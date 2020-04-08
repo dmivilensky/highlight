@@ -236,6 +236,8 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
     :structure: dict('code': string)
     :description: creates piece taken by user
     """
+    lgr = Logger()
+    lgr.log("log", "update pieces", "entry main")
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
@@ -248,6 +250,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         if not p["freedom"]:
             no_intersections = False
             return {"code": "3000"}
+    lgr.log("log", "update pieces", "intersection checked")
     pieces = sorted(pieces, key=lambda a: a["index"])
     txt = [pieces[0]["txt_path"]]
     for i in range(1, len(pieces)):
@@ -259,7 +262,9 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
     if not no_intersections:
         return {"code": "3000"}
     else:
+        lgr.log("log", "update pieces", "before compose")
         txt_real = FM.compose_files(txt, status=MergeStatus.piece, delete=False)
+        lgr.log("log", "update pieces", "after compose")
         tname = FM.create_path("translated")
         sh.copy(PATH_TO_FILES + txt_real, PATH_TO_FILES + tname)
         acc = db.accounts
