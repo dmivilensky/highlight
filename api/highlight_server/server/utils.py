@@ -192,6 +192,7 @@ def file_loader_module(request):
         # lgr.log("log", "form status: ", form.is_valid())
         # lgr.log("log", "form status: ", form.errors)
         if form.is_valid():
+            lgr.log("log", "update piece", "load " + request.FILES['file'])
             path = handle_uploaded_file(request.FILES['file'])
         else:
             path = ""
