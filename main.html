@@ -63,6 +63,29 @@
             </div>
         </div>
 
+        <div id="modal2" class="modal">
+            <div class="modal-content">
+            <h4>Загрузить исправленный перевод (.docx)</h4>
+                <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
+
+                <form enctype="multipart/form-data" target="hiddenFrame" action="/php_scripts/save_file.php" method="POST" id="file">
+                    <div class="file-field input-field">
+                        <div class="btn grey">
+                            <span>Загрузить</span>
+                            <input type="file" id="corrections" name="file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" id="corrections_path" name="title">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a id="submitting_button" onclick="upload();" class="modal-close waves-effect waves-light btn yellow darken-2">Проверено</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
+            </div>
+        </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

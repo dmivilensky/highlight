@@ -91,14 +91,17 @@ function list_blocks() {
                                 <span class="card-title">` + pieces[i].name + `</span>
                                 
                                 <div class="download-url-or">
-                                <a href="` + text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
+                                <a href="./files/` + text + `" download="` + text + `" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
                                 </div>
                                 <div class="download-url-or">
-                                <a href="` + translate + `" download="translate.txt" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
+                                <a href="./files/` + translate + `" download="` + translate + `" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
+                                </div>
+                                <div class="download-url-or">
+                                <a onclick="ready('` + pieces[i]._id + `')"class="waves-effect waves-light btn yellow lighten-4 download-btn black-text"><i class="material-icons left">done_all</i>Завершить перевод</a>
                                 </div>
                                 </div>
                                 <div class="card-action edit-btn">
-                                <a class="continue-tr">Продолжить перевод</a>
+                                <a onclick="update_tr('` + pieces[i]._id + `')" class="continue-tr">Обновить перевод</a><br>
                                 </div>
                             </div>
                         </div>
@@ -109,6 +112,85 @@ function list_blocks() {
         .fail(function(jqXHR, status, error) {
             console.log(error);
         });
+}
+
+var current_block = '';
+
+function update_tr(block_id) {
+    current_block = block_id;
+    $('#modal2').modal('open');
+}
+
+function upload() {
+    var fname = 'new_file' + getRandomInt(10000) + '.docx';
+    $("#corrections_path").val(fname);
+
+    $('#file').on('submit', function(event) {
+        // event.preventDefault();
+
+        var post_data = new FormData($("#file")[0]);
+        post_data.append("id", user_id);
+        post_data.append("piece_id", current_block);
+
+        $.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", function(evt) {
+                    var percent = Math.round(evt.loaded / evt.total * 100);
+                    console.log(percent);
+                    $('#submitting_button').attr('disabled', true);
+                    $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%'
+                }, false);
+
+                xhr.upload.addEventListener("load", function(evt) {
+                    $('#submitting_button').css('background-color', 'green').delay(2000);
+                    $('#submitting_button').get(0).innerText = "Готово, ждём ответа сервера..."
+
+                }, false);
+
+                return xhr;
+            },
+
+            url: "/api/update_translating_pieces",
+            type: "POST",
+            data: post_data,
+            processData: false,
+            contentType: false,
+            success: function(result) {
+                $('#submitting_button').attr('disabled', false);
+                alert("Файл загружен!");
+                $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
+            }
+        });
+    });
+    $("#file").submit();
+}
+
+function ready(block_id) {
+    if (confirm("Вы действительно хотите подтвердить текущий перевод?")) {
+        $.ajax({
+                url: "api/update_translating_pieces",
+                method: "POST",
+                data: {
+                    id: user_id,
+                    piece_id: block_id,
+                    status: "DONE"
+                },
+                dataType: "json"
+            })
+            .done(function(data) {
+                response = data;
+                if (response.code == "OK") {
+                    $.redirectGet("main.html", {
+                        user_id: user_id
+                    });
+                }
+            })
+            .fail(function(jqXHR, status, error) {
+                console.log(error);
+            });
+    }
 }
 
 function close_modal() {

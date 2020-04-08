@@ -539,6 +539,7 @@ def update_translating_pieces_cover(request):
         pid = params["piece_id"]
         tt = path if not(path == "") else None
         ts = params["status"] if "status" in params.keys() else "UNDONE"
+        lgr.log("log", "update piece", "cover, file " + path)
         if mn.is_there_any_body(uid):
             result = mn.update_translating_pieces(pid, tr_txt=tt, tr_stat=ts)
         else:
