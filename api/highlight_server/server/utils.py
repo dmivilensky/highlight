@@ -184,17 +184,20 @@ def file_loader_module(request):
     result = {'code': "4040"}
     lgr = Logger()
     lgr.log("log", "loader status: ", "loading")
-    if request.method == HTTPMETHOD:
-        # lgr.log("log", "loader status: ", "request = post")
-        form = UploadFileForm(get_params(request), request.FILES)
-        lgr.log("log", "form status: ", form)
-        lgr.log("log", "form status: ", request.FILES)
-        lgr.log("log", "form status: ", form.is_valid())
-        lgr.log("log", "form status: ", form.errors)
-        if form.is_valid():
-            path = handle_uploaded_file(request.FILES['file'])
-        else:
-            path = ""
+    try:
+        if request.method == HTTPMETHOD:
+            # lgr.log("log", "loader status: ", "request = post")
+            form = UploadFileForm(get_params(request), request.FILES)
+            lgr.log("log", "form status: ", form)
+            lgr.log("log", "form status: ", request.FILES)
+            lgr.log("log", "form status: ", form.is_valid())
+            lgr.log("log", "form status: ", form.errors)
+            if form.is_valid():
+                path = handle_uploaded_file(request.FILES['file'])
+            else:
+                path = ""
+    except Exception as e:
+        lgr.log("log", "error", str(e))
     return lgr, path
 
 
