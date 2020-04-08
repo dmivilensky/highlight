@@ -49,10 +49,7 @@ function check_user(success) {
 }
 
 function edit_block(id) {
-    $.redirectGet("editor.html", {
-        user_id: user_id,
-        block_id: id
-    });
+    list_blocks();
 }
 
 var inserted = [];
@@ -67,7 +64,9 @@ function list_blocks() {
             dataType: "json"
         })
         .done(function(data) {
+            console.log(data);
             $("#blocks").empty();
+            $("#blocks_ready").empty();
             inserted = [];
 
             response = data;
@@ -83,29 +82,49 @@ function list_blocks() {
                     var text = pieces[i].txt_path;
                     var translate = pieces[i].translated_txt_path;
 
-                    $("#blocks").append(`
-                        <div class="col s12 m4 l4">
-                            <div class="card">
+                    if (pieces[i].translation_status == "DONE") {
+                        $("#blocks_ready").append(`
+                            <div class="col s12 m4 l4">
+                                <div class="card">
 
-                                <div class="card-content">
-                                <span class="card-title">` + pieces[i].name + `</span>
-                                
-                                <div class="download-url-or">
-                                <a href="./files/` + text + `" download="` + text + `" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
-                                </div>
-                                <div class="download-url-or">
-                                <a href="./files/` + translate + `" download="` + translate + `" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
-                                </div>
-                                <div class="download-url-or">
-                                <a onclick="ready('` + pieces[i]._id + `')"class="waves-effect waves-light btn yellow lighten-4 download-btn black-text"><i class="material-icons left">done_all</i>Завершить перевод</a>
-                                </div>
-                                </div>
-                                <div class="card-action edit-btn">
-                                <a onclick="update_tr('` + pieces[i]._id + `')" class="continue-tr">Обновить перевод</a><br>
+                                    <div class="card-content">
+                                    <span class="mono">Переведено</span>
+                                    <span class="card-title">` + pieces[i].name + `</span>
+                                    
+                                    <div class="download-url-or">
+                                    <a href="./files/` + text + `" download="` + text + `" class="waves-effect waves-green btn-flat download-btn ready-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
+                                    </div>
+                                    <div class="download-url-or">
+                                    <a href="./files/` + translate + `" download="` + translate + `" class="waves-effect waves-green btn-flat download-btn ready-btn"><i class="material-icons left">file_download</i>Скачать перевод</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `);
+                        `);
+                    } else {
+                        $("#blocks").append(`
+                            <div class="col s12 m4 l4">
+                                <div class="card">
+
+                                    <div class="card-content">
+                                    <span class="card-title">` + pieces[i].name + `</span>
+                                    
+                                    <div class="download-url-or">
+                                    <a href="./files/` + text + `" download="` + text + `" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
+                                    </div>
+                                    <div class="download-url-or">
+                                    <a href="./files/` + translate + `" download="` + translate + `" class="waves-effect waves-green btn-flat download-btn ready-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
+                                    </div>
+                                    <div class="download-url-or">
+                                    <a onclick="ready('` + pieces[i]._id + `')"class="waves-effect waves-light btn yellow lighten-4 download-btn black-text"><i class="material-icons left">done_all</i>Завершить перевод</a>
+                                    </div>
+                                    </div>
+                                    <div class="card-action edit-btn">
+                                    <a onclick="update_tr('` + pieces[i]._id + `')" class="continue-tr">Обновить перевод</a><br>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    }
                 }
             }
         })
@@ -161,6 +180,7 @@ function upload() {
                 $('#submitting_button').attr('disabled', false);
                 alert("Файл загружен!");
                 $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
+                list_blocks();
             }
         });
     });
@@ -182,9 +202,7 @@ function ready(block_id) {
             .done(function(data) {
                 response = data;
                 if (response.code == "OK") {
-                    $.redirectGet("main.html", {
-                        user_id: user_id
-                    });
+                    list_blocks();
                 }
             })
             .fail(function(jqXHR, status, error) {

@@ -367,7 +367,12 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     :return: mongo id of created element
     :description: creates translated document from pieces
     """
+
+    lgr = Logger()
+    lgr.log("log", "compose", "entry")
+    lgr.log("log", "compose", "files " + "/".join([p["translated_txt_path"] for p in pieces]))
     file_path = FM.compose_files([p["translated_txt_path"] for p in pieces], status=MergeStatus.composition, delete=False)
+    lgr.log("log", "compose", "result" + file_path)
 
     the_stat = "TRANSLATED"
 
