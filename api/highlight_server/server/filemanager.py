@@ -15,6 +15,7 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 from docx2pdf import convert
 from .logger import Logger
 
+from subprocess import Popen, PIPE
 
 class MergeStatus(Enum):
     composition = 'merged'
@@ -26,12 +27,12 @@ def convert_to(folder, source, timeout=None):
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    process = subprocess.call(" ".join(args), shell=True)
-    for i in range(5):
-        time.sleep(1)
-        lgr.log("log", "convertion", str(process))
-        lgr.log("log", "convertion", " ; ".join(os.listdir('/var/www/html/highlight.spb.ru/public_html/files')))
+    ss = "sudo -S soffice --convert-to pdf --outdir files/ files/" + source
+    proc = Popen(ss.split(), stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    proc.communicate('Dmitry123456789'.encode())
 
+    # process = subprocess.call(" ".join(args), shell=True)
+    lgr.log("log", "convertion", "test")
 
 class FileManager:
     def __init__(self, root=getcwd()):
