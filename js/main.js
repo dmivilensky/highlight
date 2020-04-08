@@ -212,6 +212,7 @@ function ready(block_id) {
 }
 
 function close_modal() {
+    $('#modal1').modal('close');
     $("#hint").hide();
     $("#get").hide();
     $("#paragraphs").empty();
