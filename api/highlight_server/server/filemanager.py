@@ -5,6 +5,10 @@ from os import getcwd, remove
 import os
 from os.path import sep
 
+import sys
+import subprocess
+import re
+
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from docx2pdf import convert
 from .logger import Logger
@@ -13,6 +17,30 @@ from .logger import Logger
 class MergeStatus(Enum):
     composition = 'merged'
     piece = 'piece'
+
+
+def convert_to(folder, source, timeout=None):
+    args = [libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', folder, source]
+
+    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+    filename = re.search('-> (.*?) using filter', process.stdout.decode())
+
+    if filename is None:
+        raise LibreOfficeError(process.stdout.decode())
+    else:
+        return filename.group(1)
+
+
+def libreoffice_exec():
+    # TODO: Provide support for more platforms
+    if sys.platform == 'darwin':
+        return '/Applications/LibreOffice.app/Contents/MacOS/soffice'
+    return 'libreoffice'
+
+
+class LibreOfficeError(Exception):
+    def __init__(self, output):
+        self.output = output
 
 
 class FileManager:
@@ -94,9 +122,8 @@ class FileManager:
             if self.is_pdf(file):
                 return file
 
-            new_filename = 'result_{0}.pdf'.format(self.last_index)
-            convert(self.path + file, self.path + new_filename)
-            self.update_state()
+            convert_to(self.path[:-1], file)
+            new_filename = file.split('/')[-1].split('.')[0] + '.pdf'
             if delete:
                 delete_files(file)
         except Exception as e:
