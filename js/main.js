@@ -80,11 +80,8 @@ function list_blocks() {
                     }
 
                     inserted.push(pieces[i]._id);
-                    var text = pieces[i].txt;
-                    var url_text = text_uri(text.join("\n\n"));
-
-                    var translate = pieces[i].translated_txt;
-                    var url_translate = text_uri(translate ? translate.join("\n\n") : "");
+                    var text = pieces[i].txt_path;
+                    var translate = pieces[i].translated_txt_path;
 
                     $("#blocks").append(`
                         <div class="col s12 m4 l4">
@@ -94,15 +91,14 @@ function list_blocks() {
                                 <span class="card-title">` + pieces[i].name + `</span>
                                 
                                 <div class="download-url-or">
-                                <a href="` + url_text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
+                                <a href="` + text + `" download="original.txt" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
                                 </div>
                                 <div class="download-url-or">
-                                <a href="` + url_translate + `" download="translate.txt" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
+                                <a href="` + translate + `" download="translate.txt" class="waves-effect waves-green btn-flat download-btn"><i class="material-icons left">file_download</i>Скачать текущий перевод</a>
                                 </div>
-                                <p class="preview">` + text[0].slice(0, 150) + `</p>
                                 </div>
                                 <div class="card-action edit-btn">
-                                <a onclick="edit_block('` + pieces[i]._id + `');" class="continue-tr">Продолжить перевод</a>
+                                <a class="continue-tr">Продолжить перевод</a>
                                 </div>
                             </div>
                         </div>
