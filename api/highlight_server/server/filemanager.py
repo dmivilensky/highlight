@@ -7,6 +7,7 @@ from os.path import sep
 
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from docx2pdf import convert
+from .logger import Logger
 
 
 class MergeStatus(Enum):
