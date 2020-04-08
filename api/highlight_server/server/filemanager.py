@@ -27,7 +27,7 @@ def convert_to(folder, source, timeout=None):
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    ss = "sudo -S soffice --convert-to pdf --outdir files/ files/" + source
+    ss = "sudo -S soffice --convert-to pdf --outdir files/ " + source
     lgr.log("log", "convertion", ss)
     proc = Popen(ss.split(), stdin=PIPE, stdout=PIPE, stderr=PIPE)
     proc.communicate('Dmitry123456789'.encode())
