@@ -6,8 +6,10 @@ import os
 from os.path import sep
 
 import sys
+import os
 import subprocess
 import re
+import time
 
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from docx2pdf import convert
@@ -20,17 +22,17 @@ class MergeStatus(Enum):
 
 
 def convert_to(folder, source, timeout=None):
-    args = [libreoffice_exec(), '--convert-to', 'pdf', '--outdir', folder, source]
+    args = ['soffice', '--convert-to', 'pdf', '--outdir', folder, source]
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
     process = subprocess.run(args)
+    for i in range(5):
+        time.sleep(1)
+        lgr.log("log", "convertion", str(process))
+        lgr.log("log", "convertion", " ; ".join(os.listdir('/var/www/html/highlight.spb.ru/public_html/files')))
 
-def libreoffice_exec():
-    # TODO: Provide support for more platforms
-    if sys.platform == 'darwin':
-        return '/Applications/LibreOffice.app/Contents/MacOS/soffice'
-    return 'soffice'
+
 
 class FileManager:
     def __init__(self, root=getcwd()):
