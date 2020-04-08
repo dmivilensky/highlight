@@ -24,7 +24,7 @@ def convert_to(folder, source, timeout=None):
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    process = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+    process = subprocess.run(args)
 
 def libreoffice_exec():
     # TODO: Provide support for more platforms
@@ -113,7 +113,7 @@ class FileManager:
             if file.split('/')[-1].split('.')[-1] == 'pdf':
                 return file
 
-            convert_to(self.path, self.path + file.split('/')[-1])
+            convert_to('files/', 'files/' + file.split('/')[-1])
             new_filename = file.split('/')[-1].split('.')[0] + '.pdf'
             if delete:
                 self.delete_files(file)
