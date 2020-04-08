@@ -90,10 +90,10 @@ class FileManager:
         return merged_filename
     
     def docx_to_pdf(self, file, delete=True):
-        if self.is_pdf(file):
-            return file
-
         try:
+            if self.is_pdf(file):
+                return file
+
             new_filename = 'result_{0}.pdf'.format(self.last_index)
             convert(self.path + file, self.path + new_filename)
             self.update_state()
