@@ -266,8 +266,8 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         txt_real = FM.compose_files(txt, status=MergeStatus.piece, delete=False)
         lgr.log("log", "update pieces", "after compose")
         tname = FM.create_path("translated")
-        lgr.log("log", "update pieces", "lets copy " + PATH_TO_FILES + txt_real + " to " + PATH_TO_FILES + tname)
-        sh.copy(PATH_TO_FILES + txt_real, PATH_TO_FILES + tname)
+        lgr.log("log", "update pieces", "lets copy " + PATH_TO_FILES + "/" + txt_real + " to " + PATH_TO_FILES + "/" + tname)
+        sh.copy(PATH_TO_FILES + "/" + txt_real, PATH_TO_FILES + "/" + tname)
         acc = db.accounts
         new_piece = {
             "name": document["name"],
