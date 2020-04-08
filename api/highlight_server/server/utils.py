@@ -192,7 +192,7 @@ def file_loader_module(request):
             lgr.log("log", "form status: ", request.FILES)
             lgr.log("log", "form status: ", form.is_valid())
             lgr.log("log", "form status: ", form.errors)
-            lgr.log("log", "name " + request.FILES['file'].name.split('.')[-1])
+            lgr.log("log", "form status", "name " + request.FILES['file'].name.split('.')[-1])
             if form.is_valid():
                 path = handle_uploaded_file(request.FILES['file'], ext=request.FILES['file'].name.split('.')[-1])
             else:
