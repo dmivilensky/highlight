@@ -114,7 +114,7 @@ class FileManager:
             convert_to(self.path, self.path + file.split('/')[-1])
             new_filename = file.split('/')[-1].split('.')[0] + '.pdf'
             if delete:
-                delete_files(file)
+                self.delete_files(file)
         except Exception as e:
             lgr = Logger()
             lgr.log("log", "docx2pdf", "error" + str(e))
