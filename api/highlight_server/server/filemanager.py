@@ -121,7 +121,7 @@ class FileManager:
     
     def docx_to_pdf(self, file, delete=True):
         try:
-            if self.is_pdf(file):
+            if file.split('/')[-1].split('.')[-1] == 'pdf':
                 return file
 
             convert_to(self.path[:-1], file)
