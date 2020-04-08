@@ -32,20 +32,25 @@ class FileManager:
             dump(self.last_index, file)
             
     def split_pdf(self, file):
-        source = PdfFileReader(open(self.path + file, 'rb'))
-        pages = []
-        
-        for i in range(source.numPages):
-            page_filename = 'page_{0}.pdf'.format(self.last_index)
-            pages.append(page_filename)
+        lgr = Logger()
+        lgr.log("log", "splitting", "entry FM " + self.path + file)
+        try:
+            source = PdfFileReader(open(self.path + file, 'rb'))
+            pages = []
             
-            page = PdfFileWriter()
-            page.addPage(source.getPage(i))
-            with open(self.path + page_filename, 'wb') as file:
-                page.write(file)
-            
-            self.update_state()
-        
+            for i in range(source.numPages):
+                page_filename = 'page_{0}.pdf'.format(self.last_index)
+                pages.append(page_filename)
+                
+                page = PdfFileWriter()
+                page.addPage(source.getPage(i))
+                with open(self.path + page_filename, 'wb') as file:
+                    page.write(file)
+                
+                self.update_state()
+        except Exception as e:
+            lgr.log("log", "splitting", "exception FM " + str(e))
+
         return pages
     
     extention = staticmethod(lambda filename: filename.split('.')[-1])

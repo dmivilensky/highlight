@@ -91,7 +91,7 @@ def split_to_pieces(number, name, lang, doc_path):
     ids = list()
     counter = 0
     lgr = Logger()
-    lgr.log("log", "splitting", "path" + doc_path.split("/")[-1])
+    lgr.log("log", "splitting", "path " + doc_path.split("/")[-1])
     piece_pages = FM.split_pdf(doc_path.split("/")[-1])
     lgr.log("log", "splitting", "entry point")
     for i in range(len(piece_pages)):
