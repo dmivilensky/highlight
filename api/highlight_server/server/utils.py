@@ -152,10 +152,10 @@ def create_name_by_user(uac):
         return "Без редактора"
 
 
-def handle_uploaded_file(f):
-    path = PATH_TO_FILES + "/" + str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + ".pdf"
+def handle_uploaded_file(f, ext="pdf"):
+    path = PATH_TO_FILES + "/" + str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + "." + ext
     while os.path.isfile(path):
-        path = path[:-len(path.split(".")[-1])+1] + str(random.randint(0, 99999)) + ".pdf"
+        path = path[:-len(path.split(".")[-1])+1] + str(random.randint(0, 99999)) + "." + ext
     # path = '/Users/files_test/' + str(random.randint(0, 99999)) + str(
     #     random.randint(0, 99999))
     lgr = Logger()
@@ -192,8 +192,9 @@ def file_loader_module(request):
             lgr.log("log", "form status: ", request.FILES)
             lgr.log("log", "form status: ", form.is_valid())
             lgr.log("log", "form status: ", form.errors)
+            lgr.log("log", "name " + request.FILES['file'].name.split('.')[-1])
             if form.is_valid():
-                path = handle_uploaded_file(request.FILES['file'])
+                path = handle_uploaded_file(request.FILES['file'], ext=request.FILES['file'].name.split('.')[-1])
             else:
                 path = ""
     except Exception as e:
