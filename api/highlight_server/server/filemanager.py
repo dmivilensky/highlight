@@ -98,7 +98,9 @@ class FileManager:
             for stream in streams:
                 stream.close()
         except FileNotFoundError as file_error:
-            print('File not found: {0}'.format(file_error))
+            lgr.log("log", "File not found", str(file_error))
+        except Exception as e:
+            lgr.log("log", "Error", str(e))
         else:
             self.update_state()
             if delete:
