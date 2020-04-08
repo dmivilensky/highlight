@@ -22,11 +22,11 @@ class MergeStatus(Enum):
 
 
 def convert_to(folder, source, timeout=None):
-    args = ['echo', 'Dmitry123456789', '|', 'sudo', 'soffice', '--convert-to', '-v', 'pdf', '--outdir', folder, source]
+    args = ['echo', 'echo', 'Dmitry123456789', '|', 'sudo', 'soffice', '--convert-to', '-v', 'pdf', '--outdir', folder, source]
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    process = subprocess.call(args)
+    process = subprocess.run(args)
     for i in range(5):
         time.sleep(1)
         lgr.log("log", "convertion", str(process))
