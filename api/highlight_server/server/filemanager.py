@@ -23,10 +23,10 @@ class MergeStatus(Enum):
 
 
 def convert_to(folder, source, timeout=None):
-    args = ['soffice', '--convert-to', 'pdf', '--outdir', folder, source]
+    args = ['convert_docx_to_pdf_working', source]
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
-    
+
     process = subprocess.run(args)
     lgr.log("log", "convertion", str(process))
 
@@ -111,7 +111,7 @@ class FileManager:
             if file.split('/')[-1].split('.')[-1] == 'pdf':
                 return file
 
-            convert_to('files/', 'files/' + file.split('/')[-1])
+            convert_to('files/', file.split('/')[-1])
             new_filename = file.split('/')[-1].split('.')[0] + '.pdf'
             if delete:
                 self.delete_files(file)
