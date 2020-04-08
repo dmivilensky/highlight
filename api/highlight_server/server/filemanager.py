@@ -26,12 +26,11 @@ def convert_to(folder, source, timeout=None):
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    process = subprocess.call(" ".join(args))
+    process = subprocess.call(" ".join(args), shell=True)
     for i in range(5):
         time.sleep(1)
         lgr.log("log", "convertion", str(process))
         lgr.log("log", "convertion", " ; ".join(os.listdir('/var/www/html/highlight.spb.ru/public_html/files')))
-
 
 
 class FileManager:
