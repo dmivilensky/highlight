@@ -187,12 +187,11 @@ def file_loader_module(request):
     if request.method == HTTPMETHOD:
         # lgr.log("log", "loader status: ", "request = post")
         form = UploadFileForm(get_params(request), request.FILES)
-        # lgr.log("log", "form status: ", form)
-        # lgr.log("log", "form status: ", request.FILES)
-        # lgr.log("log", "form status: ", form.is_valid())
-        # lgr.log("log", "form status: ", form.errors)
+        lgr.log("log", "form status: ", form)
+        lgr.log("log", "form status: ", request.FILES)
+        lgr.log("log", "form status: ", form.is_valid())
+        lgr.log("log", "form status: ", form.errors)
         if form.is_valid():
-            lgr.log("log", "update piece", "load " + request.FILES['file'])
             path = handle_uploaded_file(request.FILES['file'])
         else:
             path = ""
