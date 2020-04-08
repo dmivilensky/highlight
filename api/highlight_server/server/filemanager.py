@@ -20,7 +20,7 @@ class MergeStatus(Enum):
 
 
 def convert_to(folder, source, timeout=None):
-    args = [libreoffice_exec(), '--headless', '--convert-to', 'pdf', '--outdir', folder, source]
+    args = [libreoffice_exec(), '--convert-to', 'pdf', '--outdir', folder, source]
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
@@ -124,7 +124,7 @@ class FileManager:
             if file.split('/')[-1].split('.')[-1] == 'pdf':
                 return file
 
-            convert_to('files', file)
+            convert_to('files', 'files/' + file.split('/')[-1])
             new_filename = file.split('/')[-1].split('.')[0] + '.pdf'
             if delete:
                 delete_files(file)
