@@ -262,7 +262,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
     if not no_intersections:
         return {"code": "3000"}
     else:
-        lgr.log("log", "update pieces", "before compose")
+        lgr.log("log", "update pieces", "before compose, files " + ",".join(txt))
         txt_real = FM.compose_files(txt, status=MergeStatus.piece, delete=False)
         lgr.log("log", "update pieces", "after compose")
         tname = FM.create_path("translated")

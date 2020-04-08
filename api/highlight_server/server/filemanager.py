@@ -59,6 +59,7 @@ class FileManager:
         
     def compose_files(self, files, status=MergeStatus.composition, delete=True):
         merged_filename = None
+        lgr = Logger()
         
         try:
             writer = PdfFileWriter()
@@ -66,11 +67,12 @@ class FileManager:
             
             for filename in files:
                 mergeable_filename = self.docx_to_pdf(filename)
-                
+                lgr.log("log", "update pieces", "try " + self.path + filename)
                 streams.append(open(self.path + filename, 'rb'))
                 reader = PdfFileReader(streams[-1])
                 for page in range(reader.numPages):
                     writer.addPage(reader.getPage(page))
+                lgr.log("log", "update pieces", "ready " + self.path + filename)
                 
             merged_filename = '{0}_{1}.pdf'.format(status.value, self.last_index)
             with open(self.path + merged_filename, 'wb') as output:
