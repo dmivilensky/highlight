@@ -66,7 +66,7 @@ class FileManager:
             streams = []
             
             for filename in files:
-                mergeable_filename = self.docx_to_pdf(filename)
+                mergeable_filename = filename# self.docx_to_pdf(filename)
                 lgr.log("log", "update pieces", "try " + self.path + filename)
                 streams.append(open(self.path + filename, 'rb'))
                 reader = PdfFileReader(streams[-1])
