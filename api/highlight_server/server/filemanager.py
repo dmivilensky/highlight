@@ -26,7 +26,7 @@ def convert_to(folder, source, timeout=None):
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    process = subprocess.run(args)
+    process = subprocess.call(args)
     for i in range(5):
         time.sleep(1)
         lgr.log("log", "convertion", str(process))
