@@ -533,6 +533,7 @@ def update_translating_pieces_cover(request):
     result = {'code': "4040"}
     # if request.method == HTTPMETHOD:
     lgr, path = file_loader_module(request)
+    lgr.log("log", "update piece", "loaded " + path)
     params = get_params(request)
     try:
         uid = params["id"]
