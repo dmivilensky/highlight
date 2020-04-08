@@ -23,19 +23,12 @@ class MergeStatus(Enum):
 
 
 def convert_to(folder, source, timeout=None):
-    args = ['echo', 'Dmitry123456789', '|', 'sudo', 'soffice', '--convert-to', 'pdf', '--outdir', folder, source]
+    args = ['soffice', '--convert-to', 'pdf', '--outdir', folder, source]
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
-
-    ss = "sudo -S soffice --convert-to pdf --outdir files/ " + source
-    lgr.log("log", "convertion", ss)
-    proc = Popen(ss.split(), stdin=PIPE, stdout=PIPE, stderr=PIPE)
-    proc.communicate('Dmitry123456789'.encode())
-
-    # process = subprocess.call(" ".join(args), shell=True)
-    lgr.log("log", "convertion", "test")
-    out, err = proc.communicate()
-    lgr.log("log", "convertion", str(out))
+    
+    process = subprocess.run(args)
+    lgr.log("log", "convertion", str(process))
 
 class FileManager:
     def __init__(self, root=getcwd()):
