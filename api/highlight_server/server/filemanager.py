@@ -124,7 +124,7 @@ class FileManager:
             if file.split('/')[-1].split('.')[-1] == 'pdf':
                 return file
 
-            convert_to(self.path[:-1], file)
+            convert_to('files', file)
             new_filename = file.split('/')[-1].split('.')[0] + '.pdf'
             if delete:
                 delete_files(file)
