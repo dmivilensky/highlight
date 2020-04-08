@@ -92,12 +92,16 @@ class FileManager:
     def docx_to_pdf(self, file, delete=True):
         if self.is_pdf(file):
             return file
-        
-        new_filename = 'result_{0}.pdf'.format(self.last_index)
-        convert(self.path + file, self.path + new_filename)
-        self.update_state()
-        if delete:
-            delete_files(file)
+
+        try:
+            new_filename = 'result_{0}.pdf'.format(self.last_index)
+            convert(self.path + file, self.path + new_filename)
+            self.update_state()
+            if delete:
+                delete_files(file)
+        except Exception as e:
+            lgr = Logger()
+            lgr.log("log", "docx2pdf", "error" + str(e))
         
         return new_filename
     
