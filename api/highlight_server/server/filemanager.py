@@ -55,7 +55,7 @@ class FileManager:
         return pages
     
     extention = lambda self, filename: filename.split('.')[-1]
-    is_pdf = lambda self, filename: extention(self, filename) == '.pdf'
+    is_pdf = lambda self, filename: filename.split('.')[-1] == '.pdf'
         
     def compose_files(self, files, status=MergeStatus.composition, delete=True):
         merged_filename = None
