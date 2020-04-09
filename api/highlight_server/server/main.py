@@ -408,7 +408,7 @@ def delete_from_db_all(did):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
-    doc = lang_storage.find_one({"_id": did})
+    doc = lang_storage.find_one({"_id": ObjectId(did)})
     for p in list(lang_storage.find(
             {"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": {"$in": ["WAITING_PIECE", "PIECE", "NEED_CHECK", "TRANSLATED", "MARKUP"]}})):
         delete_from_db(p["_id"])

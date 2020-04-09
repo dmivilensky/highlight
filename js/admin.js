@@ -380,6 +380,7 @@ function load_coworkers(id) {
         })
         .done(function(data) {
             $("#cow" + id).empty();
+            $("#cow" + id).append('Переводчики: <br>');
             console.log(data);
             response = data;
             if (response.code == "OK") {
@@ -445,9 +446,32 @@ function load_documents() {
                                 <td>` + document + `</td>
                                 <td>` + status_text + `<br><span id="cow` + data_doc[i]._id + `"></span></td>
                                 <td>` + stars + `</td>
+                                <td class="corner"><a onclick="delete_file('` + data_doc[i]._id + `');" class="secondary-content"><i class="material-icons red-text">clear</i></a></td>
                             </tr>
                     `);
                 }
+            }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+        });
+}
+
+function delete_file(id) {
+    $.ajax({
+            url: "/api/delete",
+            method: "POST",
+            data: {
+                key: key_,
+                document_id: id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            console.log(data);
+            response = data;
+            if (response.code == "OK") {
+                load_documents();
             }
         })
         .fail(function(jqXHR, status, error) {

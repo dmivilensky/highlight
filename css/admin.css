@@ -8,6 +8,10 @@
     box-shadow: 0 1px 0 0 #777 !important;
 }
 
+.corner {
+    padding-right: 30px;
+}
+
 .autocomplete-content {
     color: #424242 !important;
 }
