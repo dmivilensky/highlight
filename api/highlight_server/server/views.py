@@ -88,6 +88,20 @@ def update_account(request):
 
 
 @csrf_exempt
+def get_account(request):
+    result = {'code': "4040"}
+    # if request.method == HTTPMETHOD:
+    params = get_params(request)
+    try:
+        result = rg.get_acc(params)
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
+@csrf_exempt
 def login_cover(request):
     """
     :description: logins user by login, password and status (called type) (translator/chief/verif)

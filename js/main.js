@@ -425,6 +425,164 @@ function add_social() {
     ++social_idx;
 }
 
+function add_social_val(i, vv) {
+    $('#soc').append(`
+        <div id="field` + social_idx + `">
+        <div class="input-field col s12 m12 l4">
+            <select class="soc" id="soc_value` + social_idx + `">
+            <option value="1" ` + (i == 1 ? `selected` : ``) + `>ВК</option>
+            <option value="2" ` + (i == 2 ? `selected` : ``) + `>Facebook</option>
+            <option value="3" ` + (i == 3 ? `selected` : ``) + `>Telegram</option>
+            </select>
+            <label>Соц. сеть</label>
+        </div>
+
+        <div class="input-field col s12 m12 l8">
+            <input id="soc` + social_idx + `" value="` + vv + `" type="text" class="validate">
+            <label for="soc` + social_idx + `">id</label>
+        </div>
+        </div>
+    `);
+    $('select').formSelect();
+    ++social_idx;
+}
+
+var oname = "";
+var olang = "";
+
+function load_acc() {
+    $.ajax({
+            url: "api/get_account",
+            method: "POST",
+            data: {
+                id: user_id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            response = data;
+            if (response.code == "OK") {
+                oname = response.document.name;
+                $("#name").val(oname);
+                olang = response.document.languages;
+                var lls = olang.split(',');
+                list_ll(lls);
+                $("#email").val(response.document.email);
+                $("#login").val(response.document.login);
+                $("#password").val(response.document.password);
+                if (response.document.vk.trim() != "") {
+                    add_social_val(1, response.document.vk);
+                }
+                if (response.document.fb.trim() != "") {
+                    add_social_val(2, response.document.fb);
+                }
+                if (response.document.tg.trim() != "") {
+                    add_social_val(3, response.document.tg);
+                }
+            }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+        });
+}
+
+function update_profile() {
+    var verifiable = false;
+
+    var name_val = $("#name").val();
+    var email_val = $("#email").val();
+    var login_val = $("#login").val();
+    var password_val = $("#password").val();
+    var password_now_val = $("#password_now").val();
+
+    if (password_now_val.trim() != "") {
+        post_dt["password"] = password_now_val
+    } else {
+        alert('Необходимо ввести текущий пароль.');
+        return;
+    }
+
+    var post_dt = {}
+    if (name_val.trim() != "" && name_val.trim() != oname) {
+        post_dt["name"] = name_val;
+        verifiable = true;
+    }
+    if (email_val.trim() != "") {
+        post_dt["email"] = email_val;
+    }
+    if (login_val.trim() != "") {
+        post_dt["login"] = login_val;
+    }
+    if (password_val.trim() != "") {
+        post_dt["npassword"] = password_val;
+    }
+
+    var vk_ = "";
+    var fb_ = "";
+    var tg_ = "";
+
+    for (var i = 0; i < social_idx; ++i) {
+        if ($("#soc_value" + i).val() == "1") {
+            if (vk_ == "")
+                vk_ = $("#soc" + i).val();
+        }
+        if ($("#soc_value" + i).val() == "2") {
+            if (fb_ == "")
+                fb_ = $("#soc" + i).val();
+        }
+        if ($("#soc_value" + i).val() == "3") {
+            if (tg_ == "")
+                tg_ = $("#soc" + i).val();
+        }
+    }
+
+    if (vk_.trim() != "") {
+        post_dt["vk"] = vk_
+    }
+    if (fb_.trim() != "") {
+        post_dt["fb"] = fb_
+    }
+    if (tg_.trim() != "") {
+        post_dt["tg"] = tg_
+    }
+
+    var lang = "";
+    for (var i = 0; i < languages.length; ++i) {
+        if ($('#langf' + i).is(':checked')) {
+            lang += languages[i].code + ",";
+        }
+    }
+    lang = lang.slice(0, -1);
+
+    if (lang.trim() != "" && lang.trim() != olang) {
+        post_dt["languages"] = lang;
+        verifiable = true;
+    }
+
+    console.log(post_dt);
+    return; // TODO
+    $.ajax({
+            url: "api/update_account",
+            method: "POST",
+            data: post_dt,
+            dataType: "json"
+        })
+        .done(function(data) {
+            response = data;
+            if (response.code == "OK") {
+                if (verifiable) {
+                    alert('Заявка отправлена, вы сможете войти после подтверждения изменившихся данных.');
+                    $.redirectGet('index.html');
+                } else {
+                    alert('Данные изменены!');
+                }
+            }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+        });
+}
+
 function list_languages() {
     $("#lang").append(`
         <option value="` + languages[0].code + `" selected>` + languages[0].name + `</option>
@@ -445,6 +603,20 @@ function list_languages() {
     })
 }
 
+function list_ll(list) {
+    $("#langf").empty();
+    for (var i = 0; i < languages.length; ++i) {
+        $("#langf").append(`
+        <div class="col s12 m4 l4">
+            <p><label>
+                <input type="checkbox" id="langf` + i + `"  ` + (list.includes(languages[i].code) ? `selected` : ``) + ` />
+                <span>` + languages[i].name + `</span>
+            </label></p>
+        </div>
+        `);
+    }
+}
+
 function init() {
     $('.modal').modal();
     $("#hint").hide();
@@ -455,6 +627,9 @@ function init() {
     list_documents('ENG');
 
     list_blocks();
+
+    list_ll([]);
+    load_acc();
 }
 
 $(document).ready(function() {

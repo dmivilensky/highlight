@@ -89,6 +89,22 @@ def update_acc(params):
         return {"code": "2003"}
 
 
+def get_acc(params):
+    """
+    :param params: params you want to have updated and current password
+    :return: code
+    """
+    uid = params["id"]
+    client = MongoClient()
+    db = client.highlight
+    acc = db.accounts
+    usr = acc.find_one({"_id": ObjectId(uid)})
+    if is_there_any_body(uid):
+        return {"code": "OK", "document": usr}
+    else:
+        return {"code": "2003"}
+
+
 def log_in(login, password, type=None):
     """
     :param login:
