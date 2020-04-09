@@ -458,6 +458,7 @@ function load_documents() {
 }
 
 function delete_file(id) {
+    $("#documents").empty();
     $.ajax({
             url: "/api/delete",
             method: "POST",
