@@ -471,9 +471,7 @@ function delete_file(id) {
         .done(function(data) {
             console.log(data);
             response = data;
-            if (response.code == "OK") {
-                load_documents();
-            }
+            load_documents();
         })
         .fail(function(jqXHR, status, error) {
             console.log(error);
