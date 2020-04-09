@@ -117,8 +117,10 @@ function load_users() {
                         status_string = "Переводчик";
                     } else if (users[i].status == "chief") {
                         status_string = "Редактор";
-                    } else {
+                    } else if (users[i].status == "both") {
                         status_string = "Переводчик, Редактор";
+                    } else {
+                        status_string = "Верстальщик";
                     }
 
                     $("#users").append(`
