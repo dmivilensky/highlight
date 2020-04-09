@@ -384,9 +384,6 @@ function load_coworkers(id) {
             response = data;
             if (response.code == "OK") {
                 for (var i = 0; i < response.document.length; ++i) {
-                    if (response.document[i]._id == user_id) {
-                        continue;
-                    }
                     var social = "";
                     if (response.document[i].vk != "") {
                         social += 'vk: ' + response.document[i].vk + ', '
