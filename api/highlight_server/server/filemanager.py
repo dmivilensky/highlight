@@ -23,7 +23,7 @@ class MergeStatus(Enum):
 
 
 def convert_to(folder, source, timeout=None):
-    args = ['/usr/bin/convert_docx_to_pdf_working', source]
+    args = ['convert_docx_to_pdf_working', source]
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
