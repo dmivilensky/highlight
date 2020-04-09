@@ -44,7 +44,7 @@
 }
 
 .input-field .prefix.active {
-    color: #395c3d;
+    color: #395c3d !important;
 }
 
 .soc {
