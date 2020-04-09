@@ -9,3 +9,8 @@ class Backup_Manager:
 
     def restore(self, where="/var/www/html/highlight.spb.ru/backups/mongo/", what="backup" + ".tbz", mu="", mp=""):
         mb.restore(mu, mp, where+what)
+
+
+if __name__ == '__main__':
+    manager = Backup_Manager()
+    manager.backup()
