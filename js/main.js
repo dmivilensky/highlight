@@ -499,7 +499,9 @@ function update_profile() {
     var password_val = $("#password").val();
     var password_now_val = $("#password_now").val();
 
-    var post_dt = {}
+    var post_dt = {
+        id: user_id
+    };
     if (password_now_val.trim() != "") {
         post_dt["password"] = password_now_val
     } else {
