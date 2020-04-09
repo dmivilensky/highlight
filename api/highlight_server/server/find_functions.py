@@ -52,8 +52,6 @@ def find_doc_by_lang(lang):
         return {"code": "3100"}
     for piece in querya:
         orig_doc = lang_storage.find_one({"name": piece["name"], "number": piece["number"], "lang": piece["lang"], "status": "WAITING_FOR_TRANSLATION"})
-        if piece["name"] == "q":
-            raise ValueError(str( lang_storage.find_one({"name": piece["name"]})))
         if (piece["name"]+"#del#"+str(piece["number"])) in docs.keys():
             docs[(piece["name"]+"#del#"+str(piece["number"]))].append(piece)
         else:
@@ -63,7 +61,8 @@ def find_doc_by_lang(lang):
     out = list()
     for key in docs.keys():
         docs[key] = sorted(docs[key], key=lambda a: a["index"])
-        out.append({"name": docs_o[key]["name"], "pieces": docs[key], "doc": docs_o[key]})
+        if docs_o[key] is not None:
+            out.append({"name": docs_o[key]["name"], "pieces": docs[key], "doc": docs_o[key]})
     out = sorted(out, key=lambda a: a["doc"]["importance"], reverse=True)
 
     return {"code": "OK", "document": out}
