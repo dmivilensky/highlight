@@ -498,6 +498,7 @@ function update_profile() {
     var password_val = $("#password").val();
     var password_now_val = $("#password_now").val();
 
+    var post_dt = {}
     if (password_now_val.trim() != "") {
         post_dt["password"] = password_now_val
     } else {
@@ -505,7 +506,6 @@ function update_profile() {
         return;
     }
 
-    var post_dt = {}
     if (name_val.trim() != "" && name_val.trim() != oname) {
         post_dt["name"] = name_val;
         verifiable = true;
