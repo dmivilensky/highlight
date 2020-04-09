@@ -97,13 +97,20 @@ def get_users_by_doc_or_piece(rid):
     :return: users working on corresponding document
     :structure: dict('code': string, 'document': list(type=User))
     """
+    added_ids = []
     client = MongoClient()
     db = client.highlight
     acc = db.accounts
     l_s = db.files_info
     ps = l_s.find_one({"_id": ObjectId(rid)})
     pieces = list(l_s.find({"name": ps["name"], "number": ps["number"], "lang": ps["lang"], "status": "PIECE"}))
-    return {"code": "OK", "document": [acc.find_one({"_id": ObjectId(p["translator"])}) for p in pieces]}
+    res = []
+    added_ids = []
+    for p in pieces:
+        if p["translator"] not in added_ids:
+            res.append(acc.find_one({"_id": ObjectId(p["translator"])}))
+            added_ids.append(p["translator"])
+    return {"code": "OK", "document": res}
 
 
 def get_docs_and_trans():
