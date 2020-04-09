@@ -145,7 +145,7 @@ function load_others(id) {
         if (true) {
             social += 'vk: ' + 'vk' + '<br>'
         }
-        $('#others' + id).append('Иванов Иван Иванович' + '<br>' + 'ivan@ivan.ru' + '<br>' + social + '<br>');
+        $('#others' + id).append('Иванов Иван Иванович' + 'ivan@ivan.ru' + '<br>' + social);
     }
 }
 
