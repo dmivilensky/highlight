@@ -77,7 +77,7 @@ def update_acc(params):
              "login": login1 if not(login1 is None) else usr["login"],
              "password": pwd if not(pwd is None) else usr["password"],
              "status": stat if not(stat is None) else usr["status"],
-             "langs": langs,
+             "langs": langs if not(langs is None) else usr["langs"],
              "vk": vk if not(vk is None) else usr["vk"],
              "tg": tg if not(tg is None) else usr["tg"],
              "fb": fb if not(fb is None) else usr["fb"],
