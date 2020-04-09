@@ -10,6 +10,7 @@ from bson.objectid import ObjectId
 # from .forms import UploadFileForm
 import docx
 import time
+import datetime
 
 from .logger import Logger
 from .forms import UploadFileForm
@@ -91,6 +92,8 @@ def update_account(request):
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, ObjectId):
+            return str(o)
+        if isinstance(o, datetime.datetime):
             return str(o)
         return json.JSONEncoder.default(self, o)
 
