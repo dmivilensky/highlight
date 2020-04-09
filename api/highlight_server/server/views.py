@@ -360,13 +360,13 @@ def get_user_by_doc_or_piece_cover(request):
     # if request.method == HTTPMETHOD:
     params = get_params(request)
     try:
-        uid = params["id"]
+        # uid = params["id"]
         rid = params["find_id"]
-        if mn.is_there_any_body(uid):
-            result = gf.get_users_by_doc_or_piece(rid)
+        # if mn.is_there_any_body(uid):
+        result = gf.get_users_by_doc_or_piece(rid)
             # result = users_replace_ids(result, replace_partly=True)
-        else:
-            result = {'code': "2004"}
+        # else:
+            # result = {'code': "2004"}
     except KeyError:
         result = {'code': "5001"}
 

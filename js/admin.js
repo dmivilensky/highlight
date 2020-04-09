@@ -369,6 +369,44 @@ function load_translators() {
         });
 }
 
+function load_coworkers(id) {
+    $.ajax({
+            url: "api/get_coworkers",
+            method: "POST",
+            data: {
+                find_id: id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            $("#cow" + id).empty();
+            console.log(data);
+            response = data;
+            if (response.code == "OK") {
+                for (var i = 0; i < response.document.length; ++i) {
+                    if (response.document[i]._id == user_id) {
+                        continue;
+                    }
+                    var social = "";
+                    if (response.document[i].vk != "") {
+                        social += 'vk: ' + response.document[i].vk + ', '
+                    }
+                    if (response.document[i].fb != "") {
+                        social += 'fb: ' + response.document[i].fb + ', '
+                    }
+                    if (response.document[i].tg != "") {
+                        social += 'tg: ' + response.document[i].tg + ', '
+                    }
+                    social = social.slice(0, -2);
+                    $("#cow" + id).append(response.document[i].name + '<br>' + response.document[i].email + ', ' + social + '<br><br>');
+                }
+            }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+        });
+}
+
 function load_documents() {
     $.ajax({
             url: "/api/get_file_stat",
@@ -407,7 +445,7 @@ function load_documents() {
                     $("#documents").append(`
                             <tr>
                                 <td>` + document + `</td>
-                                <td>` + status_text + `</td>
+                                <td>` + status_text + `<br><span id="cow` + i + `"></span></td>
                                 <td>` + stars + `</td>
                             </tr>
                     `);
