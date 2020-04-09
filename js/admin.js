@@ -442,11 +442,11 @@ function load_documents() {
                             status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
                     }
 
-                    load_coworkers(i);
+                    load_coworkers(data_doc[i]._id);
                     $("#documents").append(`
                             <tr>
                                 <td>` + document + `</td>
-                                <td>` + status_text + `<br><span id="cow` + i + `"></span></td>
+                                <td>` + status_text + `<br><span id="cow` + data_doc[i]._id + `"></span></td>
                                 <td>` + stars + `</td>
                             </tr>
                     `);
