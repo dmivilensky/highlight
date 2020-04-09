@@ -39,6 +39,7 @@ function signin() {
     var login_val = $("#login").val();
     var password_val = $("#password").val();
     var is_editor = $('#editor').is(':checked');
+    var is_markup = $('#markup').is(':checked');
 
     if (login_val.trim() == "") {
         alert("Необходимо ввести логин.");
@@ -49,8 +50,22 @@ function signin() {
         return;
     }
 
-    var home_page = is_editor ? "main_editor.html" : "main.html";
-    var status = is_editor ? "chief" : "translator";
+    var home_page = "";
+    if (is_editor) {
+        home_page = "main_editor.html";
+    } else if (is_markup) {
+        home_page = "main_markup.html"
+    } else {
+        home_page = "main.html"
+    }
+    var status = "";
+    if (is_editor) {
+        home_page = "chief";
+    } else if (is_markup) {
+        home_page = "verif"
+    } else {
+        home_page = "translator"
+    }
 
     $.ajax({
             url: "api/login",

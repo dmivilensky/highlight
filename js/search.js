@@ -192,4 +192,6 @@ $(document).ready(function() {
             update_search();
         }
     });
+
+    update_search();
 });

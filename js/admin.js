@@ -429,7 +429,7 @@ function save_db() {
         .done(function(data) {
             response = data;
             if (response.code == "OK") {
-                var db_data = "";
+                var db_data = [];
 
                 var data_translator = response.document;
                 for (var i = 0; i < data_translator.length; ++i) {
@@ -455,10 +455,11 @@ function save_db() {
                     }
                     social_markup = social_markup.slice(0, -4);
 
-                    db_data += status + ";" + name + ";" + langs + ";" + email + ";" + social_markup + ";" + paragraphs + "\n";
+                    db_data.push(name + ";" + status + ";" + langs + ";" + email + ";" + social_markup + ";" + paragraphs);
                 }
 
-                download_text(db_data, "users_db.txt");
+                db_data.sort(function(a, b) { return a.localeCompare(b); });
+                download_text(db_data.join("\n"), "users_db.txt");
             }
         })
         .fail(function(jqXHR, status, error) {

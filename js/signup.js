@@ -74,6 +74,7 @@ function signup() {
     var password_val = $("#password").val();
     var is_editor = $('#editor').is(':checked');
     var is_translator = $('#translator').is(':checked');
+    var is_markup = $('#markup').is(':checked');
 
     if (name_val.trim() == "") {
         alert("Необходимо ввести имя.");
@@ -93,7 +94,14 @@ function signup() {
     }
 
     var status_ = "";
-    if (is_editor && is_translator) {
+    if (is_markup && (is_translator || is_editor)) {
+        alert('Статус верстальщика не совмещается с другими статусами.');
+        return;
+    }
+
+    if (is_markup) {
+        status_ = "verif";
+    } else if (is_editor && is_translator) {
         status_ = "both";
     } else if (is_editor) {
         status_ = "chief";
@@ -133,7 +141,6 @@ function signup() {
         return;
     }
 
-    var home_page = is_editor ? "main_editor.html" : "main.html";
     $.ajax({
             url: "api/registration",
             method: "POST",
@@ -156,9 +163,7 @@ function signup() {
             response = data;
             if (response.code == "OK") {
                 var id = response.id;
-                $.redirectGet(home_page, {
-                    user_id: id
-                });
+                $.redirectGet('index.html', {});
             } else if (response.code == "1000") {
                 alert("Пользователь с таким логином уже существует!");
             }

@@ -216,6 +216,12 @@ function close_modal() {
     $("#hint").hide();
     $("#get").hide();
     $("#paragraphs").empty();
+    $("#docs").empty();
+    $("#lang").formSelect();
+    $("#lang").change(function() {
+        list_documents($(this).val());
+    })
+    list_documents('ENG');
     selected_paragraphs.clear();
 }
 
@@ -391,7 +397,10 @@ function list_documents(lang) {
 }
 
 function list_languages() {
-    for (var i = 0; i < languages.length; ++i) {
+    $("#lang").append(`
+        <option value="` + languages[0].code + `" selected>` + languages[0].name + `</option>
+    `);
+    for (var i = 1; i < languages.length; ++i) {
         $("#lang").append(`
             <option value="` + languages[i].code + `">` + languages[i].name + `</option>
         `);
@@ -414,6 +423,7 @@ function init() {
 
     list_languages();
     $('select').formSelect();
+    list_documents('ENG');
 
     list_blocks();
 }

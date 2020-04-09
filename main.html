@@ -19,6 +19,7 @@
             </div>
 
             <div class="row instruments-panel">
+                <a class="waves-effect waves-light btn green darken-2 modal-trigger" href="#modal3"><i class="material-icons left">assignment_ind</i>Профиль</a>
                 <a class="waves-effect waves-light btn grey modal-trigger" href="#modal1"><i class="material-icons left">find_in_page</i>База документов</a>
             </div>
 
@@ -39,7 +40,6 @@
                 <div class="col s12 m6 l6 tall">
                     <div class="input-field col s12">
                         <select id="lang">
-                        <option value="" disabled selected>Язык</option>
                         </select>
                         <label>Язык</label>
                     </div>
@@ -87,6 +87,18 @@
             </div>
             <div class="modal-footer">
                 <a id="submitting_button" onclick="upload();" class="modal-close waves-effect waves-light btn green">Проверено</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
+            </div>
+        </div>
+
+
+        <div id="modal3" class="modal">
+            <div class="modal-content">
+            <h4>Профиль</h4>
+                
+            </div>
+            <div class="modal-footer">
+                <a onclick="update_profile();" class="modal-close waves-effect waves-light btn green">Обновить данные</a>
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
             </div>
         </div>
