@@ -68,7 +68,7 @@ def get_for_chief_from_db(search, tags):
     :param tags: same ag get_from_db
     :return: same as get_from_db
     """
-    return get_from_db(search, tags, status={"NEED_CHECK"})
+    return get_from_db(search, tags, status={"NEED_CHECK"}, substatus="DONE")
 
 
 def get_for_verst_from_db(search, tags):
