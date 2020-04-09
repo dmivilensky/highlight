@@ -110,7 +110,7 @@ def get_users_by_doc_or_piece(rid):
         if p["translator"] not in added_ids:
             res.append(acc.find_one({"_id": ObjectId(p["translator"])}))
             added_ids.append(p["translator"])
-    return {"code": "OK", "document": added_ids}
+    return {"code": "OK", "document": res}
 
 
 def get_docs_and_trans():
