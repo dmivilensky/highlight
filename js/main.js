@@ -396,6 +396,8 @@ function list_documents(lang) {
         });
 }
 
+var social_idx = 1;
+
 function remove_social() {
     if (social_idx > 1) {
         --social_idx;
