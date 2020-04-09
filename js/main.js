@@ -481,6 +481,7 @@ function load_acc() {
                 if (response.document.tg.trim() != "") {
                     add_social_val(3, response.document.tg);
                 }
+                M.updateTextFields();
             }
         })
         .fail(function(jqXHR, status, error) {
