@@ -464,6 +464,7 @@ function load_acc() {
         })
         .done(function(data) {
             response = data;
+            console.log(data);
             if (response.code == "OK") {
                 oname = response.document.name;
                 $("#name").val(oname);
