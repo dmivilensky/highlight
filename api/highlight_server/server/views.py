@@ -594,7 +594,7 @@ def delete_file(request):
     except KeyError:
         result = {'code': "5001"}
 
-    text = json.dumps(result)
+    text = JSONEncoder().encode(result)
     return HttpResponse(text)
 
 

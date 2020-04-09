@@ -409,10 +409,15 @@ def delete_from_db_all(did):
     db = client.highlight
     lang_storage = db.files_info
     doc = lang_storage.find_one({"_id": ObjectId(did)})
+    ll = []
     for p in list(lang_storage.find(
-            {"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": {"$in": ["WAITING_PIECE", "PIECE", "NEED_CHECK", "TRANSLATED", "MARKUP"]}})):
+            {"number": doc["number"], "name": doc["name"], "lang": doc["lang"]
+            # , 
+            # "status": {"$in": ["WAITING_PIECE", "PIECE", "NEED_CHECK", "TRANSLATED", "MARKUP"]}
+            })):
+        ll.append(str(p["_id"]))
         delete_from_db(p["_id"])
-    return {"code": "OK"}
+    return {"code": ll}
 
 
 def delete_from_doc_storage(path):
