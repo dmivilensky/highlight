@@ -453,6 +453,7 @@ var oname = "";
 var olang = "";
 
 function load_acc() {
+    $('#soc').empty();
     $.ajax({
             url: "api/get_account",
             method: "POST",
@@ -564,7 +565,6 @@ function update_profile() {
 
     console.log(post_dt);
     $('#modal3').modal('close');
-    return; // TODO
     $.ajax({
             url: "api/update_account",
             method: "POST",
@@ -575,10 +575,14 @@ function update_profile() {
             response = data;
             if (response.code == "OK") {
                 if (verifiable) {
-                    alert('Заявка отправлена, вы сможете войти после подтверждения изменившихся данных.');
-                    $.redirectGet('index.html');
+                    if (confirm('Заявка отправлена, вы сможете войти после подтверждения изменившихся данных.')) {
+                        $.redirectGet('index.html');
+                    } else {
+                        $.redirectGet('index.html');
+                    }
                 } else {
                     alert('Данные изменены!');
+                    load_acc();
                 }
             }
         })
