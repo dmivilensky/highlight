@@ -48,6 +48,28 @@
     border-radius: 5px !important;
 }
 
+.soc {
+    margin-top: 15px !important;
+}
+
+#soc-buttons {
+    width: 100%;
+    text-align: right;
+}
+
+#soc-remove {
+    margin-right: 10px !important;
+}
+
+#soc-icon {
+    font-size: 20px !important;
+    line-height: 30px !important;
+    color: #fff !important;
+    height: 30px !important;
+    width: 30px !important;
+    text-align: center !important;
+}
+
 .ready-btn {
     border: 1px solid #999 !important;
 }

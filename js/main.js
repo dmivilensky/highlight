@@ -396,6 +396,35 @@ function list_documents(lang) {
         });
 }
 
+function remove_social() {
+    if (social_idx > 1) {
+        --social_idx;
+        $('#field' + social_idx).remove();
+    }
+}
+
+function add_social() {
+    $('#soc').append(`
+        <div id="field` + social_idx + `">
+        <div class="input-field col s12 m12 l4">
+            <select class="soc" id="soc_value` + social_idx + `">
+            <option value="1" selected>ВК</option>
+            <option value="2">Facebook</option>
+            <option value="3">Telegram</option>
+            </select>
+            <label>Соц. сеть</label>
+        </div>
+
+        <div class="input-field col s12 m12 l8">
+            <input id="soc` + social_idx + `" type="text" class="validate">
+            <label for="soc` + social_idx + `">id</label>
+        </div>
+        </div>
+    `);
+    $('select').formSelect();
+    ++social_idx;
+}
+
 function list_languages() {
     $("#lang").append(`
         <option value="` + languages[0].code + `" selected>` + languages[0].name + `</option>
