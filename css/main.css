@@ -43,6 +43,10 @@
     padding-right: 10% !important;
 }
 
+.input-field .prefix.active {
+    color: #395c3d;
+}
+
 .soc {
     margin-top: 15px !important;
 }
