@@ -5,6 +5,7 @@ import asyncio
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from bson.objectid import ObjectId
 
 # from .forms import UploadFileForm
 import docx
@@ -87,6 +88,14 @@ def update_account(request):
     return HttpResponse(text)
 
 
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+analytics)
+
 @csrf_exempt
 def get_account(request):
     result = {'code': "4040"}
@@ -97,7 +106,7 @@ def get_account(request):
     except KeyError:
         result = {'code': "5001"}
 
-    text = json.dumps(result)
+    text = JSONEncoder().encode(result)
     return HttpResponse(text)
 
 
