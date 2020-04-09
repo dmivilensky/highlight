@@ -371,7 +371,7 @@ function load_translators() {
 
 function load_coworkers(id) {
     $.ajax({
-            url: "api/get_coworkers",
+            url: "/api/get_coworkers",
             method: "POST",
             data: {
                 find_id: id
