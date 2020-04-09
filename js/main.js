@@ -464,7 +464,7 @@ function load_acc() {
             if (response.code == "OK") {
                 oname = response.document.name;
                 $("#name").val(oname);
-                olang = response.document.languages;
+                olang = response.document.langs;
                 var lls = olang.split(',');
                 list_ll(lls);
                 $("#email").val(response.document.email);
