@@ -145,7 +145,7 @@ def get_file_stat():
             done_pieces = 0
             for p in l_s.find({"name": t["name"], "number": t["number"], "lang": t["lang"], "status": "PIECE", "translation_status": "DONE"}):
                 done_pieces += p["piece_end"] - p["piece_begin"] + 1
-            docs.append({"_id": t["_id"], "name": t["name"], "pieces_info": {"done_pieces": done_pieces, "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
+            docs.append({"_id": str(t["_id"]), "name": t["name"], "pieces_info": {"done_pieces": done_pieces, "all_pieces": t["piece_number"]}, "status": t["status"], "importance": t["importance"]})
     return {"code": "OK", "document": docs}
 
 
