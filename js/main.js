@@ -473,7 +473,6 @@ function load_acc() {
                 list_ll(lls);
                 $("#email").val(response.document.email);
                 $("#login").val(response.document.login);
-                $("#password").val(response.document.password);
                 if (response.document.vk.trim() != "") {
                     add_social_val(1, response.document.vk);
                 }
