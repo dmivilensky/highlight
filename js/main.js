@@ -611,7 +611,7 @@ function list_ll(list) {
         $("#langf").append(`
         <div class="col s12 m4 l4">
             <p><label>
-                <input type="checkbox" id="langf` + i + `"  ` + (list.includes(languages[i].code) ? `selected` : ``) + ` />
+                <input type="checkbox" id="langf` + i + `"  ` + (list.includes(languages[i].code) ? ` checked="checked"` : ``) + ` />
                 <span>` + languages[i].name + `</span>
             </label></p>
         </div>
