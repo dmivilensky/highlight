@@ -12,6 +12,18 @@
     height: 100% !important;
 }
 
+#langf {
+    display: table-row;
+}
+
+#soc {
+    display: table-row;
+}
+
+.spec {
+    display: table-row;
+}
+
 .slim {
     margin: 0 !important;
 }

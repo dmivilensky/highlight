@@ -429,7 +429,7 @@ function add_social() {
 
 function add_social_val(i, vv) {
     $('#soc').append(`
-        <div id="field` + social_idx + `">
+        <div id="field` + social_idx + `" class="spec">
         <div class="input-field col s12 m12 l4">
             <select class="soc" id="soc_value` + social_idx + `">
             <option value="1" ` + (i == 1 ? `selected` : ``) + `>ВК</option>
