@@ -337,6 +337,8 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         lang_storage.update_one({"_id": ObjectId(piece_id)}, {
             "$set": {"translated_txt_path": tr_txt, "translation_status": tr_stat, "lastModified": datetime.datetime.utcnow()}})
     if tr_stat == "DONE":
+        lgr = Logger()
+        lgr.log("log", "final file", "entry")
         ps = lang_storage.find_one({"_id": ObjectId(piece_id)})
         acc = db.accounts
         acc.update_one({"_id": ObjectId(ps["translator"])}, {"$inc": {"translated": 1}})
@@ -346,9 +348,11 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         taken_pieces_indexes = []
         pss = list(lang_storage.find({"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "PIECE",
                                  "translation_status": "DONE"}))
+        lgr.log("log", "final file", pss)
         pss = sorted(pss, key=lambda a: a["piece_begin"])
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
+        lgr.log("log", "final file", str(pieces_count) + " " + str(taken_pieces_indexes))
         # return {"pc": pieces_count, "tpi": len(taken_pieces_indexes)}
         if pieces_count <= len(taken_pieces_indexes):
             return {"id": str(create_translated_unverified_docs(pss, doc, ps, acc, lang_storage=lang_storage)), "code": "OK"}
@@ -382,14 +386,17 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
             the_stat = "NEED_CHECK"
             chief_id = ps["translator"]
 
+    lgr.log("log", "compose", "ready to push")
+    lgr.log("log", "compose", "data: " + str(doc["number"]) + " " + doc["name"])
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
                      path=PATH_TO_FILES + "/" + file_path, to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}))
-    for p in pieces:
-        delete_from_db(p["_id"])
+    lgr.log("log", "compose", "done push")
+    ## for p in pieces:
+        ## delete_from_db(p["_id"])
     # if not(lang_storage is None):
     #     for p in list(lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "WAITING_PIECE"})):
     #         delete_from_db(p["_id"])
-    delete_from_db(doc["_id"], with_path=False)
+    ## delete_from_db(doc["_id"], with_path=False)
     return did
 
 
