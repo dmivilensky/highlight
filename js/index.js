@@ -60,11 +60,11 @@ function signin() {
     }
     var status = "";
     if (is_editor) {
-        home_page = "chief";
+        status = "chief";
     } else if (is_markup) {
-        home_page = "verif"
+        status = "verif"
     } else {
-        home_page = "translator"
+        status = "translator"
     }
 
     $.ajax({
