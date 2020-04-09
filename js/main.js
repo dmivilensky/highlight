@@ -155,7 +155,7 @@ function load_others(id) {
             response = data;
             if (response.code == "OK") {
                 for (var i = 0; i < response.document.length; ++i) {
-                    if (response.document[i]._id == id) {
+                    if (response.document[i]._id == user_id) {
                         continue;
                     }
                     var social = "";
