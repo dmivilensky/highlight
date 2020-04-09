@@ -27,8 +27,13 @@ def convert_to(folder, source, timeout=None):
     lgr = Logger()
     lgr.log("log", "convertion", " ".join(args))
 
-    process = subprocess.run(args)
-    lgr.log("log", "convertion", str(process))
+    # process = subprocess.run(args)
+    p = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    output, err = p.communicate()
+    rc = p.returncode
+    lgr.log("log", "convertion", str(p))
+    lgr.log("log", "convertion", str(output))
+    lgr.log("log", "convertion", str(err))
 
 class FileManager:
     def __init__(self, root=getcwd()):
