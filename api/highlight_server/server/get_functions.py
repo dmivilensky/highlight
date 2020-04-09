@@ -101,7 +101,7 @@ def get_users_by_doc_or_piece(rid):
     db = client.highlight
     acc = db.accounts
     l_s = db.files_info
-    ps = l_s.find_one({"_id": rid})
+    ps = l_s.find_one({"_id": ObjectId(rid)})
     pieces = list(l_s.find({"name": ps["name"], "number": ps["number"], "lang": ps["lang"], "status": "PIECE"}))
     return {"code": "OK", "document": [acc.find_one({"_id": ObjectId(p["translator"])}) for p in pieces]}
 
