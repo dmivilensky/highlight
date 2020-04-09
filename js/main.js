@@ -143,9 +143,10 @@ function load_others(id) {
     for (var i = 0; i < 5; ++i) {
         var social = "";
         if (true) {
-            social += 'vk: ' + 'vk' + '<br>'
+            social += 'vk: ' + 'vk' + ', '
         }
-        $('#others' + id).append('Иванов Иван Иванович' + '<br>' + 'ivan@ivan.ru' + '<br>' + social);
+        social = social.split(0, -2);
+        $('#others' + id).append('Иванов Иван Иванович' + '<br>' + 'ivan@ivan.ru' + ', ' + social);
     }
 }
 
