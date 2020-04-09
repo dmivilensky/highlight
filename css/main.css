@@ -20,6 +20,12 @@
     display: table-row;
 }
 
+.others {
+    max-height: 100px;
+    margin-bottom: 15px;
+    overflow-y: auto;
+}
+
 .slim {
     margin: 0 !important;
 }

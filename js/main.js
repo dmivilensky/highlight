@@ -110,7 +110,7 @@ function list_blocks() {
                                     <div class="card-content">
                                     <span class="card-title">` + pieces[i].name + `</span>
                                     <p>Этот файл также переводят:</p>
-                                    <p id="others` + pieces[i]._id + `"></p>
+                                    <p id="others` + pieces[i]._id + `" class="others"></p>
                                     
                                     <div class="download-url-or">
                                     <a href="./files/` + text + `" download="` + text + `" class="waves-effect waves-light btn green download-btn"><i class="material-icons left">file_download</i>Скачать отрывок</a>
@@ -146,7 +146,7 @@ function load_others(id) {
             social += 'vk: ' + 'vk' + ', '
         }
         social = social.slice(0, -2);
-        $('#others' + id).append('Иванов Иван Иванович' + '<br>' + 'ivan@ivan.ru' + ', ' + social + '<br>');
+        $('#others' + id).append('Иванов Иван Иванович' + '<br>' + 'ivan@ivan.ru' + ', ' + social + '<br><br>');
     }
 }
 
