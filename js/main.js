@@ -171,7 +171,7 @@ function load_others(id) {
                     social = social.slice(0, -2);
                     $('#others' + id).append(response.document[i].name + '<br>' + response.document[i].email + ', ' + social + '<br><br>');
                 }
-                if (response.document.length == 0) {
+                if (response.document.length <= 1) {
                     $('#others' + id).append('Пока только Вы');
                 }
             }
