@@ -136,7 +136,7 @@ function signup() {
     }
     lang = lang.slice(0, -1);
 
-    if (lang.trim() == "") {
+    if (lang.trim() == "" && status_ == "translator") {
         alert("Необходимо выбрать хотя бы один язык.");
         return;
     }
