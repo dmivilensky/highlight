@@ -140,14 +140,43 @@ function list_blocks() {
 }
 
 function load_others(id) {
-    for (var i = 0; i < 5; ++i) {
-        var social = "";
-        if (true) {
-            social += 'vk: ' + 'vk' + ', '
-        }
-        social = social.slice(0, -2);
-        $('#others' + id).append('Иванов Иван Иванович' + '<br>' + 'ivan@ivan.ru' + ', ' + social + '<br><br>');
-    }
+    $.ajax({
+            url: "api/get_coworkers",
+            method: "POST",
+            data: {
+                id: user_id,
+                find_id: id
+            },
+            dataType: "json"
+        })
+        .done(function(data) {
+            $('#others' + id).empty();
+            console.log(data);
+            response = data;
+            if (response.code == "OK") {
+                for (var i = 0; i < response.document.length; ++i) {
+                    var social = "";
+                    if (response.document[i].vk != "") {
+                        social += 'vk: ' + response.document[i].vk + ', '
+                    }
+                    if (response.document[i].fb != "") {
+                        social += 'fb: ' + response.document[i].fb + ', '
+                    }
+                    if (response.document[i].tg != "") {
+                        social += 'tg: ' + response.document[i].tg + ', '
+                    }
+                    social = social.slice(0, -2);
+                    $('#others' + id).append(response.document[i].name + '<br>' + response.document[i].email + ', ' + social + '<br><br>');
+                }
+                if (response.document.length == 0) {
+                    $('#others' + id).append('Пока только Вы');
+                }
+            }
+        })
+        .fail(function(jqXHR, status, error) {
+            console.log(error);
+        });
+
 }
 
 var current_block = '';

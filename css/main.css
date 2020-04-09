@@ -22,7 +22,7 @@
 
 .others {
     max-height: 100px;
-    margin-bottom: 15px;
+    margin-bottom: 15px !important;
     overflow-y: auto;
 }
 
