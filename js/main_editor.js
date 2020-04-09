@@ -28,11 +28,11 @@ function check_user(success) {
 var doc_id;
 
 async function corrected() {
-    var extention = $("#corrections_path").val().slice(-4, -1) + $("#corrections_path").val().slice(-1);
-    if (extention != "docx") {
-        alert("Необходимо загрузить исправленный .docx файл!");
+    var extention = $("#corrections_path").val().split('.').pop()
+    if (extention != "docx" && extention != "pdf") {
+        alert("Необходимо загрузить исправленный .docx или .pdf файл!");
     } else {
-        var fname = 'new_file' + getRandomInt(10000) + '.docx';
+        var fname = 'new_file' + getRandomInt(10000) + '.' + extention;
         $("#corrections_path").val(fname);
 
         $('#file').on('submit', function(event) {
