@@ -563,6 +563,7 @@ function update_profile() {
     }
 
     console.log(post_dt);
+    $('#modal3').modal('close');
     return; // TODO
     $.ajax({
             url: "api/update_account",
