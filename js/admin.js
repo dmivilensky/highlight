@@ -170,7 +170,7 @@ function load_languages() {
         $("#lang").append(`
         <div class="col s6 m4 l4">
             <p><label>
-                <input type="radio" name="group1" id="lang_` + i + `" checked />
+                <input type="radio" name="group1" id="lang_` + i + `" ` + (i == 0 ? `checked` : ``) + ` />
                 <span>` + languages[i].name + `</span>
             </label></p>
         </div>
