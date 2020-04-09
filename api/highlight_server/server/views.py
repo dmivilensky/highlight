@@ -364,13 +364,13 @@ def get_user_by_doc_or_piece_cover(request):
         rid = params["find_id"]
         if mn.is_there_any_body(uid):
             result = gf.get_users_by_doc_or_piece(rid)
-            result = users_replace_ids(result, replace_partly=True)
+            # result = users_replace_ids(result, replace_partly=True)
         else:
             result = {'code': "2004"}
     except KeyError:
         result = {'code': "5001"}
 
-    text = json.dumps(result)
+    text = JSONEncoder().encode(result)
     return HttpResponse(text)
 
 
