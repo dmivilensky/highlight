@@ -43,6 +43,11 @@
     padding-right: 10% !important;
 }
 
+.imp {
+    border: 1px solid #666 !important;
+    border-radius: 5px !important;
+}
+
 .ready-btn {
     border: 1px solid #999 !important;
 }

@@ -95,7 +95,61 @@
         <div id="modal3" class="modal">
             <div class="modal-content">
             <h4>Профиль</h4>
-                
+            <div>
+            <form class="col s12">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                <input id="name" type="text" class="validate">
+                                <label for="name">ФИО</label>
+                                </div>
+
+                                <div class="input-field col s12">
+                                <input id="email" type="email" class="validate">
+                                <label for="email">Email</label>
+                                </div>
+
+                                <div id="lang">
+
+                                </div>
+
+                                <div id="soc" class="soc">
+
+                                <div class="input-field col s12 m12 l4 soc">
+                                    <select id="soc_value0">
+                                        <option value="1" selected>ВК</option>
+                                        <option value="2">Facebook</option>
+                                        <option value="3">Telegram</option>
+                                    </select>
+                                    <label>Соц. сеть</label>
+                                </div>
+                                <div class="input-field col s12 m12 l8">
+                                    <input id="soc0" type="text" class="validate">
+                                    <label for="soc0">id</label>
+                                </div>
+
+                                </div>
+
+                                <div id="soc-buttons">
+                                <a onclick="remove_social();" id="soc-remove"><i id="soc-icon" class="material-icons circle grey">exposure_neg_1</i></a>
+                                <a onclick="add_social();"><i id="soc-icon" class="material-icons circle grey">exposure_plus_1</i></a>
+                                </div>
+
+                                <div class="input-field col s12">
+                                <input id="login" type="text" class="validate">
+                                <label for="login">Логин</label>
+                                </div>
+
+                                <div class="input-field col s12">
+                                <input id="password" type="password" class="validate">
+                                <label for="password">Пароль</label>
+                                </div>
+
+                                <div class="input-field col s12 imp">
+                                <input id="password_now" type="password" class="validate">
+                                <label for="password_now">Текущий пароль (для подтверждения)</label>
+                                </div>
+                            </div>
+                        </form>
             </div>
             <div class="modal-footer">
                 <a onclick="update_profile();" class="modal-close waves-effect waves-light btn green">Обновить данные</a>
