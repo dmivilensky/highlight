@@ -94,8 +94,6 @@ class JSONEncoder(json.JSONEncoder):
             return str(o)
         return json.JSONEncoder.default(self, o)
 
-analytics)
-
 @csrf_exempt
 def get_account(request):
     result = {'code': "4040"}
