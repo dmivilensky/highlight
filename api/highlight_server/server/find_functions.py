@@ -52,6 +52,8 @@ def find_doc_by_lang(lang):
         return {"code": "3100"}
     for piece in querya:
         orig_doc = lang_storage.find_one({"name": piece["name"], "number": piece["number"], "lang": piece["lang"], "status": "WAITING_FOR_TRANSLATION"})
+        if piece["name"] == 'r':
+            raise ValueError(str(lang_storage.find_one({"name": piece["name"]})))
         if (piece["name"]+"#del#"+str(piece["number"])) in docs.keys():
             docs[(piece["name"]+"#del#"+str(piece["number"]))].append(piece)
         else:
