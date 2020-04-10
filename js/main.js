@@ -374,7 +374,7 @@ function create_block() {
     }
 
     if (!all_correct) {
-        alert("Выбирать можно только последовательно идущие абзацы!");
+        alert("Выбирать можно только последовательно идущие страницы!");
     } else {
         console.log(pids);
         $.ajax({

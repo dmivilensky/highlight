@@ -307,7 +307,7 @@ function load_work() {
                 $("#work").append(`
                 <tr>
                     <td>` + name + `</td>
-                    <td>` + document + (pb == pe ? `<br>Абзацы: ` + pb + `-` + pe : `<br>Абзац: ` + pb) + `</td>
+                    <td>` + document + (pb == pe ? `<br>Страницы: ` + pb + `-` + pe : `<br>Страница: ` + pb) + `</td>
                     <td>` + date + `</td>
                 </tr>
                 `);
@@ -437,7 +437,7 @@ function load_documents() {
                             status_text = "Переведён";
                             break;
                         case 'WAITING_FOR_TRANSLATION':
-                            status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " абзацев)";
+                            status_text = "В работе<br>(переведено " + paragraphs_ready + "/" + paragraphs_all + " страниц)";
                     }
 
                     load_coworkers(data_doc[i]._id);
