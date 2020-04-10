@@ -20,7 +20,7 @@ function check_user(success) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $.redirectGet("index.html", {});
         });
 }
@@ -48,7 +48,6 @@ async function corrected() {
 
                     xhr.upload.addEventListener("progress", function(evt) {
                         var percent = Math.round(evt.loaded / evt.total * 100);
-                        console.log(percent);
                         $('#submitting_button').attr('disabled', true);
                         $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%'
                     }, false);
@@ -193,7 +192,7 @@ function update_search() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $("#docs").empty();
             $("#details").empty();
             $('#loader_docs').hide();

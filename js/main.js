@@ -43,7 +43,7 @@ function check_user(success) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $.redirectGet("index.html", {});
         });
 }
@@ -70,7 +70,6 @@ function list_blocks() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             inserted = [];
             $("#blocks").empty();
             $("#blocks_ready").empty();
@@ -160,7 +159,7 @@ function list_blocks() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $("#blocks").empty();
             $('#loader_process').hide();
             $('#loader_ready').hide();
@@ -180,7 +179,6 @@ function load_others(id) {
         })
         .done(function(data) {
             $('#others' + id).empty();
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 for (var i = 0; i < response.document.length; ++i) {
@@ -206,7 +204,7 @@ function load_others(id) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 
 }
@@ -235,7 +233,6 @@ function upload() {
 
                 xhr.upload.addEventListener("progress", function(evt) {
                     var percent = Math.round(evt.loaded / evt.total * 100);
-                    console.log(percent);
                     $('#submitting_button').attr('disabled', true);
                     $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%'
                 }, false);
@@ -289,7 +286,7 @@ function ready(block_id) {
                 }
             })
             .fail(function(jqXHR, status, error) {
-                console.log(error);
+                alert('Ошибка сервера!');
             });
     }
 }
@@ -376,7 +373,6 @@ function create_block() {
     if (!all_correct) {
         alert("Выбирать можно только последовательно идущие страницы!");
     } else {
-        console.log(pids);
         $.ajax({
                 url: "api/update_pieces",
                 method: "POST",
@@ -389,7 +385,6 @@ function create_block() {
                 dataType: "json"
             })
             .done(function(data) {
-                // console.log(data);
                 response = data;
                 if (response.code == "OK") {
                     close_modal();
@@ -397,7 +392,7 @@ function create_block() {
                 }
             })
             .fail(function(jqXHR, status, error) {
-                console.log(error);
+                alert('Ошибка сервера!');
             });
     }
 }
@@ -411,7 +406,6 @@ function select_document(id) {
     selected_document = id;
     $("#get").click(create_block);
 
-    console.log(pieces_dict[selected_document]);
     total_count = pieces_dict[selected_document].length;
     for (var i = 0; i < pieces_dict[selected_document].length; ++i) {
         $("#paragraphs").append(`
@@ -450,7 +444,6 @@ function list_documents(lang) {
         })
         .done(function(data) {
             response = data;
-            console.log(response);
             $("#docs").empty();
             if (response.code == "5001") {
                 $('#loader_docs').hide();
@@ -500,7 +493,7 @@ function list_documents(lang) {
         .fail(function(jqXHR, status, error) {
             $("#docs").empty();
             $('#loader_docs').hide();
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -572,7 +565,6 @@ function load_acc() {
         })
         .done(function(data) {
             response = data;
-            console.log(data);
             if (response.code == "OK") {
                 oname = response.document.name;
                 $("#name").val(oname);
@@ -594,7 +586,7 @@ function load_acc() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -673,7 +665,6 @@ function update_profile() {
         verifiable = true;
     }
 
-    console.log(post_dt);
     $('#modal3').modal('close');
     $.ajax({
             url: "api/update_account",
@@ -697,7 +688,7 @@ function update_profile() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 

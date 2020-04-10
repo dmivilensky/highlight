@@ -23,7 +23,7 @@ function check_user(success) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $.redirectGet("index.html", {});
         });
 }
@@ -46,7 +46,7 @@ function approve_user(login) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -68,7 +68,7 @@ function delete_user(login) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -139,7 +139,7 @@ function load_users() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -219,12 +219,10 @@ async function add_document() {
             // event.preventDefault();
 
             var post_data = new FormData($("#file")[0]);
-            console.log(post_data);
             post_data.append("name", finame);
             post_data.append("language", lang);
             post_data.append("tags", tags_);
             post_data.append("key", key_);
-            console.log(post_data);
 
             $.ajax({
                 xhr: function() {
@@ -232,7 +230,6 @@ async function add_document() {
 
                     xhr.upload.addEventListener("progress", function(evt) {
                         var percent = Math.round(evt.loaded / evt.total * 100);
-                        console.log(percent);
                         $('#submitting_button').attr('disabled', true);
                         $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%'
                     }, false);
@@ -281,7 +278,7 @@ function load_stat() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -314,7 +311,7 @@ function load_work() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -365,7 +362,7 @@ function load_translators() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -381,7 +378,6 @@ function load_coworkers(id) {
         .done(function(data) {
             $("#cow" + id).empty();
             $("#cow" + id).append('Переводчики: <br>');
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 for (var i = 0; i < response.document.length; ++i) {
@@ -401,7 +397,7 @@ function load_coworkers(id) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -415,7 +411,6 @@ function load_documents() {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             if (response.code == "OK") {
                 $("#documents").empty();
@@ -453,7 +448,7 @@ function load_documents() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -469,12 +464,11 @@ function delete_file(id) {
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             response = data;
             load_documents();
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -524,7 +518,7 @@ function save_db() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 

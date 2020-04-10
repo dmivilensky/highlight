@@ -31,7 +31,7 @@ function try_signin_both() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -91,7 +91,7 @@ function signin() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 

@@ -22,7 +22,7 @@ function check_user(success) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $.redirectGet("index.html", {});
         });
 }
@@ -55,7 +55,7 @@ function ready(i) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -84,7 +84,7 @@ function save() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 

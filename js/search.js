@@ -15,7 +15,7 @@ function inc_importance(i, id_) {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
         });
 }
 
@@ -179,7 +179,7 @@ function update_search() {
             }
         })
         .fail(function(jqXHR, status, error) {
-            console.log(error);
+            alert('Ошибка сервера!');
             $("#docs").empty();
             $("#details").empty();
             $('#loader_docs').hide();
