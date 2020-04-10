@@ -20,10 +20,10 @@
 
             <div class="row"> 
                 <nav>
-                    <div class="nav-wrapper">
+                    <div class="nav-wrapper search-field">
                         <div class="input-field">
                             <input id="search" type="search" required>
-                            <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                            <label class="label-icon" for="search"><i class="material-icons lupa">search</i></label>
                             <i class="material-icons">close</i>
                         </div>
                     </div>
@@ -33,6 +33,22 @@
 
             <div class="row">
                 <div class="col s12 m6 l6">
+                    <p class="placeholder" id="text_docs">Документов пока нет<br></p>
+
+                    <div class="center">
+                    <div id="loader_docs" class="preloader-wrapper active">
+                        <div class="spinner-layer spinner-yellow-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div><div class="gap-patch">
+                            <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
                     <ul class="collection fixed docs-search" id="docs">
                     </ul>
                 </div>

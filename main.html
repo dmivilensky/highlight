@@ -24,12 +24,44 @@
             </div>
 
             <h4>В работе</h4>
-            <p class="no-bottom">Отрывки скачиваютс в формате pdf. Для удобного конвертирования в docx</p>
+            <p class="no-bottom">Отрывки скачиваются в формате pdf. Для удобного конвертирования в docx</p>
             <p class="no-top">предлагаем использовать сервис <a href="https://pdf2docx.com/ru/">pdf2docx</a></p>
+            
+            <p class="placeholder" id="text_process">Здесь будут выбранные Вами отрывки<br></p>
+
+            <div class="center">
+            <div id="loader_process" class="preloader-wrapper active">
+                <div class="spinner-layer spinner-yellow-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+                </div>
+            </div>
+            </div>
+
             <div class="row" id="blocks">
             </div>
 
             <h4>Переведено</h4>
+            <p class="placeholder" id="text_ready">Здесь будут завершённые отрывки<br></p>
+
+            <div class="center">
+            <div id="loader_ready" class="preloader-wrapper active">
+                <div class="spinner-layer spinner-yellow-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div><div class="gap-patch">
+                    <div class="circle"></div>
+                </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+                </div>
+            </div>
+            </div>
             <div class="row" id="blocks_ready">
             </div>
         </div>
@@ -45,6 +77,23 @@
                         </select>
                         <label>Язык</label>
                     </div>
+
+                    <p class="placeholder" id="text_docs">Документов пока нет<br></p>
+
+                    <div class="center">
+                    <div id="loader_docs" class="preloader-wrapper active">
+                        <div class="spinner-layer spinner-yellow-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div><div class="gap-patch">
+                            <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
                     <ul class="collection fixed list-modal" id="docs">
                     </ul>
                 </div>

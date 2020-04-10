@@ -12,12 +12,34 @@
     height: 100% !important;
 }
 
+ul {
+    border: 0;
+}
+
 #langf {
     display: table-row;
 }
 
 #soc {
     display: table-row;
+}
+
+.placeholder {
+    margin-top: 34px;
+    margin-bottom: 10px;
+    background-color: #eee !important;
+    -webkit-text-fill-color: transparent !important;
+    -webkit-background-clip: text !important;
+    font-size: 28px !important;
+    font-family: arial !important;
+    line-height: 25px;
+    text-align: center;
+    line-height: 25px;
+    text-align: center;
+}
+
+.sm {
+    font-size: 20px !important;
 }
 
 .others {

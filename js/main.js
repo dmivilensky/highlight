@@ -55,6 +55,12 @@ function edit_block(id) {
 var inserted = [];
 
 function list_blocks() {
+    $('#text_ready').hide();
+    $('#text_process').hide();
+    $('#loader_ready').show();
+    $('#loader_process').show();
+    $("#blocks").empty();
+    $("#blocks_ready").empty();
     $.ajax({
             url: "api/find_pieces",
             method: "POST",
@@ -65,13 +71,32 @@ function list_blocks() {
         })
         .done(function(data) {
             console.log(data);
+            inserted = [];
             $("#blocks").empty();
             $("#blocks_ready").empty();
-            inserted = [];
 
             response = data;
             if (response.code == "OK") {
+                $('#loader_process').hide();
+                $('#loader_ready').hide();
                 var pieces = response.document;
+
+                var exists_done = false;
+                var exists_undone = false;
+                for (var i = 0; i < pieces.length; ++i) {
+                    if (pieces[i].translation_status == "DONE") {
+                        exists_done = true;
+                    } else {
+                        exists_undone = true;
+                    }
+                }
+
+                if (!exists_undone) {
+                    $('#text_process').show();
+                }
+                if (!exists_done) {
+                    $('#text_ready').show();
+                }
 
                 for (var i = 0; i < pieces.length; ++i) {
                     if (inserted.includes(pieces[i]._id)) {
@@ -136,6 +161,10 @@ function list_blocks() {
         })
         .fail(function(jqXHR, status, error) {
             console.log(error);
+            $("#blocks").empty();
+            $('#loader_process').hide();
+            $('#loader_ready').hide();
+            $("#blocks_ready").empty();
         });
 }
 
@@ -249,6 +278,11 @@ function ready(block_id) {
                 dataType: "json"
             })
             .done(function(data) {
+                $("#lang").formSelect();
+                $("#lang").change(function() {
+                    list_documents($(this).val());
+                })
+                list_documents('ENG');
                 response = data;
                 if (response.code == "OK") {
                     list_blocks();
@@ -393,6 +427,9 @@ function list_documents(lang) {
     $("#paragraphs").empty();
     $("#docs").empty();
 
+    $('#text_docs').hide();
+    $('#loader_docs').show();
+
     $.ajax({
             url: "api/find_doc_by_lang",
             method: "POST",
@@ -403,7 +440,17 @@ function list_documents(lang) {
         })
         .done(function(data) {
             response = data;
+            console.log(response);
+            $("#docs").empty();
+            if (response.code == "5001") {
+                $('#loader_docs').hide();
+                $('#text_docs').show();
+            }
             if (response.code == "OK") {
+                $('#loader_docs').hide();
+                if (response.document.length == 0) {
+                    $('#text_docs').show();
+                }
 
                 var list = response.document;
                 for (var i = 0; i < list.length; ++i) {
@@ -441,6 +488,8 @@ function list_documents(lang) {
             }
         })
         .fail(function(jqXHR, status, error) {
+            $("#docs").empty();
+            $('#loader_docs').hide();
             console.log(error);
         });
 }
@@ -692,5 +741,7 @@ function init() {
 }
 
 $(document).ready(function() {
+    $('#text_process').hide();
+    $('#text_ready').hide();
     check_user(init);
 });

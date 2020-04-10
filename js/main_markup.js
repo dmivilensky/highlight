@@ -101,7 +101,7 @@ function document_info(i) {
         var or_s = original.split('/');
         original_text = `
         <div class="col s6">
-        <a href="files/` + or_s[or_s.length - 1] + `" target="_blank" class="waves-effect waves-green btn-flat download-btns"><i class="material-icons left">get_app</i>Скачать оригинал</a>
+        <a href="files/` + or_s[or_s.length - 1] + `" target="_blank" class="waves-effect waves-green btn-flat download-btns ready-btn"><i class="material-icons left">get_app</i>Скачать оригинал</a>
         </div>
         `;
     }
@@ -146,6 +146,8 @@ function update_search() {
         tags_list += tags_data[i].tag + ",";
     }
     tags_list = tags_list.slice(0, -1);
+    $('#loader_docs').show();
+    $('#text_docs').hide();
 
     $.ajax({
             url: "api/get_from_db_for_verst",
@@ -158,11 +160,15 @@ function update_search() {
         })
         .done(function(data) {
             response = data;
+            $('#loader_docs').hide();
             if (response.code == "OK") {
                 $("#docs").empty();
                 $("#details").empty();
 
                 documents = response.document;
+                if (documents.length == 0) {
+                    $('#text_docs').show();
+                }
                 for (var i = 0; i < documents.length; ++i) {
                     var tags = documents[i].tags.split(",");
                     var title = "«" + documents[i].name + "»";
@@ -182,9 +188,14 @@ function update_search() {
                     </li>
                     `);
                 }
+            } else {
+                $('#text_docs').show();
             }
         })
         .fail(function(jqXHR, status, error) {
+            $("#docs").empty();
+            $("#details").empty();
+            $('#loader_docs').hide();
             console.log(error);
         });
 }
