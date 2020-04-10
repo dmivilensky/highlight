@@ -391,8 +391,8 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
                      path=PATH_TO_FILES + "/" + file_path, to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}))
     lgr.log("log", "compose", "done push")
-    for p in pieces:
-        delete_from_db(p["_id"])
+    # for p in pieces:
+    #     delete_from_db(p["_id"])
     # if not(lang_storage is None):
     #     for p in list(lang_storage.find({"number": doc["number"], "name": doc["name"], "lang": doc["lang"], "status": "WAITING_PIECE"})):
     #         delete_from_db(p["_id"])
