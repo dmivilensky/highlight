@@ -314,6 +314,7 @@ var selected_document = "";
 var max_checked = -1;
 
 var pieces_dict = {};
+var total_count = 0;
 
 function select_paragraph(i, id) {
     if ($("#bar" + i).css("background-color") == "rgb(76, 175, 80)") {
@@ -341,6 +342,14 @@ function select_paragraph(i, id) {
             }
         }
         max_checked = i;
+    }
+}
+
+function select_all() {
+    for (var j = 0; j < total_count; ++j) {
+        selected_paragraphs.add(j);
+        selected_paragraphs_ids[j] = $("#status" + j).html();
+        $("#bar" + j).css("background-color", "#4caf50");
     }
 }
 
@@ -403,6 +412,7 @@ function select_document(id) {
     $("#get").click(create_block);
 
     console.log(pieces_dict[selected_document]);
+    total_count = pieces_dict[selected_document].length;
     for (var i = 0; i < pieces_dict[selected_document].length; ++i) {
         $("#paragraphs").append(`
         <div class="row paragraphs-flex" id="p` + pieces_dict[selected_document][i].number + `" ` + (pieces_dict[selected_document][i].freedom ? `onclick="select_paragraph(` + i + `, '` + pieces_dict[selected_document][i]._id + `');"` : ``) + `>
