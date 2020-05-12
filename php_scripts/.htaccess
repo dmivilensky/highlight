@@ -1,6 +1,7 @@
 Options All -Indexes
 IndexIgnore *
 IndexIgnore *.php
+IndexIgnore *.ini
 
 <Files .htaccess>
 	Order allow,deny

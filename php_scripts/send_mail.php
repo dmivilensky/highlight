@@ -7,6 +7,8 @@ require './PHPMailer/Exception.php';
 require './PHPMailer/PHPMailer.php';
 require './PHPMailer/SMTP.php';
 
+$ini = parse_ini_file('php.ini');
+
 $mail = new PHPMailer;
 $mail->isSMTP();
 $mail->SMTPDebug = SMTP::DEBUG_SERVER;
@@ -17,10 +19,10 @@ $mail->Port = 587;
 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
 $mail->SMTPAuth = true;
-$mail->Username = 'highlight.lang@gmail.com';
-$mail->Password = 'h1i2g3h4';
+$mail->Username = $ini['user'];
+$mail->Password = $ini['pwd'];
 
-$mail->setFrom('highlight.lang@gmail.com', 'HighLight');
+$mail->setFrom($ini['user'], 'HighLight');
 $mail->addAddress($_GET['email'], '');
 $mail->Subject = 'HighLight: документ '.$_GET['name'];
 
