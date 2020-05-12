@@ -4,13 +4,13 @@
 
 ## Установка
 
-####**_Скачайте:_**
+**_Скачайте:_**
 - [python 3](https://www.python.org/downloads/release/python-382/)
 - [mongodb](https://docs.mongodb.com/manual/installation/)
 - [apache](https://httpd.apache.org/download.cgi)
 - [git](https://git-scm.com/downloads)
 
-####**_Настройте:_**
+**_Настройте:_**
 - [Выполните инструкции из туториала по созданию виртуального хоста](https://medium.com/@JohnFoderaro/how-to-set-up-apache-in-macos-sierra-10-12-bca5a5dfffba#5f65)
 - В качестве виртуального хоста укажите:
     ```editorconfig
@@ -37,12 +37,12 @@
 - Убедитесь, что линия load proxy_module в httpd.conf: LoadModule proxy_module modules/mod_proxy.so есть и разкомментарена (нет # в начале)
 - Убедитесь, что линия load proxy_http_module в httpd.conf: LoadModule proxy_http_module modules/mod_proxy_http.so есть и разкомментарена (нет # в начале)
 
-####**_Напишите в консоле:_**
+**_Напишите в консоле:_**
 ```shell script
 git clone "https://github.com/dmivilensky/highlight.git"
 ```
 
-####**_Измените:_**
+**_Измените:_**
 - shell_scripts/start_django параметр USER на юзера под которым запускается apache
     ```shell script
   ps -Aj | grep httpd # Узнать юзера, если апач запущен (юзер это 1 колонка)
