@@ -1,0 +1,4 @@
+#! /bin/bash
+PROJECT_DIR="$(dirname "$0")"
+source $PROJECT_DIR/../.venv/bin/activate
+kill "$(cat /tmp/django.pid)"

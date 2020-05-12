@@ -1,0 +1,5 @@
+#! /bin/bash
+PROJECT_DIR="$(dirname "$0")"
+source $PROJECT_DIR/stop_django
+sleep 1
+source $PROJECT_DIR/start_django

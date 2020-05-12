@@ -1,0 +1,6 @@
+#!/bin/bash
+PROJECT_DIR="$(dirname "$0")"
+source $PROJECT_DIR/../.venv/bin/activate
+USER=_www
+mod_wsgi-express start-server --port 9000 --user $USER --group $USER --python-path $PROJECT_DIR/../api/highlight_server $PROJECT_DIR/../api/highlight_server/highlight_server/wsgi.py &
+echo $! > /tmp/django.pid
