@@ -9,6 +9,7 @@
 - [mongodb](https://docs.mongodb.com/manual/installation/)
 - [apache](https://httpd.apache.org/download.cgi)
 - [git](https://git-scm.com/downloads)
+- [mod_wsgi для apache](https://pypi.org/project/mod-wsgi/#installation-into-apache)
 
 **_Напишите в консоле:_**
 ```shell script
