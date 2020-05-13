@@ -11,7 +11,7 @@
 - [git](https://git-scm.com/downloads)
 - [mod_wsgi для apache](https://pypi.org/project/mod-wsgi/#installation-into-apache)
 
-**_Напишите в консоле:_**
+**_Напишите в консоли:_**
 ```shell script
 git clone "https://github.com/dmivilensky/highlight.git"
 ```
@@ -60,7 +60,7 @@ shell_scripts/start_server    # Запуск сервера
 ## Обслуживание
 
 ```shell script
-shell_scripts/stфке_django     # Запуск бэкграунда сервера
+shell_scripts/start_django     # Запуск бэкграунда сервера
 shell_scripts/restart_django   # Перезапуск бэкграунда сервера
 shell_scripts/stop_django      # Остановка бэкграунда сервера
 ```
