@@ -13,7 +13,7 @@ import shutil as sh
 from .logger import Logger
 from .filemanager import MergeStatus, FileManager
 
-PATH_TO_FILES = "../../../files"
+PATH_TO_FILES = "../../files"
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 FM = FileManager(PATH_TO_FILES)
 
@@ -244,6 +244,7 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
     pieces = list()
     document = lang_storage.find_one({"_id": ObjectId(doc_id)})
     no_intersections = True
+    pieces_ids = list(filter(lambda pid: pid != "not", pieces_ids))
     for piece_id in pieces_ids:
         p = lang_storage.find_one({"_id": ObjectId(piece_id)})
         pieces.append(p)

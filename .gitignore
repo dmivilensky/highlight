@@ -57,6 +57,7 @@ log_log.txt
 
 #files
 files/*
+mail.ini
 
 # Unit test / coverage reports
 htmlcov/
