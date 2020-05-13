@@ -2,11 +2,11 @@
 
 [logo]: https://github.com/dmivilensky/highlight/blob/master/logo.png
 
-#О HIGHLIGHT
+# О HIGHLIGHT
 
 ## Развёртывание
 
-[**Гайд по развёртыванию**](https://github.com/dmivilensky/highlight/wiki/Delpoy)
+#### [**Гайд по развёртыванию**](https://github.com/dmivilensky/highlight/wiki/Delpoy)
 
 ## Запуск
 
