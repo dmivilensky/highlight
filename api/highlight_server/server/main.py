@@ -13,7 +13,7 @@ import shutil as sh
 from .logger import Logger
 from .filemanager import MergeStatus, FileManager
 
-PATH_TO_FILES = "/var/www/html/highlight.spb.ru/public_html/files"
+PATH_TO_FILES = "../../../files"
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 FM = FileManager(PATH_TO_FILES)
 
