@@ -2,6 +2,7 @@ import json
 # Create your views here.
 import os
 import asyncio
+import sys
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -24,13 +25,15 @@ if __name__ != '__main__':
     from . import main as mn
     from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, \
     upt_d, for_verif, file_loader_module
+    # print(os.path.isdir("../../python_scripts"))
+    sys.path.insert(1, '../../python_scripts')
+    import python_mailer as p_m
 
 if __name__ == '__main__':
     # import registration as rg
     import get_functions as gf
     import find_functions as ff
     import main as mn
-    from utils import doc_ids_replace, users_replace_ids
 
 ADKEY = "5e82-?XCGf3b24sxw515b61"
 ADHASH = 75953932291808146177936
@@ -96,6 +99,7 @@ class JSONEncoder(json.JSONEncoder):
         if isinstance(o, datetime.datetime):
             return str(o)
         return json.JSONEncoder.default(self, o)
+
 
 @csrf_exempt
 def get_account(request):
@@ -640,6 +644,18 @@ def check_user(request):
 
 
 @csrf_exempt
+def send_email(request):
+    params = get_params(request)
+    try:
+        p_m.send_email_named(params['email'], params['path'], params['name'])
+        result = {'code': "OK"}
+    except KeyError:
+        result = {'code': "5001"}
+
+    text = json.dumps(result)
+    return HttpResponse(text)
+
+
 def test():
     print(ADKEY)
     try:

@@ -141,6 +141,8 @@ function signup() {
         return;
     }
 
+    csrf_setup();
+
     $.ajax({
             url: "api/registration",
             method: "POST",

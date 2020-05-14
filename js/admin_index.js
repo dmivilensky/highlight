@@ -1,4 +1,7 @@
 function signin() {
+
+    csrf_setup();
+
     var login_val = $("#login").val();
     var password_val = $("#password").val();
     $.ajax({

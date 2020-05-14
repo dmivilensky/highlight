@@ -744,5 +744,6 @@ function init() {
 $(document).ready(function() {
     $('#text_process').hide();
     $('#text_ready').hide();
+    csrf_setup();
     check_user(init);
 });

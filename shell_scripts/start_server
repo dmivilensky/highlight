@@ -2,4 +2,4 @@
 PROJECT_DIR="$(dirname "$0")"
 apachectl start
 sleep 1
-source $PROJECT_DIR/start_django
+bash $PROJECT_DIR/start_django

@@ -1,4 +1,5 @@
 function inc_importance(i, id_) {
+    csrf_setup();
     $.ajax({
             url: "api/update_importance",
             method: "POST",
@@ -21,16 +22,19 @@ function inc_importance(i, id_) {
 
 var title = "";
 var translation = "";
+var original = "";
 
 function send_file() {
+    csrf_setup();
     var email = $("#email").val();
+    var fpath = translation ? $("#translated_d").is(':checked') : original;
     $.ajax({
-            url: "../php_scripts/send_mail.php",
-            method: "GET",
+            url: "api/send_email",
+            method: "POST",
             data: {
                 name: title,
                 email: email,
-                path: translation
+                path: fpath
             },
             dataType: "text"
         })
@@ -53,7 +57,7 @@ function document_info(i) {
         tags_markup += `<div class="chip">` + tags[j] + `</div>`;
     }
 
-    var original = documents[i].orig_path;
+    original = documents[i].orig_path;
     var original_text = "";
     if (original) {
         var or_s = original.split("/");
@@ -64,6 +68,8 @@ function document_info(i) {
         `;
     }
 
+    if (documents[i].path == null)
+        $("#translated_d").attr('disabled', true);
     translation = documents[i].path;
     var translation_text = "";
     if (translation) {
@@ -123,6 +129,8 @@ function update_search() {
     tags_list = tags_list.slice(0, -1);
     $('#loader_docs').show();
     $('#text_docs').hide();
+
+    csrf_setup();
 
     $.ajax({
             url: "api/get_from_db",

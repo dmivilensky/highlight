@@ -159,5 +159,6 @@ function init() {
 }
 
 $(document).ready(function() {
+    csrf_setup();
     check_user(init);
 });

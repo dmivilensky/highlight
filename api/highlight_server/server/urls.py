@@ -29,5 +29,6 @@ urlpatterns = [
     path('let_my_people_pass', views.let_my_people_pass, name='lmpg'),
     path('check_user', views.check_user, name='cu'),
     path('find_piece', views.find_piece, name='fp'),
-    path('delete', views.delete_file, name='dlf')
+    path('delete', views.delete_file, name='dlf'),
+    path('send_email', views.send_email, name='sem')
 ]

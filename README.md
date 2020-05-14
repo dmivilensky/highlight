@@ -11,7 +11,6 @@
 ## Запуск
 
 ```shell script
-shell_scripts/setup           # Сетап
 shell_scripts/start_server    # Запуск сервера
 ```
 
