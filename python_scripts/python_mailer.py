@@ -44,6 +44,7 @@ def send_email(subject, to_addr, from_addr, body_text, uname, pswd, file_path, f
         sys.exit(1)
 
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    server.starttls()
     server.login(uname, pswd)
     server.sendmail(from_addr, [to_addr], msg)
     server.quit()
