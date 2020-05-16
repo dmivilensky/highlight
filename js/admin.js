@@ -180,6 +180,32 @@ function load_languages() {
     }
 }
 
+function reset_all() {
+    $('#abstract').val(null);
+    $('#author').val(null);
+    $('#jour').val(null);
+    $('#jl').val(null);
+    $("#file").trigger("reset");
+    $("#fname").val(null);
+    is_edited = false;
+    abstract = "";
+    author = "";
+    journal = "";
+    jl = "";
+    tags_field.chips({
+        data: [{
+            tag: 'Теги и ключевые слова',
+        }],
+        autocompleteOptions: {
+            data: {
+                'Теги и ключевые слова': null,
+            },
+            limit: Infinity,
+            minLength: 1
+        }
+    });
+}
+
 async function add_document() {
     var lang = "";
     var lang_set = false;
@@ -201,6 +227,9 @@ async function add_document() {
         tags_ += chips[i].tag + ",";
     }
     tags_ = tags_.slice(0, -1);
+    if (is_edited == false) {
+        tags_ = "";
+    }
 
     var real_name = $("#filename");
     var extention = real_name.val().slice(-3, -1) + real_name.val().slice(-1);
@@ -222,6 +251,10 @@ async function add_document() {
             post_data.append("name", finame);
             post_data.append("language", lang);
             post_data.append("tags", tags_);
+            post_data.append("abstract", abstract);
+            post_data.append("author", author);
+            post_data.append("journal", journal);
+            post_data.append("jl", jl);
             post_data.append("key", key_);
 
             $.ajax({
@@ -251,6 +284,7 @@ async function add_document() {
                     $('#submitting_button').attr('disabled', false);
                     alert("Файл загружен!");
                     $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
+                    reset_all();
                 }
             });
         });
@@ -521,18 +555,44 @@ function save_db() {
             alert('Ошибка сервера!');
         });
 }
+var abstract = "";
+var author = "";
+var journal = "";
+var jl = "";
+function add_abstract() {
+    abstract = $('#abstract').val();
+    author = $('#author').val();
+    journal = $('#jour').val();
+    jl = $('#jl').val();
+    alert("Данные добавлены");
+}
 
+var tags_field;
+var is_edited = false;
 function init() {
-    $('#tags').chips({
+    tags_field = $('#tags');
+    tags_field.chips({
         data: [{
-            tag: 'Важный',
+            tag: 'Теги и ключевые слова',
         }],
         autocompleteOptions: {
             data: {
-                'Важный': null,
+                'Теги и ключевые слова': null,
             },
             limit: Infinity,
             minLength: 1
+        }
+    });
+    $('.modal').modal();
+    tags_field.click(function(){
+        if (!is_edited) {
+            is_edited = true;
+            tags_field.chips({
+                autocompleteOptions: {
+                    limit: Infinity,
+                    minLength: 1
+                }
+            });
         }
     });
 

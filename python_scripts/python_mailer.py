@@ -11,7 +11,7 @@ from email.mime.text import MIMEText
 def send_email_named(to_addr, file_path, file_name):
     config = configparser.ConfigParser()
     config.read(os.path.realpath(__file__)[:-17] + "/mail.ini")
-    send_email('HighLight: документ ' + file_name, to_addr, config["Credentials"]["user"], 'Документ прислан сайтом highlight.spb.ru', config["Credentials"]["user"], config["Credentials"]["pwd"], file_path, file_name)
+    send_email('HighLight: документ ' + file_name, to_addr, config["Credentials"]["user"], 'Документ прислан сайтом highlight.spb.ru\n', config["Credentials"]["user"], config["Credentials"]["pwd"], file_path, file_name)
 
 
 def send_email(subject, to_addr, from_addr, body_text, uname, pswd, file_path, file_name):
@@ -46,7 +46,7 @@ def send_email(subject, to_addr, from_addr, body_text, uname, pswd, file_path, f
     server = smtplib.SMTP(host='smtp.gmail.com', port=587)
     server.starttls()
     server.login(uname, pswd)
-    server.sendmail(from_addr, [to_addr], msg)
+    server.sendmail(from_addr, [to_addr], msg.as_string())
     server.quit()
 
 

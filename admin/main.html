@@ -27,9 +27,8 @@
                         </div>
                     </div>
 
-                    <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
 
-                    <form enctype="multipart/form-data" target="hiddenFrame" method="POST" id="file">
+                    <form enctype="multipart/form-data" method="POST" id="file">
                         <div class="file-field input-field">
                         <div class="btn grey">
                             <span>Загрузить</span>
@@ -59,12 +58,17 @@
                                 </div>
 
                                 </fieldset>
-                                  
+
                         <div class="chips chips-autocomplete" id="tags"></div>
 
-                        <div style="width: 100%; text-align: right;">
-                            <a id="submitting_button" onclick="add_document();" class="waves-effect waves-light btn green">Загрузить файл<i class="material-icons right">file_upload</i></a>
-                        </div>
+                            <div class="row" style="width: 100%">
+                                <div style="text-align: left; display: inline-block; float: left">
+                                    <a class="waves-effect waves-light btn grey modal-trigger" href="#abs_modal"><i class="material-icons left">add</i>Добавить данные</a>
+                                </div>
+                                <div style="text-align: right; display: inline-block; float: right">
+                                    <a id="submitting_button" onclick="add_document();" class="waves-effect waves-light btn green">Загрузить файл<i class="material-icons right">file_upload</i></a>
+                                </div>
+                            </div>
                 </div>
 
                 <div class="col s12 m6 l6">
@@ -72,8 +76,6 @@
                     </ul>
                 </div>
 
-
-                
                 <div class="col s12" style="margin-top: 70px; margin-bottom: 70px;">
                 <h5 style="margin-bottom: 20px;">Статистика</h5>
                 <table class="striped centered" style="border-radius: 7px !important; border-collapse: unset !important; border: 1px solid #000; margin-bottom: 30px;">
@@ -152,7 +154,41 @@
             </div>
         </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+        <div id="abs_modal" class="modal">
+            <div class="modal-content">
+                <h5>Заполните данные</h5>
+                <div class="row no-bottom">
+                    <form class="col s12">
+                        <div class="row container no-bottom">
+                            <div class="input-field col s12" style="margin-bottom: 0">
+                                <input id="author" type="text" class="validate">
+                                <label for="author">Автор</label>
+                            </div>
+                            <div class="input-field col s12" style="margin-bottom: 0">
+                                <input id="jour" type="text" class="validate">
+                                <label for="jour">Журнал</label>
+                            </div>
+                            <div class="input-field col s12" style="margin-bottom: 0">
+                                <input id="jl" type="url" class="validate">
+                                <label for="jl">Ссылка на журнал</label>
+                            </div>
+                            <div class="input-field col s12" style="margin-bottom: 30px; margin-top: 0">
+                                <label style="display: block">Абстракт:</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <textarea id="abstract" rows="15" cols="650" style="height: 100%; width: 140%"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a onclick="add_abstract();" class="modal-close waves-effect waves-green btn-flat">Добавить</a>
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Отменить</a>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
         <script src="../js/utils.js"></script>

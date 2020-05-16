@@ -27,7 +27,7 @@ var original = "";
 function send_file() {
     csrf_setup();
     var email = $("#email").val();
-    var fpath = translation ? $("#translated_d").is(':checked') : original;
+    var fpath = $("#translated_d").is(':checked') ? translation : original;
     $.ajax({
             url: "api/send_email",
             method: "POST",

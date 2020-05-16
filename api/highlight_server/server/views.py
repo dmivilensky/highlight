@@ -441,8 +441,6 @@ def verify_file_cover(request):
         result = {'code': "5001"}
 
     text = json.dumps(result)
-    # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
-    # a = mn.delete_from_doc_storage("/Users/Downloads/files_test/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
@@ -467,8 +465,6 @@ def markup_file(request):
         result = {'code': "5001"}
 
     text = json.dumps(result)
-    # a = mn.delete_from_doc_storage("/var/www/html/highlight.spb.ru/public_html/files/" + path) if not(path is None) else ""
-    # a = mn.delete_from_doc_storage("/Users/Downloads/files_test/" + path) if not(path is None) else ""
     return HttpResponse(text)
 
 
@@ -505,13 +501,17 @@ def update_docs_cover(request):
         name = params["name"]
         lang = params["language"]
         tags = params["tags"]
+        abstract = params["abstract"]
+        author = params["author"]
+        journal = params["journal"]
+        jl = params["jl"]
         # f = open('program_logs.txt', 'w+')
         # f.write('zas')
         # f.close()
         # result = upt_d(params, result)
         lgr.log("log", "loader status: ", "main function")
         # file_data = mn.find_file_by_path(path) if not (path == "") else None
-        result = mn.update_docs(name, None, lang, tags, path=path) if not (path == "") else {"code": "5000"}
+        result = mn.update_docs(name, None, lang, tags, author=author, abstract=abstract, journal=journal, jl=jl, path=path) if not (path == "") else {"code": "5000"}
     except KeyError:
         result = {'code': "5001"}
 

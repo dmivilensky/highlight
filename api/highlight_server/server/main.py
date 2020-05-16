@@ -9,6 +9,7 @@ import datetime
 import django
 import random
 import shutil as sh
+import pdfminer.high_level as phl
 
 from .logger import Logger
 from .filemanager import MergeStatus, FileManager
@@ -119,21 +120,88 @@ def push_to_file_storage(path, file):
     lgr.log("log", "loader status: ", "file saved")
 
 
+def extract_pdf2text(fpath, db_file, orig=True):
+    text_preview=""
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "extracting text from pdf")
+    piece_pages = FM.split_pdf(fpath.split("/")[-1])
+    all_text = []
+    for i in range(len(piece_pages)):
+        text = phl.extract_text(fpath).strip()
+        if i == 0:
+            try:
+                text_preview = list(filter(lambda p: p != "" and len(p.split(" ")) >= 50, map(lambda p: p.strip(), text.split("\n\n"))))[0].strip()
+            except IndexError:
+                try:
+                    text_preview = \
+                    list(filter(lambda p: p != "" and len(p.split(" ")) >= 10, map(lambda p: p.strip(), text.split("\n\n"))))[
+                        0].strip()
+                except IndexError:
+                    text_preview = \
+                        list(map(lambda p: p.strip(), text.split("\n\n")))[
+                        0].strip()
+        all_text.append(text)
+    path = PATH_TO_FILES + "/" + "pdf2text" + ("orig" if orig else "trans")+ str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + ".txt"
+    while os.path.isfile(path):
+        path = path[:-len(path.split(".")[-1]) + 1] + str(random.randint(0, 99999)) + ".txt"
+    lgr = Logger()
+    lgr.log("log", "loader status: ", "saving text")
+    with open(path, 'w+') as destination:
+        destination.write("//||\\\\".join(all_text))
+    if orig:
+        db_file["orig_txt_path"] = path
+        db_file["orig_preview"] = "...\n" + text_preview + "\n..."
+    else:
+        db_file["txt_path"] = path
+        db_file["preview"] = "...\n" + text_preview + "\n..."
+    return db_file
+
+
+def indexing(db, file, file_id, orig=True):
+    index = db.index_holder
+    index_file = index.find_one({"name": "index"})
+    with open((file["orig_txt_path"] if orig else file["txt_path"]), 'r') as destination:
+        words = set()
+        for line in destination:
+            if line.strip() != "":
+                words = set(filter(lambda p: p != "", map(lambda p: p.strip(), line.split(" "))))
+        if index_file is None:
+            index_file = {
+                "name": "index"
+            }
+            w_in_a = dict()
+            for word in words:
+                w_in_a[word] = [file_id]
+            index_file["word2articles"] = w_in_a
+            index_file["word_count"] = len(w_in_a)
+            index_id = index.insert_one(index_file).inserted_id
+        else:
+            w_in_a = index_file["word2articles"]
+            for word in words:
+                if word in w_in_a.keys():
+                    w_in_a[word].append(file_id)
+                else:
+                    w_in_a[word] = [file_id]
+            index_id = index.update_one({"name": "index"},
+                                    {"$set": {"word2articles": w_in_a, "word_count": len(w_in_a)}}).upserted_id
+    return index_id
+
+
 def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path=None, orig_path=None, file_data=None,
                tags=None,
                freedom=True, index=None, to_lang="RUS", translator=None, piece_begin=None, piece_end=None, txt_path=None,
-               translated_txt_path=None, translation_status="UNDONE", chief=None):
+               translated_txt_path=None, translation_status="UNDONE", chief=None, author=None, journal=None, abstract=None, journal_link=None, orig_txt_path=None, orig_preview=None):
     """
-    :param number: id number of document
-    :param name: file name
-    :param status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION/MARKUP
-    :param lang: language one of ENG, RUS, ESP, JAP, etc.
-    :param importance: number, how this doc is needed
-    :param pieces_count: amount of pieces in document
-    :param path: file path in the filesystem
-    :param orig_path: path to original file
+    :param int number: id number of document
+    :param str name: file name
+    :param str status: one of TRANSLATED/NEED_CHECK/PIECE/WAITING_PIECE/WAITING_FOR_TRANSLATION/MARKUP
+    :param str lang: language one of ENG, RUS, ESP, JAP, etc.
+    :param int importance: number, how this doc is needed
+    :param int pieces_count: amount of pieces in document
+    :param str path: file path in the filesystem
+    :param str orig_path: path to original file
     :param file_data: file
-    :param tags: additional tags
+    :param str tags: additional tags
     :param freedom: is piece not taken True/False
     :param index: piece index
     :param to_lang: language file is translated to
@@ -144,6 +212,12 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     :param translated_txt_path: translated piece
     :param translation_status: whether translation done or not (DONE/UNDONE)
     :param chief: translates verifier
+    :param author: article author
+    :param journal: journal in which article was published
+    :param abstract: abstract
+    :param journal_link: link to coresponding journal
+    :param orig_preview: preview txt from WAITING_FOR_TRANSLATION
+    :param orig_txt_path: txt file path from WAITING_FOR_TRANSLATION
     :return: file mongo id in DB
     :structure: ObjectId Bson
     """
@@ -161,7 +235,14 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "tags": tags,
                 "importance": importance,
                 "status": status,
+                "author": author,
+                "abstract": abstract,
+                "journal": journal,
+                "journal_link": journal_link,
+                "orig_txt_path": "",
+                "orig_preview": "",
                 "lastModified": datetime.datetime.utcnow()}
+        file = extract_pdf2text(orig_path, file)
         lgr = Logger()
         lgr.log("log", "loader status: ", "saved to db")
 
@@ -202,13 +283,25 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "chief": chief,
                 "status": status,
                 "substatus": "MARKUP",
+                "author": author,
+                "abstract": abstract,
+                "journal": journal,
+                "journal_link": journal_link,
+                "orig_txt_path": orig_txt_path,
+                "orig_preview": orig_preview,
+                "txt_path": "",
+                "preview": "",
                 "lastModified": datetime.datetime.utcnow()}
+        file = extract_pdf2text(path, file, orig=False)
 
     lang_storage = db.files_info
     file_id = lang_storage.insert_one(file).inserted_id
 
     if status == "WAITING_FOR_TRANSLATION":
         split_to_pieces(number, name, lang, orig_path)
+
+    if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
+        indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
 
     return file_id
 
@@ -293,13 +386,17 @@ def update_pieces(user_id, doc_id, pieces_ids, to_lang="RUS"):
         return {"id": str(did1), "code": "OK"}
 
 
-def update_docs(name, doc, lang, tags, path=None):
+def update_docs(name, doc, lang, tags, author=None, abstract=None, journal=None, jl=None, path=None):
     """
     :param name: file name
-    :param doc: file data .docx
+    :param doc: file data .pdf
     :param lang: language
     :param tags: tags as array
+    :param author: author
+    :param abstract: abstract
+    :param journal: journal
     :param path: path to file
+    :param jl: link to journal
     :return: file mongo id
     :structure: dict('code': string, 'id': string)
     :description: pushes loaded by admin file to db
@@ -314,8 +411,7 @@ def update_docs(name, doc, lang, tags, path=None):
     lgr.log("log", "loader status: ", "saving to db")
     did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, name,
                      "WAITING_FOR_TRANSLATION", lang, tags=tags, pieces_count=0, importance=0,
-                     orig_path=path,
-                     file_data=doc)
+                     orig_path=path, file_data=doc, abstract=abstract, author=author, journal=journal, journal_link=jl)
     return {"id": str(did), "code": "OK"}
 
 
@@ -390,7 +486,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     lgr.log("log", "compose", "ready to push")
     lgr.log("log", "compose", "data: " + str(doc["number"]) + " " + doc["name"])
     did = push_to_db(doc["number"], doc["name"], the_stat, doc["lang"], orig_path=doc["orig_path"],
-                     path=PATH_TO_FILES + "/" + file_path, to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}))
+                     path=PATH_TO_FILES + "/" + file_path, to_lang=ps["to_lang"], tags=doc["tags"], importance=doc["importance"], translator=list({p["translator"] for p in pieces}), chief=chief_id, author=doc["author"], abstract=doc["abstract"], journal=doc["journal"], journal_link=doc["journal_link"], orig_preview=doc["orig_preview"], orig_txt_path=doc["orig_txt_path"])
     lgr.log("log", "compose", "done push")
     # for p in pieces:
     #     delete_from_db(p["_id"])

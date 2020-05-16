@@ -16,6 +16,8 @@ def get_from_db(search, tags, status=None, substatus=None):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
+    index = db.index_holder
+    w2a = index.find_one({"name": "index"})["word2articles"] if not(index.find_one({"name": "index"}) is None) else dict()
     search_set = set(search)
     hl = []
     for i in search.split(" "):
@@ -51,7 +53,11 @@ def get_from_db(search, tags, status=None, substatus=None):
                 relev += 8
             
             if doc["name"].find(search) != -1:
-                relev += 30
+                relev += 50
+            for w in search_set_words:
+                if w in w2a.keys():
+                    if doc["_id"] in w2a[w]:
+                        relev += 15
 
         matching_docs.append((relev, doc))
 

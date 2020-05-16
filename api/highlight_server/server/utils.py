@@ -72,7 +72,6 @@ def upt_d(params, result):
     lang = params["language"]
     tags = params["tags"]
     path = params["path"]
-    # path = '/var/www/html/highlight.spb.ru/public_html/files/' + path if not (path == "") else ""
     path = '/Users/Downloads/files_test' + path if not (path == "") else ""
     iter1 = 0
     while iter1 < ITERATIONS:
@@ -156,8 +155,6 @@ def handle_uploaded_file(f, ext="pdf"):
     path = PATH_TO_FILES + "/" + str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + "." + ext
     while os.path.isfile(path):
         path = path[:-len(path.split(".")[-1])+1] + str(random.randint(0, 99999)) + "." + ext
-    # path = '/Users/files_test/' + str(random.randint(0, 99999)) + str(
-    #     random.randint(0, 99999))
     lgr = Logger()
     lgr.log("log", "loader status: ", "saving chunks")
     with open(path, 'wb+') as destination:
