@@ -245,32 +245,38 @@ async function add_document() {
         }
 
         $('#file').on('submit', function(event) {
-            // event.preventDefault();
+            event.preventDefault();
 
+            // console.log("forming form");
             var post_data = new FormData($("#file")[0]);
             post_data.append("name", finame);
             post_data.append("language", lang);
             post_data.append("tags", tags_);
+            // console.log("adding abstract \n" + abstract + "\n" + author + "\n" + journal + "\n" + jl.toString() + "\n");
             post_data.append("abstract", abstract);
             post_data.append("author", author);
             post_data.append("journal", journal);
-            post_data.append("jl", jl);
+            post_data.append("jl", jl.toString());
             post_data.append("key", key_);
+            // console.log("finish");
 
             $.ajax({
                 xhr: function() {
                     var xhr = new window.XMLHttpRequest();
 
+                    // console.log("uploading");
+
                     xhr.upload.addEventListener("progress", function(evt) {
                         var percent = Math.round(evt.loaded / evt.total * 100);
                         $('#submitting_button').attr('disabled', true);
-                        $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%'
+                        $('#submitting_button').get(0).innerText = "Загружено: " + percent + '%';
+                        // console.log("preloading")
                     }, false);
 
                     xhr.upload.addEventListener("load", function(evt) {
                         $('#submitting_button').css('background-color', 'green').delay(2000);
-                        $('#submitting_button').get(0).innerText = "Готово, ждём ответа сервера..."
-
+                        $('#submitting_button').get(0).innerText = "Готово, ждём ответа сервера...";
+                        // console.log("loading")
                     }, false);
 
                     return xhr;
@@ -605,7 +611,7 @@ function init() {
 }
 
 $(document).ready(function() {
-    csrf_setup();
+    //csrf_setup();
     check_user(init);
     // init()
 });

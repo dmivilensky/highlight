@@ -32,6 +32,7 @@ class IndexProcessor:
                 atc = self.w2a[k]
             csv_data.append({'№': co, 'Word': k, 'Articles': atc})
             co += 1
+            csv_data = sorted(csv_data, key=lambda a: a["Word"].lower())
 
         with open(self.path + ("r_" if readable else "u_") + "index.csv", "w+") as f:
             writer = csv.DictWriter(f, fieldnames=csv_columns)

@@ -10,6 +10,7 @@ import django
 import random
 import shutil as sh
 import pdfminer.high_level as phl
+import re
 
 from .logger import Logger
 from .filemanager import MergeStatus, FileManager
@@ -106,7 +107,7 @@ def split_to_pieces(number, name, lang, doc_path):
     lang_storage = db.files_info
     lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
                             {"$set": {"piece_number": counter}})
-    return ids
+    return ids, piece_pages
 
 
 def push_to_file_storage(path, file):
@@ -120,15 +121,17 @@ def push_to_file_storage(path, file):
     lgr.log("log", "loader status: ", "file saved")
 
 
-def extract_pdf2text(fpath, db_file, orig=True):
+def extract_pdf2text(fpath, db_file, lang_storage, ptxts, orig=True):
     text_preview=""
     lgr = Logger()
     lgr.log("log", "loader status: ", "extracting text from pdf")
-    piece_pages = FM.split_pdf(fpath.split("/")[-1])
+    piece_pages = ptxts
     all_text = []
+    has_preview = False
     for i in range(len(piece_pages)):
-        text = phl.extract_text(fpath).strip()
-        if i == 0:
+        text = phl.extract_text(PATH_TO_FILES + "/" + piece_pages[i]).strip()
+        if not(has_preview):
+            has_preview = True
             try:
                 text_preview = list(filter(lambda p: p != "" and len(p.split(" ")) >= 50, map(lambda p: p.strip(), text.split("\n\n"))))[0].strip()
             except IndexError:
@@ -137,9 +140,7 @@ def extract_pdf2text(fpath, db_file, orig=True):
                     list(filter(lambda p: p != "" and len(p.split(" ")) >= 10, map(lambda p: p.strip(), text.split("\n\n"))))[
                         0].strip()
                 except IndexError:
-                    text_preview = \
-                        list(map(lambda p: p.strip(), text.split("\n\n")))[
-                        0].strip()
+                    pass
         all_text.append(text)
     path = PATH_TO_FILES + "/" + "pdf2text" + ("orig" if orig else "trans")+ str(random.randint(0, 99999)) + str(random.randint(0, 99999)) + ".txt"
     while os.path.isfile(path):
@@ -147,14 +148,16 @@ def extract_pdf2text(fpath, db_file, orig=True):
     lgr = Logger()
     lgr.log("log", "loader status: ", "saving text")
     with open(path, 'w+') as destination:
-        destination.write("//||\\\\".join(all_text))
+        destination.write("\n//||\\\\\n".join(all_text))
     if orig:
         db_file["orig_txt_path"] = path
         db_file["orig_preview"] = "...\n" + text_preview + "\n..."
     else:
         db_file["txt_path"] = path
         db_file["preview"] = "...\n" + text_preview + "\n..."
-    return db_file
+    lang_storage.replace_one({"number": db_file["number"], "name": db_file["name"], "lang": db_file["lang"], "status": "WAITING_FOR_TRANSLATION"},
+                            db_file)
+    return {"code": "OK"}
 
 
 def indexing(db, file, file_id, orig=True):
@@ -164,7 +167,7 @@ def indexing(db, file, file_id, orig=True):
         words = set()
         for line in destination:
             if line.strip() != "":
-                words = set(filter(lambda p: p != "", map(lambda p: p.strip(), line.split(" "))))
+                words |= set(filter(lambda p: p != "" and p != "//||\\\\", map(lambda p: p.strip(), re.sub("[^\w]", " ", line).split())))
         if index_file is None:
             index_file = {
                 "name": "index"
@@ -242,7 +245,6 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "orig_txt_path": "",
                 "orig_preview": "",
                 "lastModified": datetime.datetime.utcnow()}
-        file = extract_pdf2text(orig_path, file)
         lgr = Logger()
         lgr.log("log", "loader status: ", "saved to db")
 
@@ -292,15 +294,18 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
                 "txt_path": "",
                 "preview": "",
                 "lastModified": datetime.datetime.utcnow()}
-        file = extract_pdf2text(path, file, orig=False)
 
     lang_storage = db.files_info
     file_id = lang_storage.insert_one(file).inserted_id
 
     if status == "WAITING_FOR_TRANSLATION":
-        split_to_pieces(number, name, lang, orig_path)
+        pids, ptxts = split_to_pieces(number, name, lang, orig_path)
 
     if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
+        if status in {"TRANSLATED", "NEED_CHECK"}:
+            extract_pdf2text(path, file, lang_storage, ptxts, orig=False)
+        else:
+            extract_pdf2text(orig_path, file, lang_storage, ptxts)
         indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
 
     return file_id
@@ -477,11 +482,13 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
 
     the_stat = "TRANSLATED"
 
-    chief_id = None
+    chief_id = []
     for tr_id in list({p["translator"] for p in pieces}):
-        if acc.find_one({"_id": ObjectId(tr_id)})["status"] == "translator":
+        cOt = acc.find_one({"_id": ObjectId(tr_id)})
+        if cOt["status"] == "translator":
             the_stat = "NEED_CHECK"
-            chief_id = ps["translator"]
+        else:
+            chief_id.append(cOt["translator"])
 
     lgr.log("log", "compose", "ready to push")
     lgr.log("log", "compose", "data: " + str(doc["number"]) + " " + doc["name"])

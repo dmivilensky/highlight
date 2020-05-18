@@ -5,7 +5,7 @@ function try_signin_both() {
 
     var home_page = is_editor ? "main_editor.html" : "main.html";
 
-    csrf_setup();
+    //csrf_setup();
 
     $.ajax({
             url: "api/login",
@@ -43,7 +43,7 @@ function signin() {
     var is_editor = $('#editor').is(':checked');
     var is_markup = $('#markup').is(':checked');
 
-    csrf_setup();
+    //csrf_setup();
 
     if (login_val.trim() == "") {
         alert("Необходимо ввести логин.");

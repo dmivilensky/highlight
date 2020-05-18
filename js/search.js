@@ -1,5 +1,5 @@
 function inc_importance(i, id_) {
-    csrf_setup();
+    //csrf_setup();
     $.ajax({
             url: "api/update_importance",
             method: "POST",
@@ -25,7 +25,7 @@ var translation = "";
 var original = "";
 
 function send_file() {
-    csrf_setup();
+    //csrf_setup();
     var email = $("#email").val();
     var fpath = $("#translated_d").is(':checked') ? translation : original;
     $.ajax({
@@ -130,7 +130,7 @@ function update_search() {
     $('#loader_docs').show();
     $('#text_docs').hide();
 
-    csrf_setup();
+    //csrf_setup();
 
     $.ajax({
             url: "api/get_from_db",
