@@ -6,3 +6,4 @@ PyPDF2==1.26.0
 docx2pdf==0.1.5
 mongobackup==0.2.4
 pdfminer.six==20200402
+mod-wsgi==4.7.1
