@@ -85,10 +85,9 @@ def run():
     upd = DbUpdater()
     updf = {"__file_version__": "upd1"}
     ds = upd.update_docs(updf)
-    print(ds)
     updf = {"author": "", "journal": "", "journal_link": "", "abstract": "", "__file_version__": "upd1", "__update_functions__": partial(mn.combine_indexing_for_update, is_splitted=True, is_extracted=False)}
     ds = upd.update_docs(updf)
-    print(ds)
+
 
 if __name__ == "__main__":
     # test()
