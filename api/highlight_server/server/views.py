@@ -25,7 +25,9 @@ if __name__ != '__main__':
     from . import main as mn
     from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, \
     upt_d, for_verif, file_loader_module
-    # print(os.path.isdir("../../python_scripts"))
+    lgr = Logger()
+    lgr.log("log", "is dir", os.path.isdir("../../python_scripts"))
+    lgr.log("log", "in dir", os.listdir("../../python_scripts"))
     sys.path.insert(1, '../../python_scripts')
     import python_mailer as p_m
 
