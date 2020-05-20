@@ -13,7 +13,11 @@ import time
 
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from docx2pdf import convert
-from .logger import Logger
+
+if __name__ == "filemanager":
+    from logger import Logger
+else:
+    from .logger import Logger
 
 from subprocess import Popen, PIPE
 

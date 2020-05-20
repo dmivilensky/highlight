@@ -241,7 +241,8 @@ def get_from_db_cover(request):
     try:
         sch = params["search"]
         tg = params["tags"]
-        result = gf.get_from_db(sch, tg)
+        page = params["page"] if "page" in params.keys() else -1
+        result = gf.get_from_db(sch, tg, page=page)
         result = doc_ids_replace(result)
     except KeyError:
         result = {'code': "5001"}
@@ -261,7 +262,8 @@ def get_from_db_for_chief_cover(request):
     try:
         sch = params["search"]
         tg = params["tags"]
-        result = gf.get_for_chief_from_db(sch, tg)
+        page = params["page"] if "page" in params.keys() else -1
+        result = gf.get_for_chief_from_db(sch, tg, page=page)
         result = doc_ids_replace(result)
     except KeyError:
         result = {'code': "5001"}
@@ -281,7 +283,8 @@ def get_from_db_for_verst_cover(request):
     try:
         sch = params["search"]
         tg = params["tags"]
-        result = gf.get_for_verst_from_db(sch, tg)
+        page = params["page"] if "page" in params.keys() else -1
+        result = gf.get_for_verst_from_db(sch, tg, page=page)
         result = doc_ids_replace(result)
     except KeyError:
         result = {'code': "5001"}

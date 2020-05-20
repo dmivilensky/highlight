@@ -129,6 +129,8 @@ function update_search() {
     tags_list = tags_list.slice(0, -1);
     $('#loader_docs').show();
     $('#text_docs').hide();
+    var page = $('#page').text();
+    page = parseInt(page) - 1;
 
     //csrf_setup();
 
@@ -137,7 +139,8 @@ function update_search() {
             method: "POST",
             data: {
                 search: $('#search').val(),
-                tags: tags_list
+                tags: tags_list,
+                page: page
             },
             dataType: "json"
         })

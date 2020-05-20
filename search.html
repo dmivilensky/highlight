@@ -18,6 +18,16 @@
                 <a href="index.html" class="title-link"><h1 class="title">[high<span class="accent">light</span>]</h1></a>
             </div>
 
+            <div class="row">
+                <div style="margin: 0 auto">
+                    <h6 style="display: inline-block">Page</h6>
+                    <button class="previous round" onclick="$('#page').text($('#page').text() >= 2 ? (parseInt($('#page').text())-1) : 1)">&#8249;</button>
+                    <b id="page">1</b>
+                    <button class="next round" onclick="$('#page').text(parseInt($('#page').text())+1)">&#8250;</button>
+                    <i onclick="update_search()" class="tiny material-icons round refresh" style="vertical-align: bottom; font-size: 22px">refresh</i>
+                </div>
+            </div>
+
             <div class="row"> 
                 <nav>
                     <div class="nav-wrapper search-field">

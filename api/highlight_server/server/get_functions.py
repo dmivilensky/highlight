@@ -2,28 +2,43 @@ from pymongo import MongoClient
 import pymongo as pm
 from bson.objectid import ObjectId
 
+from .logger import Logger
 
-def get_from_db(search, tags, status=None, substatus=None):
+ARTICLES_PER_PAGE = 15
+
+
+def get_from_db(search, tags, status=None, substatus=None, page=-1):
     """
     :param search: user input
     :param tags: tags
     :param status: list of statuses
+    :param substatus: substatus for translated
+    :param page: page number
     :return: matching docs of id, name, tags, status, path, etc.
     :structure: dict('code': string, 'document': list(type=WaitingForTranslation or type=NeedCheck or type=Translated)
     """
     if status is None:
         status = {"TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"}
+
+    if type(page) == str:
+        try:
+            page = int(page)
+        except ValueError:
+            lgr = Logger()
+            lgr.log("log", "Searching: ", "page: " + page)
+            page = -1
+
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
     index = db.index_holder
     w2a = index.find_one({"name": "index"})["word2articles"] if not(index.find_one({"name": "index"}) is None) else dict()
-    search_set = set(search)
+    search_set = set(search.lower())
     hl = []
     for i in search.split(" "):
-        hl.extend(i.split("_"))
+        hl.extend(map(lambda a: a.lower(), i.split("_")))
     search_set_words = set(hl)
-    search_tags = set(tags.split(","))
+    search_tags = set(tags.lower().split(","))
     matching_docs = list()
     for doc in lang_storage.find({"status": {"$in": ["TRANSLATED", "NEED_CHECK", "WAITING_FOR_TRANSLATION"]}}):
         doc_stat = doc["status"]
@@ -34,8 +49,8 @@ def get_from_db(search, tags, status=None, substatus=None):
             relev += 50
         elif doc_stat == "WAITING_FOR_TRANSLATION":
             relev += 0
-        doc_name_set = set(doc["name"])
-        doc_tags_set = set(doc["tags"].split(","))
+        doc_name_set = set(doc["name"].lower())
+        doc_tags_set = set(doc["tags"].lower().split(","))
         doc_id = doc["number"]
         tag_inrsc = search_tags.intersection(doc_tags_set)
         name_inrsc = search_set.intersection(doc_name_set)
@@ -62,28 +77,30 @@ def get_from_db(search, tags, status=None, substatus=None):
         matching_docs.append((relev, doc))
 
     if substatus is None:
-        return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[:50]}
+        return {"code": "OK", "document": list(d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status)[(page * ARTICLES_PER_PAGE if page >= 0 else 0):((page + 1) * ARTICLES_PER_PAGE if page >= 0 else 50)]}
     else:
         return {"code": "OK", "document": list(
-            d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status if "substatus" in d.keys() if d["substatus"] == substatus)[:50]}
+            d for n, d in sorted(matching_docs, key=lambda t: t[0], reverse=True) if d["status"] in status if "substatus" in d.keys() if d["substatus"] == substatus)[(page * ARTICLES_PER_PAGE if page >= 0 else 0):((page + 1) * ARTICLES_PER_PAGE if page >= 0 else 50)]}
 
 
-def get_for_chief_from_db(search, tags):
+def get_for_chief_from_db(search, tags, page=-1):
     """
     :param search: same as get_from_db
     :param tags: same ag get_from_db
+    :param page: page
     :return: same as get_from_db
     """
-    return get_from_db(search, tags, status={"NEED_CHECK"}, substatus="DONE")
+    return get_from_db(search, tags, status={"NEED_CHECK"}, substatus="DONE", page=page)
 
 
-def get_for_verst_from_db(search, tags):
+def get_for_verst_from_db(search, tags, page=-1):
     """
     :param search: same as get_from_db
     :param tags: same ag get_from_db
+    :param page: page
     :return: same as get_from_db
     """
-    return get_from_db(search, tags, substatus="MARKUP")
+    return get_from_db(search, tags, substatus="MARKUP", page=page)
 
 
 def get_users():
