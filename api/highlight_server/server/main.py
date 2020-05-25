@@ -635,7 +635,7 @@ def test():
     #ids = acc.insert_one({"name": "seva", "login": "lol", "password": "kek", "verified": True})
     #print(ids)
     #print(list(acc.find()))
-    d = Document("/var/www/html/highlight.spb.ru/public_html/files/new_file4283.docx")
+    d = Document("files/new_file4283.docx")
     for p in d.paragraphs:
         print(p.text)
 
