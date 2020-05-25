@@ -35,7 +35,7 @@ def doc_ids_replace(result):
             doc = user_replacer_iterator(acc, doc, "translator")
 
         if "chief" in doc.keys():
-            if iterable(doc["chief"]):
+            if iterable(doc["chief"]) and type(doc["chief"]) != str:
                 doc = user_replacer_iterator(acc, doc, "chief")
             else:
                 uac = acc.find_one({"_id": ObjectId(doc["chief"])})
