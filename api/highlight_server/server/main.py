@@ -110,8 +110,9 @@ def split_to_pieces(number, name, lang, doc_path):
     client = MongoClient()
     db = client.highlight
     lang_storage = db.files_info
-    lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},
-                            {"$set": {"piece_number": counter}})
+    lgr.log("log", "updating doc with pcount", "num " + str(number) + "  name " + name + "  lang " + lang + "  count " + str(counter))
+    udd = lang_storage.update_one({"number": number, "name": name, "lang": lang, "status": "WAITING_FOR_TRANSLATION"},{"$set": {"piece_number": counter}})
+    lgr.log("log", "updating doc with pcount", "upd_d " + str([udd.modified_count, udd.matched_count, udd.upserted_id, udd.acknowledged]))
     return ids, piece_pages
 
 
@@ -127,9 +128,10 @@ def push_to_file_storage(path, file):
 
 
 def extract_pdf2text(fpath, db_file, lang_storage, ptxts, orig=True):
+    db_file = lang_storage.find_one({"_id": db_file["_id"]})
     db_file = pdf2text_core(fpath, db_file, ptxts, orig)
 
-    lang_storage.replace_one({"number": db_file["number"], "name": db_file["name"], "lang": db_file["lang"], "status": "WAITING_FOR_TRANSLATION"},
+    lang_storage.replace_one({"number": db_file["number"], "name": db_file["name"], "lang": db_file["lang"], "status": db_file["status"]},
                             db_file)
     return {"code": "OK"}
 
@@ -179,6 +181,8 @@ def pdf2text_core(fpath, db_file, ptxts, orig):
 
 
 def indexing(db, file, file_id, orig=True):
+    lang_storage = MongoClient().highlight.files_info
+    file = lang_storage.find_one({"_id": file_id})
     index = db.index_holder
     index_file = index.find_one({"name": "index"})
     with open((file["orig_txt_path"] if orig else file["txt_path"]), 'r') as destination:
@@ -223,6 +227,7 @@ def combine_indexing_for_update(doc, is_splitted=True, is_extracted=True):
         pids, ptxts = zip(*[(p["_id"], p["txt_path"]) for p in pss])
     else:
         pids, ptxts = split_to_pieces(doc["number"], doc["name"], doc["lang"], doc["orig_path"])
+        doc = lang_storage.find_one({"_id": doc["_id"]})
 
     if is_extracted:
         pass
@@ -339,13 +344,14 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
 
     lang_storage = db.files_info
     file_id = lang_storage.insert_one(file).inserted_id
+    client.close()
 
     if status == "WAITING_FOR_TRANSLATION":
         pids, ptxts = split_to_pieces(number, name, lang, orig_path)
 
     if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
         if status in {"TRANSLATED", "NEED_CHECK"}:
-            extract_pdf2text(path, file, lang_storage, ptxts, orig=False)
+            extract_pdf2text(path, file, lang_storage, [path.split("/")[-1]], orig=False)
         else:
             extract_pdf2text(orig_path, file, lang_storage, ptxts)
         indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
@@ -530,7 +536,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
         if cOt["status"] == "translator":
             the_stat = "NEED_CHECK"
         else:
-            chief_id.append(cOt["translator"])
+            chief_id.append(tr_id)
 
     lgr.log("log", "compose", "ready to push")
     lgr.log("log", "compose", "data: " + str(doc["number"]) + " " + doc["name"])
@@ -558,7 +564,7 @@ def delete_from_db_all(did):
     ll = []
     for p in list(lang_storage.find(
             {"number": doc["number"], "name": doc["name"], "lang": doc["lang"]
-            # , 
+            # ,
             # "status": {"$in": ["WAITING_PIECE", "PIECE", "NEED_CHECK", "TRANSLATED", "MARKUP"]}
             })):
         ll.append(str(p["_id"]))
@@ -571,11 +577,14 @@ def delete_from_doc_storage(path):
     :param path: file path
     :return: code
     """
-    os.remove(path)
+    if os.path.isfile(path):
+        os.remove(path)
+    elif os.path.isfile(PATH_TO_FILES + "/" + path):
+        os.remove(PATH_TO_FILES + "/" + path)
     return {"code": "OK"}
 
 
-def delete_from_db(doc_id, with_path=True):
+def delete_from_db(doc_id, with_path=True, recursively=False):
     """
     :param doc_id: file mongo id
     :param with_path: delete file in storage as well
@@ -587,9 +596,27 @@ def delete_from_db(doc_id, with_path=True):
     lang_storage = db.files_info
     doc = lang_storage.find_one({"_id": doc_id})
 
+    if recursively:
+        ll = []
+        for p in list(lang_storage.find(
+            {"number": doc["number"], "name": doc["name"], "lang": doc["lang"]
+            # ,
+            # "status": {"$in": ["WAITING_PIECE", "PIECE", "NEED_CHECK", "TRANSLATED", "MARKUP"]}
+            })):
+            ll.append(str(p["_id"]))
+            delete_from_db(p["_id"], with_path=with_path)
+
     if with_path:
         if "path" in doc.keys():
             delete_from_doc_storage(doc["path"])
+        if "orig_path" in doc.keys():
+            delete_from_doc_storage(doc["orig_path"])
+        if "txt_path" in doc.keys():
+            delete_from_doc_storage(doc["txt_path"])
+        if "translated_txt_path" in doc.keys():
+            delete_from_doc_storage(doc["translated_txt_path"])
+        if "orig_txt_path" in doc.keys():
+            delete_from_doc_storage(doc["orig_txt_path"])
     lang_storage.delete_one({"_id": doc_id})
 
 
@@ -604,7 +631,11 @@ def find_file_by_path(path):
 def test():
     client = MongoClient()
     db = client.highlight
-    d = Document("/Users/Downloads/new_file6391.docx")
+    acc = db.accounts
+    #ids = acc.insert_one({"name": "seva", "login": "lol", "password": "kek", "verified": True})
+    #print(ids)
+    #print(list(acc.find()))
+    d = Document("/var/www/html/highlight.spb.ru/public_html/files/new_file4283.docx")
     for p in d.paragraphs:
         print(p.text)
 

@@ -12,10 +12,15 @@ from .logger import Logger
 from . import main as mn
 from pymongo import MongoClient
 import asyncio
+from collections.abc import Iterable
 
 SECS = 5
 
 ITERATIONS = 100
+
+
+def iterable(obj):
+    return isinstance(obj, Iterable)
 
 
 def doc_ids_replace(result):
@@ -27,15 +32,23 @@ def doc_ids_replace(result):
         doc["_id"] = str(doc["_id"])
         doc["lastModified"] = str(doc["lastModified"])
         if "translator" in doc.keys():
-            for i in range(len(doc["translator"])):
-                uac = acc.find_one({"_id": ObjectId(doc["translator"][i])})
-                doc["translator"][i] = create_name_by_user(uac)
+            doc = user_replacer_iterator(acc, doc, "translator")
 
         if "chief" in doc.keys():
-            uac = acc.find_one({"_id": ObjectId(doc["chief"])})
-            doc["chief"] = create_name_by_user(uac)
+            if iterable(doc["chief"]):
+                doc = user_replacer_iterator(acc, doc, "chief")
+            else:
+                uac = acc.find_one({"_id": ObjectId(doc["chief"])})
+                doc["chief"] = create_name_by_user(uac)
 
     return result1
+
+
+def user_replacer_iterator(acc, doc, key):
+    for i in range(len(doc[key])):
+        uac = acc.find_one({"_id": ObjectId(doc[key][i])})
+        doc[key][i] = create_name_by_user(uac)
+    return doc
 
 
 def replace_pieces_id(f, not_user=True, find_in_list=False):

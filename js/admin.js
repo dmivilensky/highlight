@@ -291,8 +291,10 @@ async function add_document() {
                     alert("Файл загружен!");
                     $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
                     reset_all();
+                    location.reload();
                 }
             });
+            event.stopImmediatePropagation();
         });
 
         $("#file").submit();
