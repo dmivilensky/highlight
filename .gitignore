@@ -59,6 +59,7 @@ log_log.txt
 files/*
 mail.ini
 google_creds.json
+python_scripts/*.ini
 
 # Unit test / coverage reports
 htmlcov/
