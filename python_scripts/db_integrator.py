@@ -4,6 +4,7 @@ import io
 import os
 import sys
 from pprint import pprint
+from apiclient import errors
 
 from pymongo import MongoClient
 
@@ -77,41 +78,56 @@ def join_google_sheets():
             documents[i]["FORpath"] = documents[i]["journal_link"]
         else:
             print('Files:')
-            is_trans = False
-            for item in items:
-                print(item['name'].split("_")[0])
-                if item['name'].split("_")[0] in {str(documents[i]["number"]), ("0" + str(documents[i]["number"]))}:
+            page_token = results.get('nextPageToken')
+            while True:
+                sparams = {}
+                if page_token:
+                    sparams['pageToken'] = page_token
+                for item in items:
+                    print(item['name'].split("_")[0])
+                    if item['name'].split("_")[0] in {str(documents[i]["number"]), ("0" + str(documents[i]["number"]))}:
 
-                    if "doc" in documents[i].keys():
-                        documents[i]["doc"][("FOR" if item['name'].split("_")[1] != "RUS" else "RUS")] = item
-                    else:
-                        documents[i]["doc"] = {("FOR" if item['name'].split("_")[1] != "RUS" else "RUS"): item}
-                    print(u'{0} ({1})'.format(item['name'], item['id']))
+                        if "doc" in documents[i].keys():
+                            documents[i]["doc"][("FOR" if item['name'].split("_")[1] != "RUS" else "RUS")] = item
+                        else:
+                            documents[i]["doc"] = {("FOR" if item['name'].split("_")[1] != "RUS" else "RUS"): item}
+                        print(u'{0} ({1})'.format(item['name'], item['id']))
 
-                    filename = doc_storage + "/" + item['name']
-                    if not os.path.isfile(filename):
-                        if not os.path.exists(os.path.dirname(filename)):
-                            try:
-                                os.makedirs(os.path.dirname(filename))
-                            except OSError as exc:  # Guard against race condition
-                                if exc.errno != errno.EEXIST:
-                                    raise
+                        filename = doc_storage + "/" + item['name']
+                        if not os.path.isfile(filename):
+                            if not os.path.exists(os.path.dirname(filename)):
+                                try:
+                                    os.makedirs(os.path.dirname(filename))
+                                except OSError as exc:  # Guard against race condition
+                                    if exc.errno != errno.EEXIST:
+                                        raise
 
-                        request = gservice.files().get_media(fileId=item['id'])
-                        fb = bytes()
-                        fh = io.BytesIO(fb)
-                        downloader = MediaIoBaseDownload(fh, request)
-                        done = False
-                        while done is False:
-                            status, done = downloader.next_chunk()
-                            print("Download %d%%." % int(status.progress() * 100))
-                        with open(filename, mode="wb+") as f:
-                            f.write(fb)
-                    else:
-                        print("downloaded")
+                            request = gservice.files().get_media(fileId=item['id'])
+                            fb = bytes()
+                            fh = io.BytesIO(fb)
+                            downloader = MediaIoBaseDownload(fh, request)
+                            done = False
+                            while done is False:
+                                status, done = downloader.next_chunk()
+                                print("Download %d%%." % int(status.progress() * 100))
+                            with open(filename, mode="wb+") as f:
+                                f.write(fb)
+                        else:
+                            print("downloaded")
                     documents[i][("FOR" if item['name'].split("_")[1] != "RUS" else "RUS") + "path"] = filename
 
-            documents[i]["status"] = "WAITING_FOR_TRANSLATION" if "doc" in documents[i].keys() and not("FOR" in documents[i]["doc"].keys()) else documents[i]["status"]
+                if not page_token:
+                    break
+
+                try:
+                    results = gservice.files().list(**sparams).execute()
+                    items = results.get('files', [])
+                    page_token = results.get('nextPageToken')
+                except errors.HttpError as e:
+                    print('An error occurred: %s' % e)
+                    break
+
+            documents[i]["status"] = "WAITING_FOR_TRANSLATION" if "doc" in documents[i].keys() and not("FOR" in documents[i]["doc"].keys()) else (documents[i]["status"] if documents[i]["status"] in {"NEED_CHECK", "TRANSLATED"} else "NEED_CHECK")
 
     pprint(documents)
     client = MongoClient()
