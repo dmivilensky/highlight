@@ -350,11 +350,14 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
         pids, ptxts = split_to_pieces(number, name, lang, orig_path)
 
     if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
-        if status in {"TRANSLATED", "NEED_CHECK"}:
-            extract_pdf2text(path, file, lang_storage, [path.split("/")[-1]], orig=False)
-        else:
-            extract_pdf2text(orig_path, file, lang_storage, ptxts)
-        indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
+        try:
+            if status in {"TRANSLATED", "NEED_CHECK"}:
+                extract_pdf2text(path, file, lang_storage, [path.split("/")[-1]], orig=False)
+            else:
+                extract_pdf2text(orig_path, file, lang_storage, ptxts)
+            indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
+        except FileNotFoundError:
+            pass
 
     return file_id
 
