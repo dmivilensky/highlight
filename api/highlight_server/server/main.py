@@ -356,8 +356,8 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
             else:
                 extract_pdf2text(orig_path, file, lang_storage, ptxts)
             indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
-        except FileNotFoundError:
-            pass
+        except FileNotFoundError as e:
+            print(e)
 
     return file_id
 
