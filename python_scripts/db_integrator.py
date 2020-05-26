@@ -7,6 +7,9 @@ from pprint import pprint
 
 from pymongo import MongoClient
 
+sys.path.insert(1, (os.path.dirname(os.path.realpath(__file__)) + '/../api/highlight_server/server'))
+from main import push_to_db
+
 import httplib2
 import apiclient.discovery
 from googleapiclient.http import MediaIoBaseDownload
@@ -15,8 +18,6 @@ import re
 from itertools import zip_longest
 
 def join_google_sheets():
-    sys.path.insert(1, (os.path.dirname(os.path.realpath(__file__)) + '/../api/highlight_server/server'))
-    from main import push_to_db
     config = configparser.ConfigParser()
     config.read(os.path.dirname(os.path.realpath(__file__)) + "/google_addresses.ini")
     # Файл, полученный в Google Developer Console
