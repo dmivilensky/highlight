@@ -69,7 +69,7 @@ def join_google_sheets():
 
     for i in range(len(documents)):
         # Call the Drive v3 API
-        results = gservice.files().list(includeItemsFromAllDrives=True, supportsAllDrives=True, q="'"+drive_id+"' in parents and name contains '" + str(documents[i]["number"]) + "'").execute()
+        results = gservice.files().list(pageSize=1000, includeItemsFromAllDrives=True, supportsAllDrives=True, q="'"+drive_id+"' in parents and name contains '" + str(documents[i]["number"]) + "'").execute()
         items = results.get('files', [])
 
         if not items:
