@@ -346,8 +346,15 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     file_id = lang_storage.insert_one(file).inserted_id
     client.close()
 
+    lgr = Logger()
+    lgr.log("log", "update db", "additional operations")
+
     if status == "WAITING_FOR_TRANSLATION":
-        pids, ptxts = split_to_pieces(number, name, lang, orig_path)
+        try:
+            pids, ptxts = split_to_pieces(number, name, lang, orig_path)
+        except Exception as e:
+            print(e)
+            lgr.log("log", "update db", str(e))
 
     if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
         try:
@@ -358,6 +365,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
             indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
         except FileNotFoundError as e:
             print(e)
+            lgr.log("log", "update db", str(e))
 
     return file_id
 
@@ -501,7 +509,7 @@ def update_translating_pieces(piece_id, tr_txt=None, tr_stat="UNDONE"):
         taken_pieces_indexes = []
         pss = list(lang_storage.find({"number": ps["number"], "name": ps["name"], "lang": ps["lang"], "status": "PIECE",
                                  "translation_status": "DONE"}))
-        lgr.log("log", "final file", pss)
+        lgr.log("log", "final file", str(pss))
         pss = sorted(pss, key=lambda a: a["piece_begin"])
         for p in pss:
             taken_pieces_indexes.extend(range(p["piece_begin"], p["piece_end"] + 1))
@@ -529,7 +537,7 @@ def create_translated_unverified_docs(pieces, doc, ps, acc, lang_storage=None):
     lgr.log("log", "compose", "entry")
     lgr.log("log", "compose", "files " + "/".join([p["translated_txt_path"] for p in pieces]))
     file_path = FM.compose_files([p["translated_txt_path"] for p in pieces], status=MergeStatus.composition, delete=False)
-    lgr.log("log", "compose", "result" + file_path)
+    lgr.log("log", "compose", "result" + str(file_path))
 
     the_stat = "TRANSLATED"
 
