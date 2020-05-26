@@ -114,7 +114,7 @@ def join_google_sheets():
                                 f.write(fb)
                         else:
                             print("downloaded")
-                    documents[i][("FOR" if item['name'].split("_")[1] != "RUS" else "RUS") + "path"] = filename
+                        documents[i][("FOR" if item['name'].split("_")[1] != "RUS" else "RUS") + "path"] = filename
 
                 if not page_token:
                     break
