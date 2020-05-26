@@ -139,11 +139,13 @@ def join_google_sheets():
             if doc["status"] == "WAITING_FOR_TRANSLATION":
                 did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + "_" + doc["name"]),
                                  doc["status"], doc["lang"], tags=doc["tag"], pieces_count=0, importance=0,
-                                 orig_path=doc["RUSpath"], abstract=doc["abstract"], author="", journal=doc["journal"],
+                                 orig_path=doc["FORpath"], abstract=doc["abstract"], author="", journal=doc["journal"],
                                  journal_link=doc["journal_link"])
             else:
-                did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + "_" + doc["name"]), doc["status"], doc["lang"], orig_path=doc["RUSpath"],
-                                 path=doc["FORpath"], to_lang="RUS", tags=doc["tag"],
+                if not "FORpath" in doc.keys():
+                    doc["FORpath"] = doc["journal_link"]
+                did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + "_" + doc["name"]), doc["status"], doc["lang"], orig_path=doc["FORpath"],
+                                 path=doc["RUSpath"], to_lang="RUS", tags=doc["tag"],
                                  importance=0, translator=[],
                                  chief=[], author="", abstract=doc["abstract"], journal=doc["journal"],
                                  journal_link=doc["journal_link"], orig_preview="",
