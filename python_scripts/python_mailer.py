@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 
 def send_email_named(to_addr, file_path, file_name):
     config = configparser.ConfigParser()
-    config.read(os.path.realpath(__file__)[:-17] + "/mail.ini")
+    config.read(os.path.dirname(os.path.realpath(__file__)) + "/mail.ini")
     send_email('HighLight: документ ' + file_name, to_addr, config["Credentials"]["user"], 'Документ прислан сайтом highlight.spb.ru\n', config["Credentials"]["user"], config["Credentials"]["pwd"], file_path, file_name)
 
 

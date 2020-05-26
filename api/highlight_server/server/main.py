@@ -15,11 +15,11 @@ import re
 if __name__ == "main":
     from logger import Logger
     from filemanager import MergeStatus, FileManager
-    PATH_TO_FILES = "../../../files"
 else:
     from .logger import Logger
     from .filemanager import MergeStatus, FileManager
-    PATH_TO_FILES = "../../files"
+
+PATH_TO_FILES = os.path.dirname(os.path.realpath(__file__)) + "../../../files"
 
 BOOL_TO_ABB = ["ENG", "GER", "FRE", "ESP", "ITA", "JAP", "CHI"]
 FM = FileManager(PATH_TO_FILES)

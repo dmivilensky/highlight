@@ -1,10 +1,14 @@
 #!/bin/bash
 
-while getopts ":l:p:" opt; do
+while getopts ":l:p:s:d:" opt; do
   case $opt in
     l) login="$OPTARG"
     ;;
     p) pwd="$OPTARG"
+    ;;
+    s) sheets="$OPTARG"
+    ;;
+    d) docs="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
@@ -18,4 +22,4 @@ pip install --requirement $PROJECT_DIR/../api/requirements.txt
 
 bash $PROJECT_DIR/mongodb_setup.sh
 
-bash $PROJECT_DIR/init_ini.sh -l "$login" -p "$pwd"
+bash $PROJECT_DIR/init_ini.sh -l "$login" -p "$pwd" -s "$sheets" -d "$docs"
