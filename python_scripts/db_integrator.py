@@ -127,7 +127,7 @@ def join_google_sheets():
                     print('An error occurred: %s' % e)
                     break
 
-            documents[i]["status"] = "WAITING_FOR_TRANSLATION" if "doc" in documents[i].keys() and not("FOR" in documents[i]["doc"].keys()) else (documents[i]["status"] if documents[i]["status"] in {"NEED_CHECK", "TRANSLATED"} else "NEED_CHECK")
+            documents[i]["status"] = "WAITING_FOR_TRANSLATION" if "doc" in documents[i].keys() and not("RUS" in documents[i]["doc"].keys()) else (documents[i]["status"] if documents[i]["status"] in {"NEED_CHECK", "TRANSLATED"} else "NEED_CHECK")
 
     pprint(documents)
     client = MongoClient()
@@ -144,7 +144,7 @@ def join_google_sheets():
             else:
                 if not "FORpath" in doc.keys():
                     doc["FORpath"] = doc["journal_link"]
-                did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + "_" + doc["name"]), doc["status"], doc["lang"], orig_path=doc["FORpath"],
+                did = push_to_db(lang_storage.count_documents({"status": {"$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}) + 1, (doc["number"] + "_" + doc["name"]), doc["status"], doc["lang"], orig_path=doc["FORpath"],
                                  path=doc["RUSpath"], to_lang="RUS", tags=doc["tag"],
                                  importance=0, translator=[],
                                  chief=[], author="", abstract=doc["abstract"], journal=doc["journal"],
