@@ -69,7 +69,7 @@ def join_google_sheets():
 
     for i in range(len(documents)):
         # Call the Drive v3 API
-        results = gservice.files().list(pageSize=1000, includeItemsFromAllDrives=True, supportsAllDrives=True, q="'"+drive_id+"' in parents and name contains '" + str(documents[i]["number"]) + "'").execute()
+        results = gservice.files().list(pageSize=900, includeItemsFromAllDrives=True, supportsAllDrives=True, q="'"+drive_id+"' in parents and name contains '" + str(documents[i]["number"]) + "'").execute()
         items = results.get('files', [])
 
         if not items:
@@ -103,15 +103,15 @@ def join_google_sheets():
                                         raise
 
                             request = gservice.files().get_media(fileId=item['id'])
-                            fb = bytes()
-                            fh = io.BytesIO(fb)
+                            # fb = bytes()
+                            fh = io.BytesIO()
                             downloader = MediaIoBaseDownload(fh, request)
                             done = False
                             while done is False:
                                 status, done = downloader.next_chunk()
                                 print("Download %d%%." % int(status.progress() * 100))
                             with open(filename, mode="wb+") as f:
-                                f.write(fb)
+                                f.write(fh.getvalue())
                         else:
                             print("downloaded")
                         documents[i][("FOR" if item['name'].split("_")[1] != "RUS" else "RUS") + "path"] = filename
