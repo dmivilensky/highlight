@@ -32,13 +32,13 @@ def doc_ids_replace(result):
         doc["_id"] = str(doc["_id"])
 
         if "orig_path" in doc.keys():
-            doc["orig_path"] = doc["orig_path"] if not("var" in doc["orig_path"].split("") and "www" in doc["orig_path"].split("") and "files" in doc["orig_path"].split("")) else "/".join(doc["orig_path"].split("/")[list(doc["orig_path"].split("/")).index("files"):])
+            doc["orig_path"] = doc["orig_path"] if not("var" in doc["orig_path"].split("/") and "www" in doc["orig_path"].split("/") and "files" in doc["orig_path"].split("/")) else "/".join(doc["orig_path"].split("/")[list(doc["orig_path"].split("/")).index("files"):])
         if "path" in doc.keys():
-            doc["path"] = doc["path"] if not("var" in doc["path"].split("") and "www" in doc["path"].split("") and "files" in doc["path"].split("")) else "/".join(doc["path"].split("/")[list(doc["path"].split("/")).index("files"):])
+            doc["path"] = doc["path"] if not("var" in doc["path"].split("/") and "www" in doc["path"].split("/") and "files" in doc["path"].split("/")) else "/".join(doc["path"].split("/")[list(doc["path"].split("/")).index("files"):])
         if "orig_txt_path" in doc.keys():
-            doc["orig_txt_path"] = doc["orig_txt_path"] if not("var" in doc["orig_txt_path"].split("") and "www" in doc["orig_txt_path"].split("") and "files" in doc["orig_txt_path"].split("")) else "/".join(doc["orig_txt_path"].split("/")[list(doc["orig_txt_path"].split("/")).index("files"):])
+            doc["orig_txt_path"] = doc["orig_txt_path"] if not("var" in doc["orig_txt_path"].split("/") and "www" in doc["orig_txt_path"].split("/") and "files" in doc["orig_txt_path"].split("/")) else "/".join(doc["orig_txt_path"].split("/")[list(doc["orig_txt_path"].split("/")).index("files"):])
         if "txt_path" in doc.keys():
-            doc["txt_path"] = doc["txt_path"] if not("var" in doc["txt_path"].split("") and "www" in doc["txt_path"].split("") and "files" in doc["txt_path"].split("")) else "/".join(doc["txt_path"].split("/")[list(doc["txt_path"].split("/")).index("files"):])
+            doc["txt_path"] = doc["txt_path"] if not("var" in doc["txt_path"].split("/") and "www" in doc["txt_path"].split("/") and "files" in doc["txt_path"].split("/")) else "/".join(doc["txt_path"].split("/")[list(doc["txt_path"].split("/")).index("files"):])
 
         doc["lastModified"] = str(doc["lastModified"])
         if "translator" in doc.keys():
