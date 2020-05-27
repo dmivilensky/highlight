@@ -145,6 +145,8 @@ def join_google_sheets():
             else:
                 if not "FORpath" in doc.keys():
                     doc["FORpath"] = doc["journal_link"]
+                if not "RUSpath" in doc.keys():
+                    doc["RUSpath"] = doc["tr_txt"]
                 did = push_to_db(lang_storage.count_documents({"status": {"$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}) + 1, (doc["number"] + "_" + doc["name"]), doc["status"], doc["lang"], orig_path=doc["FORpath"],
                                  path=doc["RUSpath"], to_lang="RUS", tags=doc["tag"],
                                  importance=0, translator=[],
