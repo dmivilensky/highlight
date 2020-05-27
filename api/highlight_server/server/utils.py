@@ -30,6 +30,16 @@ def doc_ids_replace(result):
     result1 = result
     for doc in result1["document"]:
         doc["_id"] = str(doc["_id"])
+
+        if "orig_path" in doc.keys():
+            doc["orig_path"] = doc["orig_path"] if not("var" in doc["orig_path"].split("") and "www" in doc["orig_path"].split("") and "files" in doc["orig_path"].split("")) else "/".join(doc["orig_path"].split("/")[list(doc["orig_path"].split("/")).index("files"):])
+        if "path" in doc.keys():
+            doc["path"] = doc["path"] if not("var" in doc["path"].split("") and "www" in doc["path"].split("") and "files" in doc["path"].split("")) else "/".join(doc["path"].split("/")[list(doc["path"].split("/")).index("files"):])
+        if "orig_txt_path" in doc.keys():
+            doc["orig_txt_path"] = doc["orig_txt_path"] if not("var" in doc["orig_txt_path"].split("") and "www" in doc["orig_txt_path"].split("") and "files" in doc["orig_txt_path"].split("")) else "/".join(doc["orig_txt_path"].split("/")[list(doc["orig_txt_path"].split("/")).index("files"):])
+        if "txt_path" in doc.keys():
+            doc["txt_path"] = doc["txt_path"] if not("var" in doc["txt_path"].split("") and "www" in doc["txt_path"].split("") and "files" in doc["txt_path"].split("")) else "/".join(doc["txt_path"].split("/")[list(doc["txt_path"].split("/")).index("files"):])
+
         doc["lastModified"] = str(doc["lastModified"])
         if "translator" in doc.keys():
             doc = user_replacer_iterator(acc, doc, "translator")
@@ -80,54 +90,54 @@ def check_for_exeption(path):
     except docx.opc.exceptions.PackageNotFoundError:
         return True
 
-def upt_d(params, result):
-    name = params["name"]
-    lang = params["language"]
-    tags = params["tags"]
-    path = params["path"]
-    path = '/Users/Downloads/files_test' + path if not (path == "") else ""
-    iter1 = 0
-    while iter1 < ITERATIONS:
-        if not(check_for_exeption(path)):
-            file_data = mn.find_file_by_path(path) if not (path == "") else None
-            result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
-            # f = open('program_logs.txt', 'w+')
-            # f.write('vsucsess i: ' + str(iter1))
-            # f.close()
-            break
-        # f = open('program_logs.txt', 'w+')
-        # f.write('vi: ' + str(iter1))
-        # f.close()
-        iter1 += 1
-        time.sleep(SECS)
-
-    if iter1 >= ITERATIONS:
-        result = {'code': "5000"}
-    return result
-
-
-def for_verif(params, result):
-    did = params["decision"]
-    uid = params["id"]
-    path = params["path"]
-    path = ((PATH_TO_FILES + path) if not(path == "") else path)
-    iter1 = 0
-    while iter1 < ITERATIONS:
-        if os.path.isfile(path):
-            result = mn.verify_file(did, uid,  path)
-            # f = open('program_logs.txt', 'w+')
-            # f.write('fsucsess i: ' + str(iter1))
-            # f.close()
-            break
-        # f = open('program_logs.txt', 'w+')
-        # f.write('fi: '+str(iter1))
-        # f.close()
-        iter1 += 1
-        time.sleep(SECS)
-
-    if iter1 >= ITERATIONS:
-        result = {'code': "5000"}
-    return result
+# def upt_d(params, result):
+#     name = params["name"]
+#     lang = params["language"]
+#     tags = params["tags"]
+#     path = params["path"]
+#     path = '/Users/Downloads/files_test' + path if not (path == "") else ""
+#     iter1 = 0
+#     while iter1 < ITERATIONS:
+#         if not(check_for_exeption(path)):
+#             file_data = mn.find_file_by_path(path) if not (path == "") else None
+#             result = mn.update_docs(name, file_data, lang, tags, path=path) if not(file_data is None) else {"code": "5000"}
+#             # f = open('program_logs.txt', 'w+')
+#             # f.write('vsucsess i: ' + str(iter1))
+#             # f.close()
+#             break
+#         # f = open('program_logs.txt', 'w+')
+#         # f.write('vi: ' + str(iter1))
+#         # f.close()
+#         iter1 += 1
+#         time.sleep(SECS)
+#
+#     if iter1 >= ITERATIONS:
+#         result = {'code': "5000"}
+#     return result
+#
+#
+# def for_verif(params, result):
+#     did = params["decision"]
+#     uid = params["id"]
+#     path = params["path"]
+#     path = ((PATH_TO_FILES + path) if not(path == "") else path)
+#     iter1 = 0
+#     while iter1 < ITERATIONS:
+#         if os.path.isfile(path):
+#             result = mn.verify_file(did, uid,  path)
+#             # f = open('program_logs.txt', 'w+')
+#             # f.write('fsucsess i: ' + str(iter1))
+#             # f.close()
+#             break
+#         # f = open('program_logs.txt', 'w+')
+#         # f.write('fi: '+str(iter1))
+#         # f.close()
+#         iter1 += 1
+#         time.sleep(SECS)
+#
+#     if iter1 >= ITERATIONS:
+#         result = {'code': "5000"}
+#     return result
 
 
 def users_replace_ids(result, replace_login=False, replace_partly=False, full_security=False):

@@ -23,8 +23,7 @@ if __name__ != '__main__':
     from . import get_functions as gf
     from . import find_functions as ff
     from . import main as mn
-    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, \
-    upt_d, for_verif, file_loader_module
+    from .utils import doc_ids_replace, users_replace_ids, handle_uploaded_file, hashCode, get_params, replace_pieces_id, file_loader_module
     lgr = Logger()
     lgr.log("log", "is dir", os.path.isdir("../../python_scripts"))
     lgr.log("log", "in dir", os.listdir("../../python_scripts"))
