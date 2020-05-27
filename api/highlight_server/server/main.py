@@ -369,6 +369,9 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
         except IsADirectoryError as e:
             print(e)
             lgr.log("log", "update db", str(e))
+        except UnboundLocalError as e:
+            print(e)
+            lgr.log("log", "update db", str(e))
 
     return file_id
 
