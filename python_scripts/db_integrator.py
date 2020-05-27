@@ -134,11 +134,11 @@ def join_google_sheets():
     db = client.highlight
     lang_storage = db.files_info
     for doc in documents:
-        pf = lang_storage.find_one({"name": (doc["number"] + "_" + doc["name"]), "status": doc["status"]})
+        pf = lang_storage.find_one({"name": (doc["number"] + " " + doc["name"]), "status": doc["status"]})
         if pf is None:
             print(doc["number"])
             if doc["status"] == "WAITING_FOR_TRANSLATION":
-                did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + "_" + doc["name"]),
+                did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + " " + doc["name"]),
                                  doc["status"], doc["lang"], tags=",".join(doc["tag"]), pieces_count=0, importance=0,
                                  orig_path=doc["FORpath"], abstract=doc["abstract"], author="", journal=doc["journal"],
                                  journal_link=doc["journal_link"])
@@ -147,7 +147,7 @@ def join_google_sheets():
                     doc["FORpath"] = doc["journal_link"]
                 if not "RUSpath" in doc.keys():
                     doc["RUSpath"] = doc["tr_txt"]
-                did = push_to_db(lang_storage.count_documents({"status": {"$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}) + 1, (doc["number"] + "_" + doc["name"]), doc["status"], doc["lang"], orig_path=doc["FORpath"],
+                did = push_to_db(lang_storage.count_documents({"status": {"$in": ["WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"]}}) + 1, (doc["number"] + " " + doc["name"]), doc["status"], doc["lang"], orig_path=doc["FORpath"],
                                  path=doc["RUSpath"], to_lang="RUS", tags=",".join(doc["tag"]),
                                  importance=0, translator=[],
                                  chief=[], author="", abstract=doc["abstract"], journal=doc["journal"],
