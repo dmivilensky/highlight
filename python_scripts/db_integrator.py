@@ -136,6 +136,7 @@ def join_google_sheets():
     for doc in documents:
         pf = lang_storage.find_one({"name": (doc["number"] + "_" + doc["name"]), "status": doc["status"]})
         if pf is None:
+            print(doc["number"])
             if doc["status"] == "WAITING_FOR_TRANSLATION":
                 did = push_to_db(lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1, (doc["number"] + "_" + doc["name"]),
                                  doc["status"], doc["lang"], tags=doc["tag"], pieces_count=0, importance=0,
