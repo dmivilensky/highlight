@@ -95,11 +95,15 @@ def split_to_pieces(number, name, lang, doc_path):
        :structure: list(ObjectId Bson)
    """
 
+    if len(doc_path.split("/")) and doc_path.split("/")[-2] != "files":
+        integrated = True
+    else:
+        integrated = False
     ids = list()
     counter = 0
     lgr = Logger()
-    lgr.log("log", "splitting", "path " + doc_path.split("/")[-1])
-    piece_pages = FM.split_pdf(doc_path.split("/")[-1])
+    lgr.log("log", "splitting", "path " + (doc_path.split("/")[-1] if not integrated else doc_path.split("/")[-2] + "/" + doc_path.split("/")[-1]))
+    piece_pages = FM.split_pdf((doc_path.split("/")[-1] if not integrated else doc_path.split("/")[-2] + "/" + doc_path.split("/")[-1]))
     lgr.log("log", "splitting", "entry point")
     for i in range(len(piece_pages)):
         lgr.log("log", "splitting", "try " + str(i))
@@ -354,7 +358,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
             pids, ptxts = split_to_pieces(number, name, lang, orig_path)
         except Exception as e:
             print(e)
-            lgr.log("log", "update db", str(e))
+            lgr.log("log", "update db splitting", str(e))
 
     if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
         try:
@@ -365,13 +369,13 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
             indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))
         except FileNotFoundError as e:
             print(e)
-            lgr.log("log", "update db", str(e))
+            lgr.log("log", "update db indexing", str(e))
         except IsADirectoryError as e:
             print(e)
-            lgr.log("log", "update db", str(e))
+            lgr.log("log", "update db indexing", str(e))
         except UnboundLocalError as e:
             print(e)
-            lgr.log("log", "update db", str(e))
+            lgr.log("log", "update db indexing", str(e))
 
     return file_id
 
