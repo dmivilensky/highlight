@@ -76,7 +76,7 @@ function document_info(i) {
         var tr_s = translation.split("/");
         translation_text = `
         <div class="col s6">
-        <a href="files/` + (tr_s.length >1 || tr_s[tr_s.length - 2] == "files" ? tr_s[tr_s.length - 1] : tr_s[tr_s.length - 2] + "/" + tr_s[tr_s.length - 1]) + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
+        <a href="files/` + (tr_s.length < 2 || tr_s[tr_s.length - 2] == "files" ? tr_s[tr_s.length - 1] : tr_s[tr_s.length - 2] + "/" + tr_s[tr_s.length - 1]) + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
         </div>
         `;
     }
