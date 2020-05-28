@@ -120,6 +120,16 @@ function document_info(i) {
     `);
 }
 
+function previous_page() {
+    $('#page').text($('#page').text() >= 2 ? (parseInt($('#page').text())-1) : 1)
+    update_search()
+}
+
+function next_page() {
+    $('#page').text(parseInt($('#page').text())+1)
+    update_search()
+}
+
 function update_search() {
     var tags_list = "";
     var tags_data = M.Chips.getInstance($('#tags')).chipsData;
