@@ -36,7 +36,7 @@ async function corrected() {
         $("#corrections_path").val(fname);
 
         $('#file').on('submit', function(event) {
-            // event.preventDefault();
+            event.preventDefault();
 
             var post_data = new FormData($("#file")[0]);
             post_data.append("id", user_id);
@@ -69,8 +69,10 @@ async function corrected() {
                     $('#submitting_button').attr('disabled', false);
                     alert("Файл загружен!");
                     $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
+                    location.reload()
                 }
             });
+            event.stopImmediatePropagation();
         });
         $("#file").submit();
     }

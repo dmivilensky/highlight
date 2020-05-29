@@ -221,7 +221,7 @@ function upload() {
     $("#corrections_path").val(fname);
 
     $('#file').on('submit', function(event) {
-        // event.preventDefault();
+        event.preventDefault();
 
         var post_data = new FormData($("#file")[0]);
         post_data.append("id", user_id);
@@ -256,8 +256,10 @@ function upload() {
                 alert("Файл загружен!");
                 $('#submitting_button').get(0).innerText = "ЗАГРУЗИТЬ ФАЙЛ";
                 list_blocks();
+                location.reload()
             }
         });
+        event.stopImmediatePropagation();
     });
     $("#file").submit();
 }
