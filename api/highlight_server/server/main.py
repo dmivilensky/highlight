@@ -363,7 +363,7 @@ def push_to_db(number, name, status, lang, importance=0, pieces_count=None, path
     if status in {"WAITING_FOR_TRANSLATION", "NEED_CHECK", "TRANSLATED"}:
         try:
             if status in {"TRANSLATED", "NEED_CHECK"}:
-                extract_pdf2text(path, file, lang_storage, [path.split("/")[-1] if len(path.split("/")) < 2 or path.split("/")[-2] == "files" else (path.split("/")[-2] + "/" + path.split("/")[-1])], orig=False)
+                extract_pdf2text(path, file, lang_storage, [path.split("/")[-1] if len(path.split("/")) < 2 or path.split("/")[-2] == "files" else ("/".join(path.split("/")[(path.split("/").index("files")+1):]))], orig=False)
             else:
                 extract_pdf2text(orig_path, file, lang_storage, ptxts)
             indexing(db, file, file_id, orig=(True if status == "WAITING_FOR_TRANSLATION" else False))

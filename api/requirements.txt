@@ -18,3 +18,5 @@ pyasn1-modules==0.2.8
 rsa==4.0
 six==1.15.0
 uritemplate==3.0.1
+awesome-slugify==1.6.5
+django-celery==3.3.1

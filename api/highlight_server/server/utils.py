@@ -32,7 +32,7 @@ def doc_ids_replace(result):
         doc["_id"] = str(doc["_id"])
 
         if "orig_path" in doc.keys():
-            doc["orig_path"] = doc["orig_path"] if not("var" in doc["orig_path"].split("/") and "www" in doc["orig_path"].split("/") and "files" in doc["orig_path"].split("/")) else "/".join(doc["orig_path"].split("/")[list(doc["orig_path"].split("/")).index("files"):])
+            doc["orig_path"] = doc["orig_path"] if not("Users" in doc["orig_path"].split("/") and "highlight" in doc["orig_path"].split("/") and "files" in doc["orig_path"].split("/") or "var" in doc["orig_path"].split("/") and "www" in doc["orig_path"].split("/") and "files" in doc["orig_path"].split("/")) else "/".join(doc["orig_path"].split("/")[list(doc["orig_path"].split("/")).index("files"):])
         if "path" in doc.keys():
             doc["path"] = doc["path"] if not("var" in doc["path"].split("/") and "www" in doc["path"].split("/") and "files" in doc["path"].split("/")) else "/".join(doc["path"].split("/")[list(doc["path"].split("/")).index("files"):])
         if "orig_txt_path" in doc.keys():
@@ -56,8 +56,11 @@ def doc_ids_replace(result):
 
 def user_replacer_iterator(acc, doc, key):
     for i in range(len(doc[key])):
-        uac = acc.find_one({"_id": ObjectId(doc[key][i])})
-        doc[key][i] = create_name_by_user(uac)
+        try:
+            uac = acc.find_one({"_id": ObjectId(doc[key][i])})
+            doc[key][i] = create_name_by_user(uac)
+        except Exception as e:
+            print(e)
     return doc
 
 

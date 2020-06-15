@@ -63,7 +63,7 @@ function document_info(i) {
         var or_s = original.split("/");
         original_text = `
         <div class="col s6">
-        <a href="` + (or_s[0] != "http:" && or_s[0] != "https:" ? "files/" + (or_s.length >1 || or_s[or_s.length - 2] == "files" ? or_s[or_s.length - 1] : or_s[or_s.length - 2] + "/" + or_s[or_s.length - 1]) : original) + `" target="_blank" class="waves-effect waves-green btn-flat download-btns ready-btn"><i class="material-icons left">get_app</i>Скачать оригинал</a>
+        <a href="` + (or_s[0] != "http:" && or_s[0] != "https:" ? "files/" + (or_s.length < 2 || or_s[or_s.length - 2] == "files" ? or_s[or_s.length - 1] : or_s.slice(or_s.indexOf("files") + 1, or_s.length).join("/")) : original) + `" target="_blank" class="waves-effect waves-green btn-flat download-btns ready-btn"><i class="material-icons left">get_app</i>Скачать оригинал</a>
         </div>
         `;
     }
@@ -76,7 +76,7 @@ function document_info(i) {
         var tr_s = translation.split("/");
         translation_text = `
         <div class="col s6">
-        <a href="` + (tr_s[0] != "http:" && tr_s[0] != "https:" ? "files/" + (tr_s.length < 2 || tr_s[tr_s.length - 2] == "files" ? tr_s[tr_s.length - 1] : tr_s[tr_s.length - 2] + "/" + tr_s[tr_s.length - 1]) : translation) + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
+        <a href="` + (tr_s[0] != "http:" && tr_s[0] != "https:" ? "files/" + (tr_s.length < 2 || tr_s[tr_s.length - 2] == "files" ? tr_s[tr_s.length - 1] : tr_s.slice(tr_s.indexOf("files") + 1, tr_s.length).join("/")) : translation) + `" target="_blank" class="waves-effect waves-light btn green download-btns"><i class="material-icons left">get_app</i>Скачать перевод</a>
         </div>
         `;
     }
