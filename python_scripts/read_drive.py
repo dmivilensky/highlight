@@ -1,6 +1,6 @@
 import sys
 
-from celery import shared_task
+# from celery import shared_task
 from slugify import slugify
 from google.oauth2 import service_account
 from googleapiclient.http import MediaIoBaseDownload,MediaFileUpload
