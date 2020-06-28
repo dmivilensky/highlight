@@ -13,6 +13,7 @@ from pymongo import MongoClient
 import pickle
 import io
 import os
+from apiclient import errors
 
 
 sys.path.insert(1, (os.path.dirname(os.path.realpath(__file__)) + '/../api/highlight_server/server'))
@@ -21,9 +22,11 @@ from main import push_to_db, delete_from_db_all
 keys = {
         'дата'                   : 'date',
         'заголовок'              : 'name',
+        'заголовок документа'    : 'name',
         'ключевые слова'         : 'keywords',
         'номер документа'        : 'number',
         'описание'               : 'description',
+        'описание документа'     : 'description',
         'переводчики'            : 'translators',
         'ссылка на первоисточник': 'source',
         'страна'                 : 'country',
@@ -38,6 +41,29 @@ if not os.path.isdir(BASE_DIR):
         os.mkdir(BASE_DIR)
 
 ROOT_DIR = 'Highlight переводы COVID-19'
+RD_ID = '1U3tfvjjKuUbcWBhlFB2XY4Hio0OGL8-l'
+
+
+def is_file_in_folder(service, folder_id, file_id):
+  """Check if a file is in a specific folder.
+
+  Args:
+    service: Drive API service instance.
+    folder_id: ID of the folder.
+    file_id: ID of the file.
+  Returns:
+    Whether or not the file is in the folder.
+  """
+  try:
+    service.parents().get(fileId=file_id, parentId=folder_id).execute()
+  except errors.HttpError as error:
+    if error.resp.status == 404:
+      return False
+    else:
+      print('An error occurred: %s' % error)
+      raise error
+  return True
+
 
 def download_file(file_id, filename, service):
         request = service.files().get_media(fileId=file_id)
@@ -53,7 +79,6 @@ def download_file(file_id, filename, service):
 
 
 def put_to_mongo(files, directory):
-        time.sleep(10)
         try:
                 client = MongoClient()
                 db = client.highlight
@@ -73,6 +98,8 @@ def put_to_mongo(files, directory):
                 if not "lang" in files[directory].keys():
                         files[directory]["lang"] = "OTH"
 
+                files[directory]["number"] = files[directory]["number"].split(".")[0]
+
                 if files[directory]["status"] == "WAITING_FOR_TRANSLATION":
                         did = push_to_db(
                                 lang_storage.count_documents({"status": "WAITING_FOR_TRANSLATION"}) + 1,
@@ -80,10 +107,10 @@ def put_to_mongo(files, directory):
                                 files[directory]["status"], files[directory]["lang"],
                                 tags=",".join(files[directory]["keywords"]), pieces_count=0,
                                 importance=0,
-                                orig_path=files[directory]["original_path"], abstract=files[directory]["description"],
+                                orig_path=files[directory]["original_path"], abstract=files[directory]["description"] if "description" in files[directory].keys() else "",
                                 author=files[directory]["country"],
                                 journal=files[directory]["doi"] if "doi" in files[directory].keys() else "",
-                                journal_link=files[directory]["source"])
+                                journal_link=files[directory]["source"] if "source" in files[directory].keys() else "")
                 else:
                         if not "original_path" in files[directory].keys():
                                 files[directory]["original_path"] = ""
@@ -97,13 +124,13 @@ def put_to_mongo(files, directory):
                                          path=files[directory]["translate_path"], to_lang="RUS",
                                          tags=",".join(files[directory]["keywords"]),
                                          importance=0, translator=files[directory]["translators"],
-                                         chief=[], author=files[directory]["country"], abstract=files[directory]["description"],
+                                         chief=[], author=files[directory]["country"], abstract=files[directory]["description"] if "description" in files[directory].keys() else "",
                                          journal=files[directory]["doi"] if "doi" in files[
                                                  directory].keys() else "",
-                                         journal_link=files[directory]["source"], orig_preview="",
+                                         journal_link=files[directory]["source"] if "source" in files[directory].keys() else "", orig_preview="",
                                          orig_txt_path="")
         except Exception as e:
-                print(e)
+                print(str(files[directory]["number"] if "number" in files[directory].keys() else files[directory]) + str(e))
 
 
 # @shared_task
@@ -116,10 +143,11 @@ def integtate():
 
         results = service.files().list(pageSize=100,
                                        spaces='drive',
-                                       fields="nextPageToken, files(id, name, mimeType)").execute()
+                                       fields="nextPageToken, files(id, name, mimeType, parents)").execute()
         nextPageToken = results.get('nextPageToken')
         while nextPageToken:
                 nextPage = service.files().list(pageSize=100,
+                                                spaces='drive',
                                                 fields="nextPageToken, files(id, name, mimeType, parents)",
                                                 pageToken=nextPageToken).execute()
                 nextPageToken = nextPage.get('nextPageToken')
@@ -129,7 +157,7 @@ def integtate():
 
         directories = set()
         for v in results['files']:
-                if v['mimeType'] == 'application/vnd.google-apps.folder' and  v['name'] != ROOT_DIR:
+                if v['mimeType'] == 'application/vnd.google-apps.folder' and  v['name'] != ROOT_DIR and 'parents' in v.keys() and RD_ID in v['parents']:
                         directories.add(v['name'])
         new = directories - directories_before
         files = defaultdict(dict)
