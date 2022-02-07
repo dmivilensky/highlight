@@ -4,6 +4,12 @@
 
 # О HIGHLIGHT
 
+<a href="https://youtu.be/1gBOgAkURo4">Видео-инструкция для переводчиков</a>
+
+<a href="https://youtu.be/i-uj_CDzLvc">Видео-инструкция для редакторов</a>
+
+<a href="https://youtu.be/q6WmxxprFm0">Видео-инструкция для поиска документов</a>
+
 ## Развёртывание
 
 #### [**Гайд по развёртыванию**](https://github.com/dmivilensky/highlight/wiki/Delpoy)
