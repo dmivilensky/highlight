@@ -1,4 +1,4 @@
-django==3.0.6
+django==3.1.14
 docx==0.2.4
 python-docx==0.8.10
 pymongo==3.10.1
